@@ -1,0 +1,500 @@
+/* include/defs.h.in.  Generated automatically from configure.in by autoheader.  */
+/* Define short BitchX version here */
+#undef _VERSION_
+
+/* Define long BitchX version here */
+#undef VERSION
+
+/* Define BitchX version number here */
+#undef VERSION_NUMBER
+
+/* Define this if you have a crypt implementation in -lcrypt */
+#undef HAVE_CRYPT
+
+/* Define this if you have the resolv library */
+#undef HAVE_RESOLV
+
+/* Define this if tparm is declared in an included header */
+#undef TPARM_DECLARED
+
+/* Define this if you have the tparm function in an included lib */
+#undef HAVE_TPARM
+
+/* Define this if tputs is declared in an included header */
+#undef TPUTS_DECLARED
+
+/* Define this if you have the tputs function in an included lib */
+#undef HAVE_TPUTS
+
+/* Define this if you have terminfo support */
+#undef HAVE_TERMINFO
+
+/* define this if an unsigned long is 32 bits */
+#undef UNSIGNED_LONG32
+
+/* define this if an unsigned int is 32 bits */
+#undef UNSIGNED_INT32
+
+/* define this if you are unsure what is is 32 bits */
+#undef UNKNOWN_32INT
+
+/* Define this if stpcpy is declared in unistd.h */
+#undef STPCPY_DECLARED
+
+/* Define this if getpgid is declared in unistd.h */
+#undef GETPGID_DECLARED
+
+/* Define this if killpg is declared in signal.h */
+#undef KILLPG_DECLARED
+
+/* Define this if getpass is declared */
+#undef GETPASS_DECLARED
+
+/* Define this if errno is declared */
+#undef ERRNO_DECLARED
+
+/* Define this if struct linger is declared in sys/socket.h */
+#undef STRUCT_LINGER_DECLARED
+
+/* Define this if sun_len is declared in sys/un.h */
+#undef HAVE_SUN_LEN
+
+/* Define this if you want QMAIL support */
+#undef HAVE_QMAIL
+
+/* Define this if bcopy is declared in string.h */
+#undef BCOPY_DECLARED
+
+/* Define this if you system has inet_aton */
+#undef HAVE_INET_ATON
+ 
+/* Define your maildir here */
+#undef UNIX_MAIL
+
+/* Define a list of default servers here */
+#undef DEFAULT_SERVER
+
+/* Define this if you want Tcl support */
+#undef WANT_TCL
+
+/* Define this if you have tcl.h */
+#undef HAVE_TCL_H
+
+/* Define this is the system has SSL support */
+#undef HAVE_SSL
+
+/* Define this if you want IPV6 support */
+#undef IPV6
+
+/* Define this if you want SOCKS support */
+#undef SOCKS
+
+/* Non-blocking type should be one of these */
+#undef NBLOCK_POSIX
+#undef NBLOCK_BSD
+#undef NBLOCK_SYSV
+
+/*
+ * Are we doing non-blocking connects? Note: SOCKS support precludes us from
+ * using this feature.
+ */
+#if (defined(NBLOCK_POSIX) || defined(NBLOCK_BSD) || defined(NBLOCK_SYSV)) && !defined(SOCKS)
+#define NON_BLOCKING_CONNECTS
+#endif
+
+/* Define this if you want CD-ROM support */
+#undef WANT_CD
+
+/* Define this if you want GUI support (PM or GTK) */
+#undef GUI
+
+/* Defined if Win32 GUI */
+#if defined(GUI) && defined(WINNT)
+#define WIN32 1
+#endif
+
+/* Define this is you want OS/2 PM support */
+#undef __EMXPM__
+
+/* Define this if you want GTK support */
+#undef GTK
+
+/* Define this if you want imlib support */
+#undef USE_IMLIB
+
+/* Define this if you want GNOME support */
+#undef USE_GNOME
+
+/* Define this if your ZVT is newer than 1.0.10 */
+#undef HAVE_NEW_ZVT
+
+/* Define this if you want ZVT support */
+#undef USE_ZVT
+
+/* Define this is you want sound support */
+#undef SOUND
+
+/* Define this if you want loadable module support */
+#undef HAVE_DLLIB
+
+/*
+ * Define this if you have shlib support and want plugin support in BitchX
+ * Note: Not all systems support this.
+ */
+#ifdef HAVE_DLLIB
+#define WANT_DLL
+#endif
+
+/* The Extra Files */
+#undef DEFAULT_CTOOLZ_DIR
+#undef DEFAULT_MSGLOGFILE
+#undef DEFAULT_BITCHX_HELP_FILE
+#undef DEFAULT_SCRIPT_HELP_FILE
+#undef DEFAULT_BITCHX_KICK_FILE
+#undef DEFAULT_BITCHX_QUIT_FILE
+#undef DEFAULT_BITCHX_IRCNAME_FILE
+
+/* Needed defines */
+#undef DEFAULT_HELP_PATH
+#undef IRCLIB
+#undef IRCPATH
+#undef SHLIB_SUFFIX
+#undef PLUGINDIR
+#undef SCRIPT_PATH
+#undef WSERV_PATH
+#undef TRANSLATION_PATH
+
+/* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
+   systems. This function is required for `alloca.c' support on those systems.
+   */
+#undef CRAY_STACKSEG_END
+
+/* Define if using `alloca.c'. */
+#undef C_ALLOCA
+
+/* Define if the `getpgrp' function takes no argument. */
+#undef GETPGRP_VOID
+
+/* Define if you have `alloca', as a function or macro. */
+#undef HAVE_ALLOCA
+
+/* Define if you have <alloca.h> and it should be used (not on Ultrix). */
+#undef HAVE_ALLOCA_H
+
+/* Define if you have the <arpa/inet.h> header file. */
+#undef HAVE_ARPA_INET_H
+
+/* Define if you have the <arpa/nameser.h> header file. */
+#undef HAVE_ARPA_NAMESER_H
+
+/* Define if you have the <curses.h> header file. */
+#undef HAVE_CURSES_H
+
+/* Define if you have the <dirent.h> header file. */
+#undef HAVE_DIRENT_H
+
+/* Define if you have the `fchdir' function. */
+#undef HAVE_FCHDIR
+
+/* Define if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define if you have the `fpathconf' function. */
+#undef HAVE_FPATHCONF
+
+/* Define if you have the `gethostname' function. */
+#undef HAVE_GETHOSTNAME
+
+/* Define if you have the `getlogin' function. */
+#undef HAVE_GETLOGIN
+
+/* Define if you have the `getpass' function. */
+#undef HAVE_GETPASS
+
+/* Define if you have the `getpgid' function. */
+#undef HAVE_GETPGID
+
+/* Define if you have the `getpwent' function. */
+#undef HAVE_GETPWENT
+
+/* Define if you have the `getrusage' function. */
+#undef HAVE_GETRUSAGE
+
+/* Define if you have the `gettimeofday' function. */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define if you have the `killpg' function. */
+#undef HAVE_KILLPG
+
+/* Define if you have the `crypt' library (-lcrypt). */
+#undef HAVE_LIBCRYPT
+
+/* Define if you have the `curses' library (-lcurses). */
+#undef HAVE_LIBCURSES
+
+/* Define if you have the `c_r' library (-lc_r). */
+#undef HAVE_LIBC_R
+
+/* Define if you have the `dgc' library (-ldgc). */
+#undef HAVE_LIBDGC
+
+/* Define if you have the `dir' library (-ldir). */
+#undef HAVE_LIBDIR
+
+/* Define if you have the `dl' library (-ldl). */
+#undef HAVE_LIBDL
+
+/* Define if you have the `dld' library (-ldld). */
+#undef HAVE_LIBDLD
+
+/* Define if you have the `dmalloc' library (-ldmalloc). */
+#undef HAVE_LIBDMALLOC
+
+/* Define if you have the `intl' library (-lintl). */
+#undef HAVE_LIBINTL
+
+/* Define if you have the `m' library (-lm). */
+#undef HAVE_LIBM
+
+/* Define if you have the `mysqlclient' library (-lmysqlclient). */
+#undef HAVE_LIBMYSQLCLIENT
+
+/* Define if you have the `mytinfo' library (-lmytinfo). */
+#undef HAVE_LIBMYTINFO
+
+/* Define if you have the `ncurses' library (-lncurses). */
+#undef HAVE_LIBNCURSES
+
+/* Define if you have the `nsl' library (-lnsl). */
+#undef HAVE_LIBNSL
+
+/* Define if you have the `pthread' library (-lpthread). */
+#undef HAVE_LIBPTHREAD
+
+/* Define if you have the `pthreads' library (-lpthreads). */
+#undef HAVE_LIBPTHREADS
+
+/* Define if you have the `resolv' library (-lresolv). */
+#undef HAVE_LIBRESOLV
+
+/* Define if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define if you have the `socks' library (-lsocks). */
+#undef HAVE_LIBSOCKS
+
+/* Define if you have the `socks5' library (-lsocks5). */
+#undef HAVE_LIBSOCKS5
+
+/* Define if you have the `ssl' library (-lssl). */
+#undef HAVE_LIBSSL
+
+/* Define if you have the `sun' library (-lsun). */
+#undef HAVE_LIBSUN
+
+/* Define if you have the `tcl' library (-ltcl). */
+#undef HAVE_LIBTCL
+
+/* Define if you have the `tcl76' library (-ltcl76). */
+#undef HAVE_LIBTCL76
+
+/* Define if you have the `tcl80' library (-ltcl80). */
+#undef HAVE_LIBTCL80
+
+/* Define if you have the `termcap' library (-ltermcap). */
+#undef HAVE_LIBTERMCAP
+
+/* Define if you have the `termlib' library (-ltermlib). */
+#undef HAVE_LIBTERMLIB
+
+/* Define if you have the `tinfo' library (-ltinfo). */
+#undef HAVE_LIBTINFO
+
+/* Define if you have the `x' library (-lx). */
+#undef HAVE_LIBX
+
+/* Define if you have the <linux/soundcard.h> header file. */
+#undef HAVE_LINUX_SOUNDCARD_H
+
+/* Define if you have the <machine/soundcard.h> header file. */
+#undef HAVE_MACHINE_SOUNDCARD_H
+
+/* Define if you have the `memmove' function. */
+#undef HAVE_MEMMOVE
+
+/* Define if you have the `mkstemp' function. */
+#undef HAVE_MKSTEMP
+
+/* Define if you have the <ncurses.h> header file. */
+#undef HAVE_NCURSES_H
+
+/* Define if you have the <ncurses/termcap.h> header file. */
+#undef HAVE_NCURSES_TERMCAP_H
+
+/* Define if you have the <ndir.h> header file. */
+#undef HAVE_NDIR_H
+
+/* Define if you have the <netdb.h> header file. */
+#undef HAVE_NETDB_H
+
+/* Define if you have the <netinet/in_systm.h> header file. */
+#undef HAVE_NETINET_IN_SYSTM_H
+
+/* Define if you have the <net/if.h> header file. */
+#undef HAVE_NET_IF_H
+
+/* Define if you have the `realpath' function. */
+#undef HAVE_REALPATH
+
+/* Define if you have the <regex.h> header file. */
+#undef HAVE_REGEX_H
+
+/* Define if you have the <resolv.h> header file. */
+#undef HAVE_RESOLV_H
+
+/* Define if you have the `scandir' function. */
+#undef HAVE_SCANDIR
+
+/* Define if you have the `select' function. */
+#undef HAVE_SELECT
+
+/* Define if you have the `setsid' function. */
+#undef HAVE_SETSID
+
+/* Define if you have the `setvbuf' function. */
+#undef HAVE_SETVBUF
+
+/* Define if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
+
+/* Define if you have the `socket' function. */
+#undef HAVE_SOCKET
+
+/* Define if you have the `stpcpy' function. */
+#undef HAVE_STPCPY
+
+/* Define if you have the `strerror' function. */
+#undef HAVE_STRERROR
+
+/* Define if you have the `strftime' function. */
+#undef HAVE_STRFTIME
+
+/* Define if you have the `strlcat' function. */
+#undef HAVE_STRLCAT
+
+/* Define if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
+/* Define if you have the `strtoul' function. */
+#undef HAVE_STRTOUL
+
+/* Define if you have the `sysconf' function. */
+#undef HAVE_SYSCONF
+
+/* Define if you have the <sys/dir.h> header file. */
+#undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/fcntl.h> header file. */
+#undef HAVE_SYS_FCNTL_H
+
+/* Define if you have the <sys/file.h> header file. */
+#undef HAVE_SYS_FILE_H
+
+/* Define if you have the <sys/filio.h> header file. */
+#undef HAVE_SYS_FILIO_H
+
+/* Define if you have the <sys/in_systm.h> header file. */
+#undef HAVE_SYS_IN_SYSTM_H
+
+/* Define if you have the <sys/ndir.h> header file. */
+#undef HAVE_SYS_NDIR_H
+
+/* Define if you have the <sys/soundcard.h> header file. */
+#undef HAVE_SYS_SOUNDCARD_H
+
+/* Define if you have the <sys/syslimits.h> header file. */
+#undef HAVE_SYS_SYSLIMITS_H
+
+/* Define if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <sys/un.h> header file. */
+#undef HAVE_SYS_UN_H
+
+/* Define if you have the <termcap.h> header file. */
+#undef HAVE_TERMCAP_H
+
+/* Define if you have the `uname' function. */
+#undef HAVE_UNAME
+
+/* Define if you have the `vsnprintf' function. */
+#undef HAVE_VSNPRINTF
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#undef RETSIGTYPE
+
+/* Define if the `setpgrp' function takes no argument. */
+#undef SETPGRP_VOID
+
+/* Define if the `setvbuf' function takes the buffering type as its second
+   argument and the buffer pointer as the third, as on System V before release
+   3. */
+#undef SETVBUF_REVERSED
+
+/* The size of a `unsigned int', as computed by sizeof. */
+#undef SIZEOF_UNSIGNED_INT
+
+/* The size of a `unsigned long', as computed by sizeof. */
+#undef SIZEOF_UNSIGNED_LONG
+
+/* If using the C implementation of alloca, define if you know the
+   direction of stack growth for your system; otherwise it will be
+   automatically deduced at run-time.
+        STACK_DIRECTION > 0 => grows toward higher addresses
+        STACK_DIRECTION < 0 => grows toward lower addresses
+        STACK_DIRECTION = 0 => direction of growth unknown */
+#undef STACK_DIRECTION
+
+/* Define if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define if `sys_siglist' is declared by <signal.h> or <unistd.h>. */
+#undef SYS_SIGLIST_DECLARED
+
+/* Define if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* Define if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+
+/* Define if you need to in order for stat and other things to work. */
+#undef _POSIX_SOURCE
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `int' if <sys/types.h> doesn't define. */
+#undef gid_t
+
+/* Define as `__inline' if that's what the C compiler calls it, or to nothing
+   if it is not supported. */
+#undef inline
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef mode_t
+
+/* Define to `long' if <sys/types.h> does not define. */
+#undef off_t
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef pid_t
+
+/* Define to `unsigned' if <sys/types.h> does not define. */
+#undef size_t
+
+/* Define to `int' if <sys/types.h> doesn't define. */
+#undef uid_t
