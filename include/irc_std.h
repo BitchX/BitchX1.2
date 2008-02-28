@@ -98,7 +98,7 @@
 # define __N
 # define __inline__
 #else
-# if (__GNUC__ >= 2) && (__GNUC_MINOR__ >= 7)
+# if (__GNUC__ > 2) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 7))
 #  define __A(x) __attribute__ ((format (printf, x, x + 1)))
 #  define __N    __attribute__ ((noreturn))
 # else
