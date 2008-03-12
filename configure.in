@@ -42,6 +42,16 @@ AC_ISC_POSIX
 AC_AIX
 AC_PROG_AWK
 
+dnl Enable -fno-strict-aliasing, if the compiler supports it.
+dnl Hopefully this is a temporary measure, until the code can be fixed.
+AC_MSG_CHECKING(whether compiler understands -fno-strict-aliasing)
+old_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -fno-strict-aliasing"
+AC_TRY_COMPILE([],[],
+  AC_MSG_RESULT(yes),
+  AC_MSG_RESULT(no) 
+  CFLAGS="$old_CFLAGS")
+
 dnl Checks for libraries.
 AC_CHECK_LIB(sun, getpwnam, LIBS="-lsun $LIBS",)
 AC_CHECK_LIB(dgc, inet_addr, LIBS="-ldgc $LIBS",)
@@ -518,7 +528,7 @@ if test -z "$CYGWIN" -a -z "$EMXOS2" -a -z "$MINGWIN32"; then
     AC_CHECK_DECLARATION(tputs, tputs, [tputs( |        |)], termcap.h, TPUTS_DECLARED)
   fi
   if test x"$termcap" = x"1"; then
-    AC_CHECK_HEADER(termcap.h)
+    AC_CHECK_HEADERS(termcap.h)
     AC_CHECK_DECLARATION(tparm, tparm, [tparm( |        |)], termcap.h, TPARM_DECLARED)
     AC_CHECK_LIB(termcap, tparm, AC_DEFINE(HAVE_TPARM, 1, Define this if you have the tparm function in an included lib.),)
     AC_CHECK_DECLARATION(tputs, tputs, [tputs( |        |)], termcap.h, TPUTS_DECLARED)
@@ -997,7 +1007,6 @@ dll/aim/toc/Makefile
 dll/amp/Makefile
 dll/arcfour/Makefile
 dll/autocycle/Makefile
-dll/aim/Makefile
 dll/blowfish/Makefile
 dll/cavlink/Makefile
 dll/cdrom/Makefile
