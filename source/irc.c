@@ -63,19 +63,17 @@ CVS_REVISION(irc_c)
 #endif
 
 #ifndef VERSION
-	const char irc_version[] = "BitchX-1.1-final";
+	const char irc_version[] = "BitchX-1.2c01-svn";
 #else
 	const char irc_version[] = VERSION;
 #endif
 
-/*
- * major version is 75
- * minor version is 14
- * 000 is non-alpha/non-patch
- * 001 is alpha 
- * 002 is patch
+/* Format of bitchx_numver: MMmmpp
+ * MM = major version (eg 10 = 1.0)
+ * mm = minor version
+ * pp = patchlevel (00 = development, 01 = release)
  */
-const unsigned long bitchx_numver = 100001;
+const unsigned long bitchx_numver = 120100;
 
 /*
  * INTERNAL_VERSION is the number that the special alias $V returns.
