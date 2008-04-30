@@ -97,7 +97,7 @@ static LookupStruct channel_struct[] = {
 		
 	{ "LIMIT",		offsetof(ChannelList, limit), INT_TYPE_VAR, VAR_READ_ONLY  },
 	{ "KEY",		offsetof(ChannelList, key), STR_TYPE_VAR, VAR_READ_ONLY  },
-	{ "CHOP",		offsetof(ChannelList, chop), INT_TYPE_VAR, VAR_READ_ONLY  },
+	{ "CHOP",		offsetof(ChannelList, have_op), INT_TYPE_VAR, VAR_READ_ONLY  },
 	{ "HOP",		offsetof(ChannelList, hop), INT_TYPE_VAR, VAR_READ_ONLY  },
 	{ "VOICE",		offsetof(ChannelList, voice), INT_TYPE_VAR, VAR_READ_ONLY  },
 	{ "BOUND",		offsetof(ChannelList, bound), INT_TYPE_VAR, VAR_READ_ONLY  },

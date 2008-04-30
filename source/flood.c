@@ -460,7 +460,7 @@ ChannelList *chan = NULL;
 	for (chan = get_server_channels(from_server); chan; chan = chan->next)
 		if ((Nick = find_nicklist_in_channellist(nick, chan, 0)))
 			break;
-	if (chan && chan->chop && get_cset_int_var(chan->csets, CTCP_FLOOD_BAN_CSET) && Nick)
+	if (chan && chan->have_op && get_cset_int_var(chan->csets, CTCP_FLOOD_BAN_CSET) && Nick)
 	{
 		if (!Nick->userlist || (Nick->userlist && !(Nick->userlist->flags & ADD_FLOOD)))
 		{
@@ -509,7 +509,7 @@ int	kick_on_flood = 1;
 					kick_on_flood = get_cset_int_var(chan->csets, PUBFLOOD_CSET);
 					if (kick_on_flood && (Nick = find_nicklist_in_channellist(nick, chan, 0)))
 					{
-						if (chan->chop && (!Nick->userlist || (Nick->userlist && !(Nick->userlist->flags & ADD_FLOOD))))
+						if (chan->have_op && (!Nick->userlist || (Nick->userlist && !(Nick->userlist->flags & ADD_FLOOD))))
 							if (!nick_isop(Nick) || get_cset_int_var(chan->csets, KICK_OPS_CSET))
 								send_to_server("KICK %s %s :\002%s\002 flooder", chan->channel, nick, type);
 					} 
@@ -524,7 +524,7 @@ int	kick_on_flood = 1;
 			{
 				for (chan = get_server_channels(from_server); chan; chan = chan->next)
 				{
-					if (chan->chop && (Nick = find_nicklist_in_channellist(nick, chan, 0)))
+					if (chan->have_op && (Nick = find_nicklist_in_channellist(nick, chan, 0)))
 					{
 						if ((!Nick->userlist || (Nick->userlist && !(Nick->userlist->flags & ADD_FLOOD))))
 							if (!nick_isop(Nick) || get_cset_int_var(chan->csets, KICK_OPS_CSET))

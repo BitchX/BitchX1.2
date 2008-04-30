@@ -260,7 +260,7 @@ ChannelList * BX_add_channel(char *channel, int server, int refnum)
 		get_time(&new->join_time);
 		add_server_channels(server, new);
 	}
-	new->chop = 0;
+	new->have_op = 0;
 	new->voice = 0;
 	new->hop = 0;
 	
@@ -351,7 +351,7 @@ ChannelList *BX_add_to_channel(char *channel, char *nick, int server, int oper, 
 				if (!my_stricmp(nick, get_server_nickname(server)))
 				{
 					check_mode_list_join(channel, server);
-					chan->chop = 1;
+					chan->have_op = 1;
 				}
 			}	
 			if (!(new = find_nicklist_in_channellist(nick, chan,  0)))
@@ -549,7 +549,7 @@ typedef struct _UserChanModes {
  *
  * Written by Jordy (jordy@wserv.com)
  */
-char *BX_compress_modes(ChannelList *chan, int server, char *channel, char *modes) {
+char *BX_do_compress_modes(ChannelList *chan, int server, char *channel, char *modes) {
 int		add = 0, 
 		isbanned = 0, 
 		isopped = 0, 
@@ -821,13 +821,13 @@ NickList	*tnl = NULL;
 
 int BX_got_ops(int add, ChannelList *channel)
 {
-int chop = 0;
+int have_op = 0;
 register NickList *tmp;
 int in_join = 0;
 	in_join = in_join_list(channel->channel, from_server);
-	if (add && add != channel->chop && !in_join)
+	if (add && add != channel->have_op && !in_join)
 	{
-		chop = channel->chop = add;
+		have_op = channel->have_op = add;
 #ifdef WANT_USERLIST
 		for(tmp = next_nicklist(channel, NULL); tmp; tmp = next_nicklist(channel, tmp))
 			check_auto(channel->channel,tmp, channel);
@@ -835,19 +835,19 @@ int in_join = 0;
 		if ((get_server_version(from_server) == Server2_8hybrid6))
 			send_to_server("MODE %s e", channel->channel);
 	}
-	else if (!add && add != channel->chop && !in_join)
+	else if (!add && add != channel->have_op && !in_join)
  	{
 		for(tmp = next_nicklist(channel, NULL); tmp; tmp = next_nicklist(channel, tmp))
 			tmp->sent_reop = tmp->sent_deop = tmp->sent_voice = 0;
 	}
-	return chop;
+	return have_op;
 }
 
 /*
  * decifer_mode: This will figure out the mode string as returned by mode
  * commands and convert that mode string into a one byte bit map of modes 
  */
-static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsigned long *mode, char *chop, char *voice, char **key)
+static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsigned long *mode, char *have_op, char *voice, char **key)
 {
 
 	char	*limit = 0;
@@ -951,8 +951,8 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 				person = get_server_nickname(from_server);
 			if (!my_stricmp(person, get_server_nickname(from_server)))
 			{
-				*chop = (char)got_ops(add, *channel);
-				(*channel)->chop = add;
+				*have_op = (char)got_ops(add, *channel);
+				(*channel)->have_op = add;
 				if (add)
 					do_hook(CHANOP_LIST, "%s", (*channel)->channel);
 			}
@@ -973,7 +973,7 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 				        ThisNick->sent_deop--;
 			}			
 
-			if (!its_me && (*channel)->chop)
+			if (!its_me && (*channel)->have_op)
 			{
 				if (add && splitter)
 					check_hack(person, *channel, ThisNick, from);
@@ -1052,7 +1052,7 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 					malloc_strcpy(&new->setby, from?from:get_server_name(from_server));
 				new->time = now;
 #ifdef WANT_USERLIST
-				if (!its_me && (*channel)->chop)
+				if (!its_me && (*channel)->have_op)
 					check_prot(from, person, *channel, new, ThisNick);
 #endif
 			} 
@@ -1169,7 +1169,7 @@ void update_channel_mode(char *from, char *channel, int server, char *mode, Chan
 	
 	if (tmp || (channel && (tmp = lookup_channel(channel, server, CHAN_NOUNLINK))))
 	{
-		if ((limit = decifer_mode(from, mode, &(tmp), &(tmp->mode), &(tmp->chop), &(tmp->voice), &(tmp->key))) != -1)
+		if ((limit = decifer_mode(from, mode, &(tmp), &(tmp->mode), &(tmp->have_op), &(tmp->voice), &(tmp->key))) != -1)
 			tmp->limit = limit;
 	}
 }
@@ -1368,7 +1368,7 @@ void BX_rename_nick(char *old_nick, char *new_nick, int server)
 			if ((tmp = find_nicklist_in_channellist(old_nick, chan, REMOVE_FROM_LIST)))
 			{
 				tmp->stat_nicks++;
-				if (chan->chop && !isme(new_nick))
+				if (chan->have_op && !isme(new_nick))
 				{
 					if (is_other_flood(chan, tmp, NICK_FLOOD, &t))
 						handle_nickflood(old_nick, new_nick, tmp, chan, t); 
@@ -1684,7 +1684,7 @@ int BX_get_channel_oper(char *channel, int server)
 
 	
 	if ((chan = lookup_channel(channel, server, CHAN_NOUNLINK)))
-		return chan->chop;
+		return chan->have_op;
 	return 1;
 }
 
@@ -2062,7 +2062,7 @@ ChannelList *chan;
 	{
 		for (chan = get_server_channels(i); chan; chan = chan->next)
 		{
-			if (!chan->chop || !chan->csets || !chan->csets->set_auto_limit)
+			if (!chan->have_op || !chan->csets || !chan->csets->set_auto_limit)
 				continue;
 			if (chan->totalnicks + chan->csets->set_auto_limit != chan->limit)
 				my_send_to_server(i, "MODE %s +l %d", chan->channel, chan->totalnicks + chan->csets->set_auto_limit);

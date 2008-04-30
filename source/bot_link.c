@@ -776,7 +776,7 @@ DCC_int *n;
 			ch = lookup_channel(chan, from_server, 0);
 		else
 			ch = lookup_channel(get_current_channel_by_refnum(0), from_server, 0);	
-		if (!nick || !ch || !ch->chop) { dcc_printf(idx, "No Nick specified or not on that channel or not chop\n"); return TCL_ERROR; }
+		if (!nick || !ch || !ch->have_op) { dcc_printf(idx, "No Nick specified, not on that channel or not channel op\n"); return TCL_ERROR; }
 		while ((n1 = next_in_comma_list(nick, &nick)))
 		{
 			if (!n1 || !*n1) break;

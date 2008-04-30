@@ -202,7 +202,7 @@ static int already_done = 0;
 	global_table[RANDOM_NUMBER]		= (Function_ptr) BX_random_number;
 	
 /* words.c reg.c */
-	global_table[SEARCH]			= (Function_ptr) BX_search;
+	global_table[STRSEARCH]			= (Function_ptr) BX_strsearch;
 	global_table[MOVE_TO_ABS_WORD]		= (Function_ptr) BX_move_to_abs_word;
 	global_table[MOVE_WORD_REL]		= (Function_ptr) BX_move_word_rel;
 	global_table[EXTRACT]			= (Function_ptr) BX_extract;
@@ -364,7 +364,6 @@ static int already_done = 0;
 	global_table[TRAVERSE_ALL_WINDOWS]	= (Function_ptr) BX_traverse_all_windows;
 	global_table[ADD_TO_INVISIBLE_LIST]	= (Function_ptr) BX_add_to_invisible_list;
 	global_table[ADD_TO_WINDOW_LIST]	= (Function_ptr) BX_add_to_window_list;
-	global_table[REMOVE_WINDOW_FROM_SCREEN]	= (Function_ptr) BX_remove_window_from_screen;
 	global_table[RECALCULATE_WINDOW_POSITIONS]= (Function_ptr) BX_recalculate_window_positions;
 	global_table[MOVE_WINDOW]		= (Function_ptr) BX_move_window;
 	global_table[REDRAW_ALL_WINDOWS]	= (Function_ptr) BX_redraw_all_windows;
@@ -388,9 +387,9 @@ static int already_done = 0;
 	global_table[STATUS_UPDATE]		= (Function_ptr) BX_status_update;
 	global_table[SET_PROMPT_BY_REFNUM]	= (Function_ptr) BX_set_prompt_by_refnum;
 	global_table[GET_PROMPT_BY_REFNUM]	= (Function_ptr) BX_get_prompt_by_refnum;
-	global_table[QUERY_NICK]		= (Function_ptr) BX_query_nick;
-	global_table[QUERY_HOST]		= (Function_ptr) BX_query_host;
-	global_table[QUERY_CMD]			= (Function_ptr) BX_query_cmd;
+	global_table[QUERY_NICK]		= (Function_ptr) null_function; /* DEFUNCT */
+	global_table[QUERY_HOST]		= (Function_ptr) null_function; /* DEFUNCT */
+	global_table[QUERY_CMD]			= (Function_ptr) null_function; /* DEFUNCT */
 	global_table[GET_TARGET_BY_REFNUM]	= (Function_ptr) BX_get_target_by_refnum;
 	global_table[GET_TARGET_CMD_BY_REFNUM]	= (Function_ptr) BX_get_target_cmd_by_refnum;
 	global_table[GET_WINDOW_TARGET_BY_DESC]	= (Function_ptr) BX_get_window_target_by_desc;
@@ -425,7 +424,7 @@ static int already_done = 0;
 	global_table[SCROLLBACK_BACKWARDS]	= (Function_ptr) BX_scrollback_backwards;
 	global_table[SCROLLBACK_END]		= (Function_ptr) BX_scrollback_end;
 	global_table[SCROLLBACK_START]		= (Function_ptr) BX_scrollback_start;
-	global_table[HOLD_MODE]			= (Function_ptr) BX_hold_mode;
+	global_table[SET_HOLD_MODE]		= (Function_ptr) BX_set_hold_mode;
 	global_table[UNHOLD_WINDOWS]		= (Function_ptr) BX_unhold_windows;
 	global_table[FUNC_UNSTOP_ALL_WINDOWS]	= (Function_ptr) BX_unstop_all_windows;
 	global_table[RESET_LINE_CNT]		= (Function_ptr) BX_reset_line_cnt;
@@ -504,7 +503,7 @@ static int already_done = 0;
 	global_table[GET_CHANNEL_KEY]		= (Function_ptr) BX_get_channel_key;
 	global_table[FUNC_RECREATE_MODE]	= (Function_ptr) BX_recreate_mode;
 #ifdef COMPRESS_MODES
-	global_table[FUNC_COMPRESS_MODES]	= (Function_ptr) BX_compress_modes;
+	global_table[FUNC_COMPRESS_MODES]	= (Function_ptr) BX_do_compress_modes;
 #endif
 	global_table[FUNC_GOT_OPS]		= (Function_ptr) BX_got_ops;
 	global_table[GET_CHANNEL_BANS]		= (Function_ptr) BX_get_channel_bans;
@@ -674,7 +673,7 @@ static int already_done = 0;
 	global_table[DLL_CTCP]			= (Function_ptr) &dll_ctcp;
 #endif
 	global_table[WINDOW_DISPLAY]		= (Function_ptr) &window_display;
-	global_table[STATUS_UPDATE_FLAG]	= (Function_ptr) status_update_flag;
+	global_table[STATUS_UPDATE_FLAG]	= (Function_ptr) &status_update_flag;
 	global_table[TABKEY_ARRAY]		= (Function_ptr) &tabkey_array;
 	global_table[AUTOREPLY_ARRAY]		= (Function_ptr) &autoreply_array;
 	global_table[IDENTD_SOCKET]		= (Function_ptr) &identd;

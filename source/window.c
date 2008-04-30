@@ -116,6 +116,7 @@ Window	*BX_new_window(Screen *screen)
 	new = (Window *) new_malloc(sizeof(Window));
 
 	new->output_func = default_output_function;
+	new->update_status = NULL;
 
 	tmp = NULL;
 	while ((traverse_all_windows(&tmp)))
@@ -1028,8 +1029,8 @@ void BX_update_all_windows()
 			if (full_window || fast_window)
 				repaint_window(tmp, tmp->repaint_start, tmp->repaint_end);
 
-			if (tmp->update_window_status)
-				(tmp->update_window_status)(tmp);
+			if (tmp->update_status)
+				(tmp->update_status)(tmp);
 			else if (r_status)
 				update_window_status(tmp, 1);
 			else if (u_status)
@@ -1441,24 +1442,6 @@ char	*BX_get_prompt_by_refnum(unsigned int refnum)
 		return (tmp->prompt);
 	else
 		return (empty_string);
-}
-
-
-/* query_nick: Returns the query nick for the current channel */
-const char	* BX_query_nick (void)
-{
-	return (current_window->query_nick);
-}
-
-/* query_nick: Returns the query nick for the current channel */
-const char	* BX_query_host (void)
-{
-	return (current_window->query_host);
-}
-
-const char	* BX_query_cmd (void)
-{
-	return (current_window->query_cmd);
 }
 
 /*
@@ -1880,34 +1863,6 @@ void BX_window_check_servers(int unused)
 	}
 	update_all_status(current_window, NULL, 0);
 	cursor_to_input();
-}
-
-/*
- * window_close_server: this is like window_check_servers but it gets called
- * with old_server as the refnum of a server that just got closed.  It marks
- * every window that used to be connected to old_server as WINDOW_SERVER_CLOSED
- * and sets last_server for those windows.  It doesn't touch windows that
- * already had no server.
- */
-
-void BX_window_close_server(int old_server)
-{
-	Window	*tmp;
-
-	tmp = NULL;
-	if (old_server < 0)
-		return;
-	while ((traverse_all_windows(&tmp)))
-	{
-		if (tmp->server < 0)
-			continue;
-		if (tmp->server == old_server)
-		{
-			close_server(tmp->server, NULL);
-			tmp->server = WINDOW_SERVER_CLOSED;
-			tmp->last_server = old_server;
-		}
-	}
 }
 
 /*
@@ -2382,7 +2337,7 @@ void BX_clear_all_windows(int unhold, int scrollback)
 	while (traverse_all_windows(&tmp))
 	{
 		if (unhold)
-			hold_mode(tmp, OFF, 1);
+			set_hold_mode(tmp, OFF, 1);
 		if (scrollback)
 			clear_scrollback(tmp);
 		clear_window(tmp);
@@ -2434,7 +2389,7 @@ void	unclear_all_windows (int unhold, int visible, int hidden)
 			continue;
 
 		if (unhold)
-			hold_mode(tmp, OFF, 1);
+			set_hold_mode(tmp, OFF, 1);
 		unclear_window(tmp);
 	}
 }
@@ -3759,7 +3714,7 @@ Window *window_query (Window *window, char **args, char *usage)
 	}
 	if ((nick = window->query_nick))
 	{
-		say("Ending conversation with %s", query_nick());
+		say("Ending conversation with %s", current_window->query_nick);
 		window->update |= UPDATE_STATUS;
 		while ((ptr = next_in_comma_list(nick, &nick)))
 		{
@@ -4692,7 +4647,7 @@ void 	BX_scrollback_start (char dumb, char *dumber)
  * this will also update the status line, if needed, to display the hold mode
  * state.  If update is false, only the internal flag is set.  
  */
-void	BX_hold_mode (Window *window, int flag, int update)
+void	BX_set_hold_mode (Window *window, int flag, int update)
 {
 	if (window == NULL)
 		window = current_window;
@@ -4752,7 +4707,7 @@ void 	BX_unstop_all_windows (char dumb, char *dumber)
 	Window	*tmp = NULL;
 
 	while (traverse_all_windows(&tmp))
-		hold_mode(tmp, OFF, 1);
+		set_hold_mode(tmp, OFF, 1);
 }
 
 /*
@@ -4770,7 +4725,7 @@ void 	BX_reset_line_cnt (Window *win, char *unused, int value)
 /* toggle_stop_screen: the BIND function TOGGLE_STOP_SCREEN */
 void 	BX_toggle_stop_screen (char unused, char *not_used)
 {
-	hold_mode(NULL, TOGGLE, 1);
+	set_hold_mode(NULL, TOGGLE, 1);
 	update_all_windows();
 }
 
@@ -4818,7 +4773,7 @@ void 	BX_flush_everything_being_held (Window *window)
 		ircpanic("erf. fix this.");
 
 	window->holding_something = 0;
-	hold_mode(window, OFF, 1);
+	set_hold_mode(window, OFF, 1);
 }
 
 
@@ -4908,8 +4863,8 @@ void BX_set_screens_current_window (Screen *screen, Window *window)
 void BX_make_window_current (Window *window)
 {
 	Window *old_current_window = current_window;
-	int	old_screen, old_window;
-	int	new_screen, new_window; 
+	int	old_screen, old_win;
+	int	new_screen, new_win; 
 
 	if (!window)
 		current_window = last_input_screen->current_window;
@@ -4922,22 +4877,22 @@ void BX_make_window_current (Window *window)
 		return;
 
 	if (!old_current_window)
-		old_screen = old_window = -1;
+		old_screen = old_win = -1;
 	else if (!old_current_window->screen)
-		old_screen = -1, old_window = old_current_window->refnum;
+		old_screen = -1, old_win = old_current_window->refnum;
 	else
 		old_screen = old_current_window->screen->screennum,
-		old_window = old_current_window->refnum;
+		old_win = old_current_window->refnum;
 
-	new_window = current_window->refnum;
+	new_win = current_window->refnum;
 	if (!current_window->screen)
 		new_screen = -1;
 	else
 		new_screen = current_window->screen->screennum;
 
         do_hook(WINDOW_FOCUS_LIST, "%d %d %d %d", 
-        		old_screen, old_window, 
-			new_screen, new_window);
+        		old_screen, old_win, 
+			new_screen, new_win);
 }
 
 void BX_clear_scrollback(Window *window)
@@ -4960,10 +4915,10 @@ void BX_clear_scrollback(Window *window)
 
 void	make_to_window_by_desc (char *desc)
 {
-	Window	*new_window = get_window_by_desc(desc);
+	Window	*new_win = get_window_by_desc(desc);
 
-	if (new_window)
-		target_window = new_window;
+	if (new_win)
+		target_window = new_win;
 	else
 		say("Window [%s] doesn't exist any more.  Punting.", desc);
 }
@@ -4985,23 +4940,23 @@ int	get_winref_by_desc (const char *desc)
 
 void	make_window_current_by_desc (char *desc)
 {
-	Window	*new_window = get_window_by_desc(desc);
+	Window	*new_win = get_window_by_desc(desc);
 
-	if (new_window)
-		make_window_current(new_window);
+	if (new_win)
+		make_window_current(new_win);
 	else
 		say("Window [%s] doesn't exist any more.  Punting.", desc);
 }
 
 void	make_window_current_by_winref (int refnum)
 {
-	Window	*new_window;
+	Window	*new_win;
 
 	if (refnum == -1)
 		return;
 
-	if ((new_window = get_window_by_refnum(refnum)))
-		make_window_current(new_window);
+	if ((new_win = get_window_by_refnum(refnum)))
+		make_window_current(new_win);
 	else
 		say("Window [%d] doesn't exist any more.  Punting.", refnum);
 }

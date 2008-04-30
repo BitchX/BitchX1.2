@@ -1518,9 +1518,7 @@ char	*BX_alias_special_char(char **buffer, char *ptr, const char *args, char *qu
 		pad_char = 0;
 register unsigned char	c;
 
-	int	upper,
-		lower,
-		length;
+	int	length;
 
 	length = 0;
 	if ((c = *ptr) == LEFT_BRACKET)
@@ -1723,6 +1721,8 @@ register unsigned char	c;
 			 */
 			if (isdigit(c) || (c == '-') || c == '~')
 			{
+			    int	first, last;
+
 			    *args_flag = 1;
 
 			    /*
@@ -1731,7 +1731,7 @@ register unsigned char	c;
 			     */
 			    if (c == '~')
 			    {
-				lower = upper = EOS;
+				first = last = EOS;
 				ptr++;
 			    }
 
@@ -1748,10 +1748,10 @@ register unsigned char	c;
 			     */
 			    else if (c == '-')
 			    {
-				lower = SOS;
+				first = SOS;
 				ptr++;
-				upper = parse_number(&ptr);
-				if (upper == -1)
+				last = parse_number(&ptr);
+				if (last == -1)
 				    return empty_string; /* error */
 			    }
 
@@ -1761,16 +1761,16 @@ register unsigned char	c;
 			     */
 			    else
 			    {
-				lower = parse_number(&ptr);
+				first = parse_number(&ptr);
 				if (*ptr == '-')
 				{
 				    ptr++;
-				    upper = parse_number(&ptr);
-				    if (upper == -1)
-					upper = EOS;
+				    last = parse_number(&ptr);
+				    if (last == -1)
+					last = EOS;
 				}
 				else
-				    upper = lower;
+				    last = first;
 			    }
 
 			    /*
@@ -1785,7 +1785,7 @@ register unsigned char	c;
 			    if (!args)
 				tmp2 = m_strdup(empty_string);
 			    else
-				tmp2 = extract2(args, lower, upper);
+				tmp2 = extract2(args, first, last);
 
 			    TruncateAndQuote(buffer, tmp2, length, quote_em, pad_char);
 			    new_free(&tmp2);

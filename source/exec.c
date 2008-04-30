@@ -6,6 +6,8 @@
  * See the COPYRIGHT file, or do a HELP IRCII COPYRIGHT 
  */
 
+#define _GNU_SOURCE /* Needed for strsignal from string.h on GLIBC systems */
+
 #include "irc.h"
 static char cvsrevision[] = "$Id$";
 CVS_REVISION(exec_c)
@@ -86,7 +88,7 @@ extern char  *next_expr (char **, char);
 
 /*
  * A nice array of the possible signals.  Used by the coredump trapping
- * routines and in the exec.c package 
+ * routines and in the exec.c package.
  */
 #if !defined(SYS_SIGLIST_DECLARED) && !defined(_SYS_SIGLIST_DECLARED) && !defined(__QNX__)
 #if defined(WINNT) || defined(__EMX__)
@@ -96,7 +98,7 @@ char *sys_siglist[] = { "ZERO", "SIGINT", "SIGKILL", "SIGPIPE", "SIGFPE",
 			"SIGBUS", "SIGLOST", "SIGSTOP", "SIGABRT", "SIGUSR1",
 			"SIGUSR2", "SIGCHLD", "SIGTTOU", "SIGTTIN", "SIGCONT" };
 #elif defined(__GLIBC__)
-#define _GNU_SOURCE
+#define USING_STRSIGNAL
 /* use strsignal() from <string.h> */
 #include <string.h>
 #else
@@ -432,7 +434,7 @@ BUILT_IN_COMMAND(execcmd)
 			 */
 			for (sig = 1; sig < NSIG-1; sig++)
 			{
-#if defined(_GNU_SOURCE)
+#if defined(USING_STRSIGNAL)
 				if (strsignal(sig) && !my_strnicmp(strsignal(sig), flag, len))
 #else
 				if (sys_siglist[sig] && !my_strnicmp(sys_siglist[sig], flag, len))
@@ -1162,7 +1164,7 @@ static void 	cleanup_dead_processes (void)
 				if (dead->termsig > 0 && dead->termsig < NSIG)
 					say("Process %d (%s) terminated with signal %s (%d)", 
 						dead->index, dead->name,
-#if defined(_GNU_SOURCE)
+#if defined(USING_STRSIGNAL)
 						 strsignal(dead->termsig),
 #else
 						 sys_siglist[dead->termsig],
@@ -1260,7 +1262,7 @@ void 	kill_process (int kill_index, int sig)
 	}
 
 	say("Sending signal %s (%d) to process %d: %s", 
-#if defined(_GNU_SOURCE)
+#if defined(USING_STRSIGNAL)
 		strsignal(sig),
 #else
 		sys_siglist[sig],

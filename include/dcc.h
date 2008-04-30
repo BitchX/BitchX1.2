@@ -113,22 +113,20 @@
 #define DCC_STATES	0xffffff00
 
 
-#define DCC_COMMAND(x) void x (char *command, char *args)
-
 	int	check_dcc_list (char *);
 	int	dcc_exempt_save (FILE *);
 
-	DCC_COMMAND(BX_dcc_filesend);
-	DCC_COMMAND(BX_dcc_resend);
-	DCC_COMMAND(dcc_stats);
-	DCC_COMMAND(dcc_chat);
-	DCC_COMMAND(dcc_ftpopen);
-	DCC_COMMAND(dcc_glist);
-	DCC_COMMAND(dcc_chatbot);
-	DCC_COMMAND(dcc_resume);
-	DCC_COMMAND(dcc_rename);
+	void	BX_dcc_filesend(char *, char *);
+	void	BX_dcc_resend(char *, char *);
+	void	dcc_stats(char *, char *);
+	void	dcc_chat(char *, char *);
+	void	dcc_ftpopen(char *, char *);
+	void	dcc_glist(char *, char *);
+	void	dcc_chatbot(char *, char *);
+	void	dcc_resume(char *, char *);
+	void	dcc_rename(char *, char *);
 
-	int	BX_get_active_count();
+	int	BX_get_active_count(void);
 	int	dcc_ftpcommand(char *, char *);
 	void	process_dcc(char *);
 	int	dcc_activechat(char *);	/* identify all active chat dcc's */

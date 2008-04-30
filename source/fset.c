@@ -1021,13 +1021,15 @@ IrcVariable *return_fset_var(int nummer)
 }
 #endif
 
+/* This is a horrible hack so that the standard List functions can be used
+ * for the numeric list.
+ */
 int compare_number(List *item1, List *item2)
 {
-	if ((int)item1->name == (int)(item2->name))
-		return 0;
-	else if ((int)item1->name > (int)(item2->name))
-		return 1;
-	return -1;
+	FsetNumber *real1 = (FsetNumber *)item1;
+	FsetNumber *real2 = (FsetNumber *)item2;
+
+	return real1->numeric - real2->numeric;	
 }
 
 char *find_numeric_fset(int numeric)

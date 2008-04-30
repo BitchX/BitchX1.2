@@ -1267,7 +1267,7 @@ void set_channel_limit(ChannelList *channel, int currentlimit, int add, int numu
 
 void check_channel_limit(ChannelList *chan)
 {
-	if (chan && chan->csets && chan->csets->set_auto_limit && chan->chop)
+	if (chan && chan->csets && chan->csets->set_auto_limit && chan->have_op)
 	{
 		int count = 0;
 		NickList *nick;

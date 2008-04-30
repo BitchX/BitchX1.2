@@ -18,25 +18,25 @@ CVS_REVISION(words_c)
 /*
  * search() looks for a character forward or backward from mark 
  */
-extern char	*BX_search(register char *start, char **mark, char *chars, int how)
+extern char	*BX_strsearch(register char *start, char *mark, char *chars, int how)
 {
-        if (!mark || !*mark)
-                *mark = start;
+        if (!mark)
+                mark = start;
 
         if (how > 0)   /* forward search */
         {
-		*mark = sindex(*mark, chars);
+		mark = sindex(mark, chars);
 		how--;
-		for (;(how > 0) && *mark && **mark;how--)
-			*mark = sindex(*mark+1, chars);
+		for (; how > 0 && mark && *mark; how--)
+			mark = sindex(mark + 1, chars);
 	}
 
 	else if (how == 0)
-		return (char *) 0;
+		return NULL;
 
 	else  /* how < 0 */
 	{
-		*mark = rsindex(*mark, start, chars, -how);
+		mark = rsindex(mark, start, chars, -how);
 #if 0
 		how++;
 		for (;(how < 0) && *mark && **mark;how++)
@@ -44,7 +44,7 @@ extern char	*BX_search(register char *start, char **mark, char *chars, int how)
 #endif
 	}
 
-	return *mark;
+	return mark;
 }
 
 /* Move to an absolute word number from start */

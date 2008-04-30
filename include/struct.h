@@ -709,7 +709,7 @@ typedef	struct	WindowStru
 	int	in_more;
 	int	save_hold_mode;
 	int	mangler;
-	void	(*update_window_status)	(struct WindowStru *);
+	void	(*update_status)	(struct WindowStru *);
 	void	(*update_input) (struct WindowStru *);
 }	Window;
 
@@ -939,7 +939,7 @@ typedef	struct	channel_stru
 	int	limit;			/* max users for the channel */
 	time_t	limit_time;		/* time of last limit set */
 	char	*key;			/* key for this channel */
-	char	chop;			/* true if you are chop */
+	char	have_op;		/* true if you are a channel op */
 	char	hop;			/* true if you are a half op */
 	char	voice;			/* true if you are voice */
 	char	bound;			/* true if channel is bound */

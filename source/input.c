@@ -1189,7 +1189,7 @@ BUILT_IN_KEYBINDING(send_line)
 		if (!(cmdchar = get_string_var(CMDCHARS_VAR)))
 			cmdchar = "/";
 		malloc_strcpy(&tmp, line);
-		if (line && (*line != *cmdchar) && get_int_var(NICK_COMPLETION_VAR) && !query_nick())
+		if (line && (*line != *cmdchar) && get_int_var(NICK_COMPLETION_VAR) && !current_window->query_nick)
 		{
 			char auto_comp_char;
 			char *p;
@@ -1319,7 +1319,7 @@ BUILT_IN_KEYBINDING(type_text)
  */
 BUILT_IN_KEYBINDING(clear_screen)
 {
-	hold_mode(NULL, OFF, 1);
+	set_hold_mode(NULL, OFF, 1);
 	clear_window_by_refnum(0);
 }
 
@@ -1721,7 +1721,7 @@ BUILT_IN_KEYBINDING(cpu_saver_on)
 
 BUILT_IN_KEYBINDING(input_unclear_screen)
 {
-	hold_mode(NULL, OFF, 1);
+	set_hold_mode(NULL, OFF, 1);
 	unclear_window_by_refnum(0);
 }
 
@@ -2702,7 +2702,7 @@ do_more_tab:
 		{
 			char **completes = NULL;
 			int c = 0, matches = count;
-			completes = RESIZE(completes, char *, count+1);
+			RESIZE(completes, char *, count+1);
 			if (wcount > 1)
 			{
 				if (!got_space)

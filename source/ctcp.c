@@ -598,7 +598,7 @@ int server;
 			return NULL;
 		}
 		sprintf(ban, "%s!%s", from, FromUserHost);
-		if (chan && chan->chop)
+		if (chan && chan->have_op)
 		{
 			if ((b = ban_is_on_channel(ban, chan)))
 			{

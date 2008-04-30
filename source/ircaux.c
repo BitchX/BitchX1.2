@@ -93,13 +93,13 @@ void * n_malloc (size_t size, const char *module, const char *file, const int li
 /*
  * new_free:  Why do this?  Why not?  Saves me a bit of trouble here and there 
  */
-void *	n_free(void **ptr, const char *module, const char *file, const int line)
+void *	n_free(void *ptr, const char *module, const char *file, const int line)
 {
-	if (*ptr)
+	if (ptr)
 	{
 #ifdef FREE_DEBUG
 		/* Check to make sure its not been freed before */
-		if (alloc_size(*ptr) == FREED_VAL)
+		if (alloc_size(ptr) == FREED_VAL)
 		{
 			yell("free()ing a already free'd pointer, giving up!");
 			putlog(LOG_ALL, "*", "*** failed free %s %s (%d)", module?module:empty_string, file, line);
@@ -107,42 +107,41 @@ void *	n_free(void **ptr, const char *module, const char *file, const int line)
 			exit(1);
 		}
 #endif
-		alloc_size(*ptr) = FREED_VAL;
+		alloc_size(ptr) = FREED_VAL;
 
 #ifdef MEM_DEBUG
-		_free_leap(file, line, (void *)alloc_start(*ptr));
+		_free_leap(file, line, (void *)alloc_start(ptr));
 #else
-		free((void *)alloc_start(*ptr));
+		free((void *)alloc_start(ptr));
 #endif
-		*ptr = NULL;
+		ptr = NULL;
 	}
-	return (*ptr);
+	return ptr;
 }
 
-void * n_realloc (void **ptr, size_t size, const char *module, const char *file, const int line)
+void * n_realloc (void *ptr, size_t size, const char *module, const char *file, const int line)
 {
 	char *ptr2 = NULL;
 
-	if (*ptr)
+	if (ptr)
 	{
 		if (size)
 		{
-			size_t msize = alloc_size(*ptr);
+			size_t msize = alloc_size(ptr);
 
 			if (msize >= size)
-				return *ptr;
+				return ptr;
 
 			ptr2 = n_malloc(size, module, file, line);
-			memmove(ptr2, *ptr, msize);
+			memmove(ptr2, ptr, msize);
 			n_free(ptr, module, file, line);
-			return ((*ptr = ptr2));
+			return ptr2;
 		}
-		n_free(ptr, module, file, line);
-		return NULL;
+		return n_free(ptr, module, file, line);
 	} 
 	else if (size)
 		ptr2 = n_malloc(size, module, file, line);
-	return ((*ptr = ptr2));
+	return ptr2;
 }
 
 /*
@@ -155,14 +154,14 @@ void * n_realloc (void **ptr, size_t size, const char *module, const char *file,
 char *	n_malloc_strcpy (char **ptr, const char *src, const char *module, const char *file, const int line)
 {
 	if (!src)
-		return n_free((void **)ptr, module, file, line);
+		return *ptr = n_free(*ptr, module, file, line);
 	if (ptr && *ptr)
 	{
 		if (*ptr == src)
 			return *ptr;
 		if (alloc_size(*ptr) > strlen(src))
 			return strcpy(*ptr, src);
-		n_free((void **)ptr, module, file, line);
+		*ptr = n_free(*ptr, module, file, line);
 	}
 	*ptr = n_malloc(strlen(src) + 1, module, file, line);
 	return strcpy(*ptr, src);
@@ -179,7 +178,7 @@ char *	n_malloc_strcat (char **ptr, const char *src, const char *module, const c
 		if (!src)
 			return *ptr;
 		msize = strlen(*ptr) + strlen(src) + 1;
-		n_realloc((void **)ptr, sizeof(char)*msize, module, file, line);
+		*ptr = n_realloc(*ptr, sizeof(char)*msize, module, file, line);
 		return strcat(*ptr, src);
 	}
 	return (*ptr = n_m_strdup(src, module, file, line));
@@ -867,7 +866,7 @@ char *	n_m_strcat_ues(char **dest, char *src, int unescape, const char *module, 
 	total_length += strlen(src);
 
 /*	RESIZE(*dest, char, total_length + 2);*/
-	n_realloc((void **)dest, sizeof(char) * (total_length + 2), module, file,  line);
+	*dest = n_realloc(*dest, sizeof(char) * (total_length + 2), module, file,  line);
 	if (z == 0)
 		**dest = 0;
 

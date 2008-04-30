@@ -954,7 +954,7 @@ BuiltInDllFunctions *dll = NULL;
 
 	len = strlen(name);
 	*cnt = 0;
-	matches = RESIZE(matches, char *, matches_size);
+	RESIZE(matches, char *, matches_size);
         while (built_in_functions[i].func && i <= NUMBER_OF_FUNCTIONS)
 	{
 		if (strncmp(name, built_in_functions[i].name, len) == 0)
@@ -965,7 +965,7 @@ BuiltInDllFunctions *dll = NULL;
 			if (++(*cnt) == matches_size)
 			{
 				matches_size += 5;
-				matches = (char	**) RESIZE(matches, char *, matches_size);
+				RESIZE(matches, char *, matches_size);
 			}
 		}
 		else if (*cnt)
@@ -1173,7 +1173,7 @@ static	char	*alias_serverport 		(void)
 static	char	*alias_query_nick 	(void)
 {
 	char	*tmp;
-	return m_strdup((tmp = (char *)query_nick()) ? tmp : empty_string);
+	return m_strdup((tmp = current_window->query_nick) ? tmp : empty_string);
 }
 
 static	char	*alias_target 		(void)
@@ -1950,7 +1950,7 @@ BUILT_IN_FUNCTION(function_before, word)
 	if (numint < 0 && strlen(word))
 		pointer = word + strlen(word) - 1;
 
-	pointer = search(word, &pointer, chars, numint);
+	pointer = strsearch(word, pointer, chars, numint);
 
 	if (!pointer)
 		RETURN_EMPTY;
@@ -1985,7 +1985,7 @@ BUILT_IN_FUNCTION(function_after, word)
 	if (numint < 0 && strlen(word))
 		pointer = word + strlen(word) - 1;
 
-	pointer = search(word, &pointer, chars, numint);
+	pointer = strsearch(word, pointer, chars, numint);
 
 	if (!pointer || !*pointer)
 		RETURN_EMPTY;

@@ -304,7 +304,7 @@ void toggle_aimwin (Window *win, char *unused, int onoff){
 			tmp->query_cmd = m_strdup("asay");  
 			tmp->double_status = 0;
 			tmp->absolute_size = 1;
-			tmp->update_window_status = update_aim_window;
+			tmp->update_status = update_aim_window;
 			tmp->server = -2;
                 	set_wset_string_var(tmp->wset, STATUS_FORMAT1_WSET, NULL);
                 	set_wset_string_var(tmp->wset, STATUS_FORMAT2_WSET, NULL);

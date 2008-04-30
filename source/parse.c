@@ -1049,7 +1049,7 @@ static	void p_channel(char *from, char **ArgList)
 			else 
 				put_it("%s",convert_output_format(fget_string_var(FORMAT_JOIN_FSET), "%s %s %s %s %s",update_clock(GET_TIME),from,FromUserHost?FromUserHost:"UnKnown",channel, extra));
 
-			if (!its_me && chan && chan->chop)
+			if (!its_me && chan && chan->have_op)
 			{
 				char lame_chars[] = "\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a";
 				register char *p;
@@ -1367,7 +1367,7 @@ char *n = NULL;
 time_t right_now;
 
 	
-	if (!from || !chan || (chan && (!get_cset_int_var(chan->csets, BITCH_CSET) || !chan->chop)))
+	if (!from || !chan || (chan && (!get_cset_int_var(chan->csets, BITCH_CSET) || !chan->have_op)))
 		return;
 	if (!get_int_var(HACK_OPS_VAR) && wild_match("%.%", from))
 		return;
@@ -1442,7 +1442,7 @@ static	void p_mode(char *from, char **ArgList)
 				chan = (ChannelList *)find_in_list((List **)&chan2, channel, 0);
 			if (chan && get_cset_int_var(chan->csets, COMPRESS_MODES_CSET))
 			{
-				tmpbuf = compress_modes(chan, from_server, channel, line);
+				tmpbuf = do_compress_modes(chan, from_server, channel, line);
 				if (tmpbuf)
 					strcpy(line, tmpbuf);
 				else
@@ -1653,7 +1653,7 @@ static	void p_kick(char *from, char **ArgList)
 			if (!itsme)
 			{
 				f_nick = find_nicklist_in_channellist(who, chan, 0);
-				if (chan->chop && tmpnick && is_other_flood(chan, tmpnick, KICK_FLOOD, &t))
+				if (chan->have_op && tmpnick && is_other_flood(chan, tmpnick, KICK_FLOOD, &t))
 				{
 					if (get_cset_int_var(chan->csets, KICK_ON_KICKFLOOD_CSET) > get_cset_int_var(chan->csets, DEOP_ON_KICKFLOOD_CSET))
 						send_to_server("MODE %s -o %s", chan->channel, from);

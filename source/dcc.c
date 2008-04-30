@@ -198,28 +198,28 @@ typedef struct
 DCC_dllcommands	*dcc_dllcommands = NULL;
 
 
-DCC_COMMAND(dcc_chat);
-DCC_COMMAND(BX_dcc_filesend);
-DCC_COMMAND(BX_dcc_resend);
-DCC_COMMAND(dcc_getfile);
-DCC_COMMAND(dcc_regetfile);
-DCC_COMMAND(dcc_glist);
-DCC_COMMAND(dcc_resume);
-DCC_COMMAND(dcc_rename);
+void dcc_chat(char *command, char *args);
+void BX_dcc_filesend(char *command, char *args);
+void BX_dcc_resend(char *command, char *args);
+void dcc_getfile(char *command, char *args);
+void dcc_regetfile(char *command, char *args);
+void dcc_glist(char *command, char *args);
+void dcc_resume(char *command, char *args);
+void dcc_rename(char *command, char *args);
 
-DCC_COMMAND(dcc_show_active);
-DCC_COMMAND(dcc_set_quiet);
-DCC_COMMAND(dcc_set_paths);
-DCC_COMMAND(dcc_tog_rename);
-DCC_COMMAND(dcc_tog_resume);
-DCC_COMMAND(dcc_overwrite_toggle);
-DCC_COMMAND(dcc_tog_auto);
-DCC_COMMAND(dcc_stats);
-DCC_COMMAND(dcc_close);
-DCC_COMMAND(dcc_closeall);
-DCC_COMMAND(dcc_help1);
-DCC_COMMAND(dcc_exempt);
-DCC_COMMAND(dcc_ftpopen);
+void dcc_show_active(char *command, char *args);
+void dcc_set_quiet(char *command, char *args);
+void dcc_set_paths(char *command, char *args);
+void dcc_tog_rename(char *command, char *args);
+void dcc_tog_resume(char *command, char *args);
+void dcc_overwrite_toggle(char *command, char *args);
+void dcc_tog_auto(char *command, char *args);
+void dcc_stats(char *command, char *args);
+void dcc_close(char *command, char *args);
+void dcc_closeall(char *command, char *args);
+void dcc_help1(char *command, char *args);
+void dcc_exempt(char *command, char *args);
+void dcc_ftpopen(char *command, char *args);
 
 DCC_commands	dcc_commands[] =
 {
@@ -1516,7 +1516,7 @@ char *user = NULL;
 	return user;
 }
 
-DCC_COMMAND(dcc_chat)
+void dcc_chat(char *command, char *args)
 {
 	char	*user;
 	char 	*nick;
@@ -2005,7 +2005,7 @@ void real_file_send(char *nick, char *filename, char *passwd, char *port, int td
 		new->blocksize = blocksize;
 }
 
-DCC_COMMAND(BX_dcc_filesend)
+void BX_dcc_filesend(char *command, char *args)
 {
 	char	*user;
 	char 	*nick;
@@ -2044,7 +2044,7 @@ DCC_COMMAND(BX_dcc_filesend)
 	doing_multi = 0;
 }
 
-DCC_COMMAND(BX_dcc_resend)
+void BX_dcc_resend(char *command, char *args)
 {
 	char	*user;
 	char 	*nick;
@@ -2205,7 +2205,7 @@ char *nick;
 	}
 }
 
-DCC_COMMAND(dcc_getfile)
+void dcc_getfile(char *command, char *args)
 {
 char	*user;
 	
@@ -2284,7 +2284,7 @@ char *nick;
 	}
 }
 
-DCC_COMMAND(dcc_regetfile)
+void dcc_regetfile(char *command, char *args)
 {
 char	*user;
 char	*passwd = NULL;
@@ -2354,7 +2354,7 @@ static char *_dcc_offer[12] = {"%K±°°°°°°°°°%n",		/*  0 */
 }
 
 
-DCC_COMMAND(dcc_glist)
+void dcc_glist(char *command, char *args)
 {
 char	*dformat =
 	"#$[3]0 $[6]1%Y$2%n $[11]3 $[25]4 $[7]5 $6-";
@@ -2985,7 +2985,7 @@ BUILT_IN_COMMAND(chat)
 }
 
 
-DCC_COMMAND(dcc_exempt)
+void dcc_exempt(char *command, char *args)
 {
 int remove;
 List *nptr = NULL;
@@ -3314,7 +3314,7 @@ unsigned long flags;
 	return;
 }
 
-DCC_COMMAND(dcc_close)
+void dcc_close(char *command, char *args)
 {
 char *type;
 char *file;
@@ -3413,7 +3413,7 @@ int num = -1;
 	return;
 }
 
-DCC_COMMAND(dcc_closeall)
+void dcc_closeall(char *command, char *args)
 {
 	close_all_dcc();
 }
@@ -3499,7 +3499,7 @@ struct stat sb;
 	new_free(&tmp);
 }
 
-DCC_COMMAND(dcc_resume)
+void dcc_resume(char *command, char *args)
 {
 char		*user, *nick;
 char		*filename = NULL;
@@ -3596,7 +3596,7 @@ int		blocksize = 0;
 }
 #endif
 
-DCC_COMMAND(dcc_help1)
+void dcc_help1(char *command, char *args)
 {
 char *comm;
 int i, c;
@@ -4061,7 +4061,7 @@ FILE *f;
 	return dir ? m_strdup(dir) : NULL;
 }
 
-DCC_COMMAND(dcc_ftpopen)
+void dcc_ftpopen(char *command, char *args)
 {
 char	u[] = "anonymous";
 char	p[] = "- bxuser@";
@@ -4155,7 +4155,7 @@ SocketList *s;
 }
 
 
-DCC_COMMAND(dcc_rename)
+void dcc_rename(char *command, char *args)
 {
 DCC_List *tmp;
 DCC_int	*n;

@@ -74,7 +74,7 @@ void		move_window_channels (Window *);
 void		reassign_window_channels (Window *);
 void		check_channel_limits();
 void		BX_clear_bans(ChannelList *);
-char		*BX_compress_modes(ChannelList *, int, char *, char*);
+char		*BX_do_compress_modes(ChannelList *, int, char *, char*);
 int		BX_got_ops(int, ChannelList *);
 void		BX_flush_channel_stats (void);
 char		*BX_get_channel_bans(char *, int, int);

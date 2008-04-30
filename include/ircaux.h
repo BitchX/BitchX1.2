@@ -138,7 +138,7 @@ char *	urldecode		(char *);
 /* From words.c */
 #define SOS -32767
 #define EOS 32767
-char	*BX_search			(register char *, char **, char *, int);
+char	*BX_strsearch			(register char *, char *, char *, int);
 char	*BX_move_to_abs_word	(const register char *, char **, int);
 char	*BX_move_word_rel		(const register char *, char **, int);
 char	*BX_extract		(char *, int, int);
@@ -197,16 +197,16 @@ int			lame_resolv (const char *, struct sockaddr_foobar *);
 			((double)x/_1KB): (double)x)))) )
 
 void	*n_malloc 	(size_t, const char *, const char *, const int);
-void	*n_realloc	(void **, size_t, const char *, const char *, const int);
+void	*n_realloc	(void *, size_t, const char *, const char *, const int);
 
-void	*n_free 	(void **, const char *, const char *, const int);
+void	*n_free 	(void *, const char *, const char *, const int);
 
 #define MODULENAME NULL
 
 #define new_malloc(x) n_malloc(x, MODULENAME, __FILE__, __LINE__)
-#define new_free(x) n_free((void **)(x), MODULENAME, __FILE__, __LINE__)
+#define new_free(x) (*(x) = n_free(*(x), MODULENAME, __FILE__, __LINE__))
 
-#define RESIZE(x, y, z) n_realloc     ((void **)& (x), sizeof(y) * (z), MODULENAME, __FILE__, __LINE__)
+#define RESIZE(x, y, z) ((x) = n_realloc((x), sizeof(y) * (z), MODULENAME, __FILE__, __LINE__))
 #define malloc_strcpy(x, y) n_malloc_strcpy((char **)x, (char *)y, MODULENAME, __FILE__, __LINE__)
 #define malloc_strcat(x, y) n_malloc_strcat((char **)x, (char *)y, MODULENAME, __FILE__, __LINE__)
 #define m_strdup(x) n_m_strdup(x, MODULENAME, __FILE__, __LINE__)

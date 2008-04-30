@@ -1128,7 +1128,7 @@ BUILT_IN_COMMAND(my_clear)
 		if (scrollback)
 			clear_scrollback(get_window_by_refnum(0));
 		if (unhold)
-			hold_mode(NULL, OFF, 1);
+			set_hold_mode(NULL, OFF, 1);
 		clear_window_by_refnum(0);
 	}
 #if defined(WINNT) || defined(__EMX__)
@@ -3393,7 +3393,7 @@ extern int MODE_TOPIC;
 		my_send_to_server(server, "TOPIC %s :", chan->channel);
 		return;
 	}
-	if (arg && (!(chan->mode & MODE_TOPIC) || chan->chop))
+	if (arg && (!(chan->mode & MODE_TOPIC) || chan->have_op))
 	{
 		if (is_channel(arg))
 		{
@@ -3429,7 +3429,7 @@ BUILT_IN_COMMAND(do_mtopic)
 		int count = 0;
 		for (chan  = get_server_channels(from_server); chan; chan = chan->next)
 		{
-			if (!chan->chop)
+			if (!chan->have_op)
 				continue;
 		 	send_to_server("TOPIC %s :%s", chan->channel, args ? args : empty_string);
 			count++;
@@ -5020,7 +5020,7 @@ BUILT_IN_COMMAND(sendlinecmd)
 void irc_clear_screen(char key, char *ptr)
 {
 	
-	hold_mode(NULL, OFF, 1);
+	set_hold_mode(NULL, OFF, 1);
 	my_clear(NULL, empty_string, empty_string, NULL);
 }
 
@@ -5117,7 +5117,7 @@ BUILT_IN_COMMAND(me)
 		}
 		else if (!my_stricmp(command, "qme"))
 		{
-			target = (char *)query_nick();
+			target = current_window->query_nick;
 			if (!target)
 			{
 				Window *tmp = NULL;

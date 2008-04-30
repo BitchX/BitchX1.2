@@ -288,7 +288,7 @@ int kick_count = 0;
 UserList *user = NULL;
 
 	
-	if (channel && (tmp = lookup_channel(channel, from_server, CHAN_NOUNLINK)) && tmp->chop && tmp->max_idle && tmp->check_idle)
+	if (channel && (tmp = lookup_channel(channel, from_server, CHAN_NOUNLINK)) && tmp->have_op && tmp->max_idle && tmp->check_idle)
 	{
 		NickList *nick;
 		for (nick = next_nicklist(tmp, NULL); nick; nick = next_nicklist(tmp, nick))
@@ -738,7 +738,7 @@ int t = 0;
 			}
 			if (!splitter)
 			{
-				if (chan->chop && is_other_flood(chan, nick, JOIN_FLOOD, &t))
+				if (chan->have_op && is_other_flood(chan, nick, JOIN_FLOOD, &t))
 				{
 					if (get_cset_int_var(chan->csets, JOINFLOOD_CSET) && get_cset_int_var(chan->csets, KICK_ON_JOINFLOOD_CSET) && !nick->kickcount++)
 					{
@@ -816,7 +816,7 @@ int t = 0;
 				if (nick) nick->stat_dops++;
 			}
 
-			if (chan->chop && is_other_flood(chan, nick, DEOP_FLOOD, &t))
+			if (chan->have_op && is_other_flood(chan, nick, DEOP_FLOOD, &t))
 			{
 				if (get_cset_int_var(chan->csets, DEOP_ON_DEOPFLOOD_CSET) < get_cset_int_var(chan->csets, KICK_ON_DEOPFLOOD_CSET))
 					send_to_server("MODE %s -o %s", chan->channel, nick->nick);
@@ -2184,7 +2184,6 @@ static	int	ar_remrequest(struct reslist *old)
 	{
 		for (; *s; s++)
 			new_free(s);
-		new_free(&rptr->re_he.h_aliases);
 	}
 	if (rptr->re_rinfo.ri_ptr)
 		new_free(&rptr->re_rinfo.ri_ptr);
@@ -4794,7 +4793,7 @@ ChannelList *chan = NULL;
 		}
 		return NULL;
 	}
-	if (need_op == NEED_OP && chan && !chan->chop && !chan->hop)
+	if (need_op == NEED_OP && chan && !chan->have_op && !chan->hop)
 	{
 		set_display_target(chan->channel, LOG_CRAP);
 		error_not_opped(chan->channel);

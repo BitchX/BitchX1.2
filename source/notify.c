@@ -378,7 +378,7 @@ UserList *tmp = NULL;
 		{
 			NickList *n = NULL;
 			n = find_nicklist_in_channellist(nick, chan, 0);
-			if (!n && chan->chop && get_cset_int_var(chan->csets, AINV_CSET) && (tmp->flags & ADD_INVITE) && get_cset_int_var(chan->csets, AINV_CSET))
+			if (!n && chan->have_op && get_cset_int_var(chan->csets, AINV_CSET) && (tmp->flags & ADD_INVITE) && get_cset_int_var(chan->csets, AINV_CSET))
 			{
 				bitchsay("Auto-inviting %s to %s", nick, chan->channel);
 				send_to_server("NOTICE %s :Auto-invite from %s", nick, get_server_nickname(from_server));

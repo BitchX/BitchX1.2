@@ -280,21 +280,21 @@ extern	void		move_index (an_array *array, long oldindex, long newindex)
  */
 extern	long		find_index (an_array *array, long item)
 {
-	long search = 0;
+	long i = 0;
 
 	if (array->size >= ARRAY_THRESHOLD)
 	{
-		search = find_item(*array, array->item[item]);
-		while (search >= 0 && !strcmp(array->item[array->index[search]], array->item[item]))
-			search--;
-		search++;
+		i = find_item(*array, array->item[item]);
+		while (i >= 0 && !strcmp(array->item[array->index[i]], array->item[item]))
+			i--;
+		i++;
 	}
-	while(array->index[search] != item && search < array->size)
-		search++;
+	while(array->index[i] != item && i < array->size)
+		i++;
 
-	if (search == array->size)
+	if (i == array->size)
 		say("ERROR in find_index()");	
-	return search;
+	return i;
 }
 
 /*
@@ -350,7 +350,7 @@ extern	void		delete_array (char *name)
                 }
                 array_info.item = (char**)RESIZE(array_info.item, char *, array_info.size);
                 array_info.index = (long *)RESIZE(array_info.index, long, array_info.size);
-                array_array = (an_array *)RESIZE(array_array, an_array, array_info.size);
+                RESIZE(array_array, an_array, array_info.size);
         }
         else
         {
@@ -680,7 +680,7 @@ BUILT_IN_FUNCTION(function_setitem)
 					if (item == 0)
 					{
 						if (array_info.size)
-							array_array = (an_array*)RESIZE(array_array, an_array, (array_info.size + 1));
+							RESIZE(array_array, an_array, (array_info.size + 1));
 						else
 							array_array = (an_array*)new_malloc(sizeof(an_array));
 						array = &array_array[array_info.size];

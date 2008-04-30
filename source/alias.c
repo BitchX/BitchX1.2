@@ -743,7 +743,7 @@ void	destroy_arglist (ArgList *arglist)
 		new_free(&arglist->vars[i]);
 		new_free(&arglist->defaults[i]);
 	}
-	new_free((char **)&arglist);
+	new_free(&arglist);
 }
 
 void	prepare_alias_call (void *al, char **stuff)
@@ -1707,7 +1707,7 @@ char **	glob_cmd_alias (char *name, int *howmany)
 
 	len = strlen(name);
 	*howmany = 0;
-	matches = RESIZE(matches, char *, matches_size);
+	RESIZE(matches, char *, matches_size);
 
 	for (cnt = 0; cnt < cmd_alias.max; cnt++)
 	{
@@ -1749,7 +1749,7 @@ char **	glob_assign_alias (char *name, int *howmany)
 
 	len = strlen(name);
 	*howmany = 0;
-	matches = RESIZE(matches, char *, matches_size);
+	RESIZE(matches, char *, matches_size);
 
 	for (cnt = 0; cnt < var_alias.max; cnt++)
 	{
@@ -1790,7 +1790,7 @@ char **	pmatch_cmd_alias (char *name, int *howmany)
 
 	len = strlen(name);
 	*howmany = 0;
-	matches = RESIZE(matches, char *, matches_size);
+	RESIZE(matches, char *, matches_size);
 
 	for (cnt = 0; cnt < cmd_alias.max; cnt++)
 	{
@@ -1826,7 +1826,7 @@ char **	pmatch_assign_alias (char *name, int *howmany)
 
 	len = strlen(name);
 	*howmany = 0;
-	matches = RESIZE(matches, char *, matches_size);
+	RESIZE(matches, char *, matches_size);
 
 	for (cnt = 0; cnt < var_alias.max; cnt++)
 	{
@@ -1873,7 +1873,7 @@ char **	get_subarray_elements (char *root, int *howmany, int type)
 
 	len = strlen(root);
 	*howmany = 0;
-	matches = RESIZE(matches, char *, matches_size);
+	RESIZE(matches, char *, matches_size);
 	for (cnt = 0; cnt < as->max; cnt++)
 	{
 		len2 = strlen(as->list[cnt]->name);

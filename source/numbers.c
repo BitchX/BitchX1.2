@@ -248,8 +248,6 @@ void display_msg(char *from, char **ArgList)
 	char	*ptr,
 		*s,
 		*rest;
-	int	drem;
-	
 
 	rest = PasteArgs(ArgList, 0);
 	if ((s = find_numeric_fset(-current_numeric)))
@@ -266,16 +264,14 @@ void display_msg(char *from, char **ArgList)
 	else
 		ptr = NULL;
 		
-        drem = (int)(from) /*&& (!get_int_var(SUPPRESS_FROM_REMOTE_SERVER))*/;
-     
         put_it("%s %s%s%s%s%s%s",
                 numeric_banner(),
                 strlen(rest)        ? rest     : empty_string,
                 strlen(rest)        ? space    : empty_string,
                 ptr                 ? ptr      : empty_string,
-                drem                ? "(from " : empty_string,
-                drem                ? from     : empty_string,
-                drem                ? ")"      : empty_string
+                from                ? "(from " : empty_string,
+                from                ? from     : empty_string,
+                from                ? ")"      : empty_string
               );
 }
 

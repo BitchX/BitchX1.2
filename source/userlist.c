@@ -970,7 +970,7 @@ char *p = (char *) arg; /* original args unmodified  so we can free them */
 	if ((serv_num = next_arg(args, &args)))
 		this_server = my_atol(serv_num);
 	chan = lookup_channel(channel, this_server, 0);
-	if (chan && is_on_channel(channel, this_server, from) && chan->chop) 
+	if (chan && is_on_channel(channel, this_server, from) && chan->have_op) 
 	{
 		NickList *nick;
 		for (nick = next_nicklist(chan, NULL); nick; nick = next_nicklist(chan, nick))
@@ -1077,7 +1077,7 @@ char *ban;
 	if (!chan_ptr)
 		return NULL;		
 
-	if (!chan_ptr->chop)
+	if (!chan_ptr->have_op)
 		return nicklist;
 	userptr = nicklist->userlist;
 	shitptr = nicklist->shitlist;
@@ -1254,7 +1254,7 @@ char *nick = NULL, *userhost = NULL, *p;
 		}
 	}
 
-	if (get_cset_int_var(chan->csets, USERLIST_CSET) && chan->chop && ((n && n->userlist) || 
+	if (get_cset_int_var(chan->csets, USERLIST_CSET) && chan->have_op && ((n && n->userlist) || 
 		(tmp && tmp->userlist)))
 	{
 		UserList *user = NULL;		
@@ -1352,7 +1352,7 @@ char *nick = NULL, *userhost = NULL, *p;
 void check_shit(ChannelList *chan)
 {
 ShitList *Bans;
-	if (!chan || !chan->chop || !shitlist_list || chan->server <= -1 || !get_cset_int_var(chan->csets, SHITLIST_CSET))
+	if (!chan || !chan->have_op || !shitlist_list || chan->server <= -1 || !get_cset_int_var(chan->csets, SHITLIST_CSET))
 		return;
 	if (!check_channel_match(get_string_var(PROTECT_CHANNELS_VAR), chan->channel))
 		return;
