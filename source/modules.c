@@ -1325,7 +1325,7 @@ unsigned long major, minor, need_major, need_minor;
 	minor = (bitchx_numver / 100) % 100;
 	need_major = required / 10000;
 	need_minor = (required / 100) % 100;
-	if (major >= need_major && minor >= need_minor)
+	if ((major > need_major) || (major == need_major && minor >= need_minor))
 		return 1;
 	return INVALID_MODVERSION;
 }
