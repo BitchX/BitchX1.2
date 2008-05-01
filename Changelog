@@ -1,5 +1,7 @@
 [Changes 1.2c01 ]
 
+* Fix four bugs in the /FE scripting function (reported by fudd). (caf)
+
 * Fix incompatibility with 64-bit platforms. (caf)
 
 * Fix module load version check logic. (caf)
