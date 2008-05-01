@@ -361,16 +361,14 @@ BUILT_IN_COMMAND(fe)
 		*placeholder,
 		*sa,
 		*vars,
+        *varmem = NULL,
 		*var[255],
 		*word = NULL,
 		*todo = NULL,
-		fec_buffer[2];
-	int     ind, x, y, blah = 0, args_flag;
+		fec_buffer[2] = { 0 };
+	int     ind, y, args_flag;
 	int     old_display;
 	int	doing_fe = !my_stricmp(command, "FE");
-
-	for (x = 0; x <= 254; var[x++] = NULL)
-		;
 
 	list = next_expr(&args, '(');
 
@@ -396,76 +394,121 @@ BUILT_IN_COMMAND(fe)
 		new_free(&templist);
 		return;
 	}
-	if ((char *)var == (char *)args)
-	{
-		error("%s: You did not specify any variables", command);
-		new_free(&templist);
-		return;
-	}
-	args[-1] = '\0';
-	ind = 0;
 
-	while ((var[ind++] = next_arg(vars, &vars)))
+    /* This is subtle - we have to create a duplicate of the string
+     * containing the var names, in case there's no space between
+     * it and the commands. */
+	args[0] = '\0';
+    malloc_strcpy(&varmem, vars);
+    vars = varmem;
+    args[0] = '{';
+    
+	ind = 0;
+	while ((var[ind] = next_arg(vars, &vars)))
 	{
+        ind++;
+
 		if (ind == 255)
 		{
 			error("%s: Too many variables", command);
 			new_free(&templist);
+            new_free(&varmem);
 			return;
 		}
 	}
-	ind = ind ? ind - 1: 0;
+
+	if (ind < 1)
+	{
+		error("%s: You did not specify any variables", command);
+		new_free(&templist);
+        new_free(&varmem);
+		return;
+	}
 
 	if (!(todo = next_expr(&args, '{')))		/* } { */
 	{
 		error("%s: Missing }", command);		
 		new_free(&templist);
+        new_free(&varmem);
 		return;
 	}
 
 	old_display = window_display;
 
-	if (!doing_fe)
-		{ word = fec_buffer; word[1] = 0; }
-		
-	blah = ((doing_fe) ? (word_count(templist)) : (strlen(templist)));
 	placeholder = templist;
 
 	will_catch_break_exceptions++;
 	will_catch_continue_exceptions++;
 
 	make_local_stack(NULL);
-	for ( x = 0 ; x < blah ; )
-	{
-		window_display = 0;
-		for ( y = 0 ; y < ind ; y++ )
-		{
-			if (doing_fe)
-				word = ((x+y) < blah)
-				    ? new_next_arg(templist, &templist)
-				    : empty_string;
-			else
-				word[0] = ((x+y) < blah)
-				    ? templist[x+y] : 0;
 
-			add_local_alias(var[y], word);
-		}
-		window_display = old_display;
-		x += ind;
-		parse_line(NULL, todo, subargs?subargs:empty_string, 0, 0, 0);
-		if (continue_exception)
-		{
-			continue_exception = 0;
-			continue;
-		}
-		if (break_exception)
-		{
-			break_exception = 0;
-			break;
-		}
-		if (return_exception)
-			break;
-	}
+    if (doing_fe) {
+        /* FE */
+        word = new_next_arg(templist, &templist);
+        while (word)
+        {
+            window_display = 0;
+            for ( y = 0 ; y < ind ; y++ )
+            {
+                if (word) {
+                    add_local_alias(var[y], word);
+
+                    word = new_next_arg(templist, &templist);
+                } else {
+                    add_local_alias(var[y], empty_string);
+                }
+            }
+            window_display = old_display;
+            parse_line(NULL, todo, subargs?subargs:empty_string, 0, 0, 0);
+            if (continue_exception)
+            {
+                continue_exception = 0;
+                continue;
+            }
+            if (break_exception)
+            {
+                break_exception = 0;
+                break;
+            }
+            if (return_exception)
+                break;
+        }
+    }
+    else
+    {
+        /* FEC */
+        word = fec_buffer; 
+
+        word[0] = *templist++;
+        while(word[0])
+        {
+            window_display = 0;
+            for ( y = 0 ; y < ind ; y++ )
+            {
+                if (word[0]) {
+                    add_local_alias(var[y], word);
+
+                    word[0] = *templist++;
+                } else {
+                    add_local_alias(var[y], empty_string);
+                }
+            }
+            window_display = old_display;
+            parse_line(NULL, todo, subargs?subargs:empty_string, 0, 0, 0);
+            if (continue_exception)
+            {
+                continue_exception = 0;
+                continue;
+            }
+            if (break_exception)
+            {
+                break_exception = 0;
+                break;
+            }
+            if (return_exception)
+                break;
+        }
+    }
 
 	destroy_local_stack();
 	will_catch_break_exceptions--;
@@ -473,6 +516,7 @@ BUILT_IN_COMMAND(fe)
 
 	window_display = old_display;
 	new_free(&placeholder);
+    new_free(&varmem);
 }
 
 /* FOR command..... prototype: 
