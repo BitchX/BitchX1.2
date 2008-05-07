@@ -9,6 +9,20 @@
 
 * Fix module load version check logic. (caf)
 
+* [1.1s01] Cleanups to allow compiling with new gcc releases. (caf)
+
+* [1.1s01] Fix configure check for termcap.h. (caf)
+
+* [1.1s01] Re-implement code to find available vhost addresses 
+  (CVE-2007-5839). (caf)
+
+* [1.1s01] Fix test for GCC >= 2.7 - fixes compiling on S390 platform. (caf)
+
+* [1.1s01] Improve buffer handling in convert_output_format_raw 
+  (CVE-2007-4584). (caf)
+
+* [1.1s01] Handle negative numerics correctly (CVE-2007-3360). (caf)
+
 [Changes 1.1-final]
 
 * Fixed bug with using [$8] in expressions (Reported by BlackJac)
