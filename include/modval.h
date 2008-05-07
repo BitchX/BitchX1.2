@@ -657,7 +657,7 @@ extern Function_ptr *global;
 #define start_time ((time_t) *((time_t *)global[START_TIME]))
 #define idle_time() ((time_t) *((time_t *)global[IDLE_TIME]()))
 
-#define loading_global ((int) *((int *)global[LOADING_GLOBAL]))
+#define loading_global (*((int *)global[LOADING_GLOBAL]))
 #define target_window (*((Window **)global[TARGET_WINDOW]))
 #define current_window (*((Window **)global[CURRENT_WINDOW]))
 #define invisible_list (*((Window **)global[INVISIBLE_LIST]))
@@ -676,7 +676,7 @@ extern Function_ptr *global;
 #define status_update_flag ((int) *((int *)global[STATUS_UPDATE_FLAG]))
 #define tabkey_array (*((NickTab **)global[TABKEY_ARRAY]))
 #define autoreply_array (*((NickTab *)global[AUTOREPLY_ARRAY]))
-#define identd ((int) *((int *)global[IDENTD_SOCKET]))
+#define identd (*((int *)global[IDENTD_SOCKET]))
 #define doing_notice ((int) *((int *)global[DOING_NOTICE]))
 #define last_sent_msg_body (*((char **)global[LAST_SENT_MSG_BODY]))
 #define sent_nick (*((char **)global[SENT_NICK]))

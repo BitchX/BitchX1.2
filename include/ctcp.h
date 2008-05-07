@@ -56,7 +56,6 @@
 extern CtcpEntryDll *dll_ctcp;
 
 
-extern		char	*ctcp_type[];
 extern		int	sed;
 extern		int	in_ctcp_flag;
 

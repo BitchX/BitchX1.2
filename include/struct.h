@@ -1064,7 +1064,6 @@ struct	timeval	time;
 	int	delete;
 }	TimerList;
 
-extern TimerList *PendingTimers;
 typedef struct nicktab_stru
 {
 	struct nicktab_stru *next;

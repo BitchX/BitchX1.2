@@ -150,9 +150,6 @@ void toc_build_config(char *s, int len);
 void parse_toc_buddy_list(char *);
 void translate_toc_error_code(char *c);
 
-extern int toc_fd;
-extern int seqno;
-extern unsigned int peer_ver;
 extern int state;
 /* extern int inpa; */
 
@@ -207,9 +204,7 @@ int check_idle();
 void serv_set_away(char *message);
 
 extern int idle_timer;
-extern time_t lastsent;
 extern time_t login_time;
-extern struct timeval lag_tv;
 extern int is_idle;
 extern int lag_ms;
 extern int permdeny;
