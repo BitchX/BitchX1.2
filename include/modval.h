@@ -416,6 +416,7 @@ extern Function_ptr *global;
 #define is_channel (*(int (*)(char *))global[IS_CHANNEL])
 #define make_channel (*(char *(*)(char *))global[MAKE_CHANNEL])
 #define is_chanop (*(int (*)(char *, char *))global[IS_CHANOP])
+#define is_halfop (*(int (*)(char *, char *))global[IS_HALFOP])
 #define im_on_channel (*(int (*)(char *, int ))global[IM_ON_CHANNEL])
 #define is_on_channel (*(int (*)(char *, int , char *))global[IS_ON_CHANNEL])
 #define add_channel (*(ChannelList *(*)(char *, int, int))global[ADD_CHANNEL])

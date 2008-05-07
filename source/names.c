@@ -407,12 +407,16 @@ ChannelList *BX_add_to_channel(char *channel, char *nick, int server, int oper, 
 				new->flags |= NICK_VOICE;
 			if (away)
 			{
-				if (*away == 'H')
+				if (strchr(away,'H'))
 					new->flags &= ~NICK_AWAY;
 				else
 					new->flags |= NICK_AWAY;
-				if (*(away+1) == '*')
+
+				if (strchr(away, '*'))
 					new->flags |= NICK_IRCOP;
+                
+                if (strchr(away, '%'))
+                    new->flags |= NICK_HALFOP;
 			}
 		}
 		else if (check_whowas_chan_buffer(channel, -1, 0))
@@ -436,12 +440,16 @@ ChannelList *BX_add_to_channel(char *channel, char *nick, int server, int oper, 
 				new->flags |= NICK_VOICE;
 			if (away)
 			{
-				if (*away == 'H')
-					new->flags |= NICK_AWAY;
-				else
+				if (strchr(away,'H'))
 					new->flags &= ~NICK_AWAY;
-				if (*(away+1) == '*')
+				else
+					new->flags |= NICK_AWAY;
+
+				if (strchr(away, '*'))
 					new->flags |= NICK_IRCOP;
+                
+                if (strchr(away, '%'))
+                    new->flags |= NICK_HALFOP;
 			}
 			if (server1)
 				malloc_strcpy(&new->server, server1);			
@@ -1417,6 +1425,20 @@ int BX_is_chanop(char *channel, char *nick)
 	{
 		if ((Nick = find_nicklist_in_channellist(nick, chan, 0)))
 			if (nick_isop(Nick))
+				return 1;
+	}
+	return 0;
+}
+
+int BX_is_halfop(char *channel, char *nick)
+{
+	ChannelList *chan;
+	NickList *Nick;
+	
+	if (nick && (chan = lookup_channel(channel, from_server, CHAN_NOUNLINK)))
+	{
+		if ((Nick = find_nicklist_in_channellist(nick, chan, 0)))
+			if (nick_ishalfop(Nick))
 				return 1;
 	}
 	return 0;

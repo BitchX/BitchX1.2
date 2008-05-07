@@ -35,6 +35,7 @@ int		got_info (char *, int, int);
 	
 int		is_channel_mode (char *, int, int);
 int		BX_is_chanop (char *, char *);
+int		BX_is_halfop (char *, char *);
 char		*is_chanoper (char *, char *);
 ChannelList	*BX_lookup_channel (char *, int, int);
 char		*BX_get_channel_mode (char *, int);

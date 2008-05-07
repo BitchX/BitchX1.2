@@ -169,6 +169,7 @@ static		char	*function_encode 	(char *, unsigned char *);
 static		char	*function_index 	(char *, char *);
 static		char	*function_ischannel 	(char *, char *);
 static		char	*function_ischanop 	(char *, char *);
+static		char	*function_ishalfop 	(char *, char *);
 static		char	*function_left 		(char *, char *);
 static		char	*function_listen 	(char *, char *);
 static		char	*function_match 	(char *, char *);
@@ -580,6 +581,7 @@ static BuiltInFunctions built_in_functions[] =
 	{ "ISCURCHAN",          function_iscurchan      },
 	{ "ISDIGIT",		function_isdigit 	},
 	{ "ISDISPLAYING",	function_isdisplaying	},
+	{ "ISHALFOP",		function_ishalfop 	},
 	{ "ISIGNORED",		function_isignored	},
 	{ "ISNUMBER",		function_isnumber	},
 	{ "ISOP",		function_isop		},
@@ -1745,6 +1747,22 @@ BUILT_IN_FUNCTION(function_ischanop, input)
 	}
 	else
 		RETURN_INT(is_chanop(input, nick));
+}
+
+/*
+ * Usage: $ishalfop(nick channel)
+ * Returns: 1 if <nick> is a channel half-op on <channel>
+ *          0 if <nick> is not a channel half-op on <channel>
+ *			* O R *
+ *	      if you are not on <channel>
+ *
+ */
+BUILT_IN_FUNCTION(function_ishalfop, input)
+{
+	char	*nick;
+
+	GET_STR_ARG(nick, input);
+	RETURN_INT(is_halfop(input, nick));
 }
 
 

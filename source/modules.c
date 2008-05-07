@@ -494,6 +494,7 @@ static int already_done = 0;
 		
 /* names.c */			
 	global_table[IS_CHANOP]			= (Function_ptr) BX_is_chanop;
+	global_table[IS_HALFOP]			= (Function_ptr) BX_is_halfop;
 	global_table[IS_CHANNEL]		= (Function_ptr) BX_is_channel;
 	global_table[MAKE_CHANNEL]		= (Function_ptr) BX_make_channel; /* this is really in misc.c */
 	global_table[IM_ON_CHANNEL]		= (Function_ptr) BX_im_on_channel;
