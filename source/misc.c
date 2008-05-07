@@ -4380,11 +4380,19 @@ static int cparse_recurse = -1;
 #endif
 #define RECURSE_CPARSE
 
-char *convert_output_format_raw(char *buffer, int len, const char *format, const char *str, va_list args)
+/* One buffer for each recursive implementation.  We also keep track of the 
+ * buffer size, so that it can be resized when necessary.
+ */
+static char *cof_buffer[MAX_RECURSE + 1] = { NULL };
+static size_t cof_buffer_sz[MAX_RECURSE + 1 ] = { 0 };
+#define COF_BUFFER_HEADROOM 100
+#define COF_BUFFER_FREE(p) (cof_buffer[cparse_recurse] + cof_buffer_sz[cparse_recurse] - (p)) 
+
+char *convert_output_format_raw(const char *format, const char *str, va_list args)
 {
 char buffer2[5*BIG_BUFFER_SIZE+1];
 enum color_attributes this_color = BLACK;
-register unsigned char *s;
+char *s;
 char *copy = NULL;
 char *tmpc = NULL;
 register char *p;
@@ -4406,17 +4414,18 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 	copy = LOCAL_COPY(format);
 	
 
-	if (cparse_recurse < MAX_RECURSE)
-		cparse_recurse++;
-	else {
+    cparse_recurse++;
+
+	if (cparse_recurse > MAX_RECURSE)
+	{
 		yell("cparse_recurse() recursed too many times!  this should never happen!");
-		return NULL;
+		return empty_string;
 	}
 
 	*buffer2 = 0;
 	if (str)
 	{
-		memset(buffer2, 0, BIG_BUFFER_SIZE+1);
+		memset(buffer2, 0, sizeof buffer2);
 		p = (char *)str;
 		while(p && *p)
 		{
@@ -4493,14 +4502,31 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 	else if (str)
 		strlcpy(buffer2, str, 5 * BIG_BUFFER_SIZE);
 
-	s = buffer + (BIG_BUFFER_SIZE * cparse_recurse);
-	memset(s, 0, BIG_BUFFER_SIZE+1);
+    if (!cof_buffer[cparse_recurse])
+    {
+        cof_buffer_sz[cparse_recurse] = BIG_BUFFER_SIZE;
+        cof_buffer[cparse_recurse] = new_malloc(cof_buffer_sz[cparse_recurse]);
+    }
+
+	s = cof_buffer[cparse_recurse];
+    *s = 0;
 
 	tmpc = copy;
 	if (!tmpc)
 		goto done;
 	while (*tmpc)
 	{
+        /* Ensure some headroom is available in the buffer */
+        if (COF_BUFFER_FREE(s) < COF_BUFFER_HEADROOM)
+        {
+            size_t s_pos = s - cof_buffer[cparse_recurse];
+
+            cof_buffer_sz[cparse_recurse] += BIG_BUFFER_SIZE;
+            RESIZE(cof_buffer[cparse_recurse], char, cof_buffer_sz[cparse_recurse]);
+
+            s = cof_buffer[cparse_recurse] + s_pos;
+        }
+            
 		if (*tmpc == '%')
 		{
 			char *cs;
@@ -4545,7 +4571,7 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 				this_color = MAGENTA;
 			else if (*tmpc == '@')
 			{
-				strlcpy(s, make_timestamp(do_timestamp, timestamp_str), len);
+				strlcpy(s, make_timestamp(do_timestamp, timestamp_str), COF_BUFFER_FREE(s));
 				while(*s) s++;
 				tmpc++;
 				continue;
@@ -4554,21 +4580,21 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 /* do we really wanna do this? */
 			else if (*tmpc == '^') /* ibmpc charset */
 			{
-				strcpy(s, "\033(U");
+				strlcpy(s, "\033(U", COF_BUFFER_FREE(s));
 				while(*s) s++;
 				tmpc++;
 				continue;
 			}
 			else if (*tmpc == '&') /* latin1 charset */
 			{
-				strcpy(s, "\033(B");
+				strlcpy(s, "\033(B", COF_BUFFER_FREE(s));
 				while(*s) s++;
 				tmpc++;
 				continue;
 			}
 			else if (*tmpc == '$') /* custom charset */
 			{
-				strcpy(s, "\033(K");
+				strlcpy(s, "\033(K", COF_BUFFER_FREE(s));
 				while(*s) s++;
 				tmpc++;
 				continue;
@@ -4579,7 +4605,7 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 				*s++ = *tmpc;
 				continue;
 			}
-			strlcpy(s, color_str[this_color], len);
+			strlcpy(s, color_str[this_color], COF_BUFFER_FREE(s));
 			while (*s) s++;
 			tmpc++;
 			continue;
@@ -4599,13 +4625,28 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 			in_cparse--;
 
 			if (new_str)
+            {
+                char *subformat;
 #ifdef RECURSE_CPARSE
-				strlcat(s, convert_output_format_raw(buffer, len, (const char *)new_str, NULL, VA_NULL), len);
+				subformat = convert_output_format_raw((const char *)new_str, NULL, VA_NULL);
 #else
-				strlcat(s, new_str, len);
+                subformat = new_str;
 #endif
-			new_free(&new_str);
-			while (*s) { s++; }
+                /* Ensure sufficient buffer space */
+                if (COF_BUFFER_FREE(s) < strlen(subformat) + 1)
+                {
+                    size_t s_pos = s - cof_buffer[cparse_recurse];
+
+                    cof_buffer_sz[cparse_recurse] += BIG_BUFFER_SIZE + strlen(subformat);
+                    RESIZE(cof_buffer[cparse_recurse], char, cof_buffer_sz[cparse_recurse]);
+
+                    s = cof_buffer[cparse_recurse] + s_pos;
+                }
+ 
+				strlcpy(s, subformat, COF_BUFFER_FREE(s));
+			    new_free(&new_str);
+			    while (*s) { s++; }
+            }
 			if (!tmpc) break;
 			continue;
 		} else
@@ -4615,25 +4656,22 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 	*s = 0;
 
 done:
-	s = buffer + (BIG_BUFFER_SIZE * cparse_recurse);
+	s = cof_buffer[cparse_recurse];
 	who_level = old_who_level;
 	cparse_recurse--;
 
 	return s;
 }
 
-#define RAW_BUFFER_SIZE (MAX_RECURSE * BIG_BUFFER_SIZE * 2)
 char *BX_convert_output_format(const char *format, const char *str, ...)
 {
-static unsigned char *buffer = NULL /*[RAW_BUFFER_SIZE + (MAX_RECURSE+1)]*/;
 	char *s;
 	int old_alias_debug = alias_debug;
 	va_list args;
-	if (!buffer)
-		buffer = new_malloc(RAW_BUFFER_SIZE + (MAX_RECURSE + 1));
+
 	alias_debug = 0;
 	va_start(args, str);
-	s = convert_output_format_raw(buffer, RAW_BUFFER_SIZE, format, str, args);
+	s = convert_output_format_raw(format, str, args);
 	va_end(args);
 	if (*s)
 		strcat(s, color_str[NO_COLOR]);
@@ -4641,7 +4679,7 @@ static unsigned char *buffer = NULL /*[RAW_BUFFER_SIZE + (MAX_RECURSE+1)]*/;
 	return s;
 }
 
-
+#define RAW_BUFFER_SIZE (MAX_RECURSE * BIG_BUFFER_SIZE * 2)
 char *convert_output_format2(const char *str)
 {
 unsigned char buffer[RAW_BUFFER_SIZE+1];
