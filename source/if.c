@@ -445,69 +445,49 @@ BUILT_IN_COMMAND(fe)
     if (doing_fe) {
         /* FE */
         word = new_next_arg(templist, &templist);
-        while (word)
-        {
-            window_display = 0;
-            for ( y = 0 ; y < ind ; y++ )
-            {
-                if (word) {
-                    add_local_alias(var[y], word);
-
-                    word = new_next_arg(templist, &templist);
-                } else {
-                    add_local_alias(var[y], empty_string);
-                }
-            }
-            window_display = old_display;
-            parse_line(NULL, todo, subargs?subargs:empty_string, 0, 0, 0);
-            if (continue_exception)
-            {
-                continue_exception = 0;
-                continue;
-            }
-            if (break_exception)
-            {
-                break_exception = 0;
-                break;
-            }
-            if (return_exception)
-                break;
-        }
-    }
-    else
-    {
+    } else {
         /* FEC */
         word = fec_buffer; 
-
         word[0] = *templist++;
-        while(word[0])
-        {
-            window_display = 0;
-            for ( y = 0 ; y < ind ; y++ )
-            {
-                if (word[0]) {
-                    add_local_alias(var[y], word);
+        if (word[0] == '\0')
+            word = NULL;
+    }
 
-                    word[0] = *templist++;
+    while (word)
+    {
+        window_display = 0;
+        for ( y = 0 ; y < ind ; y++ )
+        {
+            if (word) {
+                add_local_alias(var[y], word);
+
+                if (doing_fe) {
+                    /* FE */
+                    word = new_next_arg(templist, &templist);
                 } else {
-                    add_local_alias(var[y], empty_string);
+                    /* FEC */
+                    word[0] = *templist++;
+                    if (word[0] == '\0')
+                        word = NULL;
                 }
+            } else {
+                add_local_alias(var[y], empty_string);
             }
-            window_display = old_display;
-            parse_line(NULL, todo, subargs?subargs:empty_string, 0, 0, 0);
-            if (continue_exception)
-            {
-                continue_exception = 0;
-                continue;
-            }
-            if (break_exception)
-            {
-                break_exception = 0;
-                break;
-            }
-            if (return_exception)
-                break;
         }
+        window_display = old_display;
+        parse_line(NULL, todo, subargs?subargs:empty_string, 0, 0, 0);
+        if (continue_exception)
+        {
+            continue_exception = 0;
+            continue;
+        }
+        if (break_exception)
+        {
+            break_exception = 0;
+            break;
+        }
+        if (return_exception)
+            break;
     }
 
 	destroy_local_stack();
