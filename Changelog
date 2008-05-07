@@ -1,6 +1,9 @@
 [Changes 1.2c01 ]
 
-* Fix four bugs in the /FE scripting function (reported by fudd). (caf)
+* Add $ishalfop(<nick> <channel) scripting function, just like the
+  existing function in EPIC. (caf)
+
+* Fix four bugs in the /FE scripting function. (caf)
 
 * Fix incompatibility with 64-bit platforms. (caf)
 
