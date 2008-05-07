@@ -68,6 +68,7 @@ NumericList *dll_numeric_list	= NULL;
 #endif
 
 /* hook_functions: the list of all hook functions available */
+#define HOOK_COUNT (sizeof hook_functions / sizeof *hook_functions)
 HookFunc hook_functions[] =
 {
 	{ "ACTION",		NULL,	3,	0,	0 },
@@ -855,7 +856,7 @@ int 	BX_do_hook (int which, char *format, ...)
 	}
 
 	/* Named list */
-	else
+	else if (which < HOOK_COUNT)
 	{
 		/*
 		 * If we're already executing the type, and we're
@@ -872,7 +873,10 @@ int 	BX_do_hook (int which, char *format, ...)
 			strncpy(hook_name, hook_functions[which].name, BIG_BUFFER_SIZE);
 		}
 	}
-
+    else /* invalid hook */
+    {
+        list = NULL;
+    }
 
 	/*
 	 * Press the buffer using the specified format string and args

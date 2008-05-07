@@ -1908,7 +1908,7 @@ void parse_server(char *orig_line)
 	 * of compares.)  I will be doing more testing in the future on
 	 * a live client to see if this is a reasonable order.
 	 */
-	if ((numeric = atoi(comm)))
+	if ((numeric = atoi(comm)) > 0) /* numbered_command can't handle -ves */
 		numbered_command(from, numeric, ArgList);
 	else
 	{
