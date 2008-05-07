@@ -15,6 +15,34 @@
 static char cvsrevision[] = "$Id$";
 CVS_REVISION(commands_c)
 
+/* These headers are for the local-address-finding routines. */
+#ifdef IPV6
+
+#include <net/if.h>
+#include <ifaddrs.h>
+
+#else /* IPV6 */
+
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+
+#ifndef SIOCGIFCONF
+#include <sys/sockio.h>
+#endif /* SIOCGIFCONF */
+
+/* Some systems call it SIOCGIFCONF, some call it OSIOCGIFCONF */
+#if defined(OSIOCGIFCONF)
+    #define SANE_SIOCGIFCONF OSIOCGIFCONF
+#elif defined(SIOCGIFCONF)
+    #define SANE_SIOCGIFCONF SIOCGIFCONF
+#endif
+
+#ifdef HAVE_NET_IF_H
+#include <net/if.h>
+#endif /* HAVE_NET_IF_H */
+
+#endif /* IPV6 */
+
 #include <sys/stat.h>
 #include "struct.h"
 #include "commands.h"
@@ -87,7 +115,6 @@ extern	int	doing_notice;
 	int     return_exception = 0;
 
 
-Virtuals *virtuals = NULL;
 
 static	void	oper_password_received (char *, char *);
 
@@ -2537,59 +2564,250 @@ BUILT_IN_COMMAND(version1)
 	}
 }
 
-#define old_hostname
+/* Functions used by e_hostname to generate a list of local interface 
+ * addreses (vhosts).
+ */
 
-#ifndef old_hostname
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#if defined(sun)
-#include <sys/sockio.h>
-#else
-#include <sys/sysctl.h>
-#endif
-#include <sys/time.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#if !defined(linux)
-#include <netinet/in_var.h>
-#endif
-#include <netdb.h>
-
-
-      
-void check_inter(char *interface)
+/* add_address()
+ *
+ * This converts a local address to a character string, and adds it to the
+ * list of addresses if not a duplicate or a special address.  If norev
+ * is not set, it also looks up the hostname.
+ */
+void add_address(Virtuals **vhost_list, int norev, struct sockaddr *sa)
 {
-int fd;
-char *ip;
-struct ifreq ifr;
-register int flags;
+    struct sockaddr_in * const sin = (struct sockaddr_in *)sa;
+    char *result = NULL;
+    Virtuals *vhost; 
+#ifdef IPV6
+    struct sockaddr_in6 * const sin6 = (struct sockaddr_in6 *)sa;
+    char addr[128];
+    socklen_t slen = 0;
+#else
+    struct hostent *host;
+#endif /* IPV6 */
 
-	if ( (fd = socket(AF_INET, SOCK_DGRAM, 0) ) < 0)
-		return;
-	strcpy(ifr.ifr_name, interface);
-
-	if (ioctl(fd, SIOCGIFADDR, &ifr) < 0) 
-	{
-		close(fd);
-		return;
-	}
-	if (ioctl(fd, SIOCGIFFLAGS, &ifr) < 0) 
-	{
-		close(fd);
-		return;
-	}
-	ip = (char *)inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-	if (ifr.ifr_flags & IFF_UP) 
-		bitchsay("Interface %s has an IP: %s", interface, ip);
-	close (fd);
-	return;
-}
+#ifdef IPV6
+    if (sa->sa_family == AF_INET)
+    {
+        slen = sizeof(struct sockaddr);
+        result = inet_ntop(sa->sa_family, &sin->sin_addr, addr, sizeof addr);
+    }
+    else if (sa->sa_family == AF_INET6)
+    {
+        slen = sizeof(struct sockaddr_in6);
+        result = inet_ntop(sa->sa_family, &sin6->sin6_addr, addr, sizeof addr);
+    } 
+#else /* IPV6 */
+    if (sa->sa_family == AF_INET)
+    {
+        result = inet_ntoa(sin->sin_addr);
+    }
 #endif
+
+    if (result == NULL)
+        return;
+
+    /* Ignore INADDR_ANY, loopback and link-local addresses (see RFC 2373) */
+    if (!strcmp(result, "127.0.0.1") || 
+        !strcmp(result, "0.0.0.0") ||
+        !strcmp(result, "::1") || 
+        !strcmp(result, "::") ||
+        !strcmp(result, "0::0") ||
+        !strncasecmp(result, "fe8", 3) || 
+        !strncasecmp(result, "fe9", 3) || 
+        !strncasecmp(result, "fea", 3) || 
+        !strncasecmp(result, "feb", 3))
+    {
+        return;
+    }
+   
+    for (vhost = *vhost_list; vhost ; vhost = vhost->next)
+    {
+        /* Ignore duplicates */
+        if (!strcasecmp(result, vhost->address))
+            return;
+    }
+
+    /* Got a new address, so add it to the list */
+    vhost = (Virtuals *) new_malloc(sizeof(Virtuals));
+
+    /* Set the address and hostname strings */
+	vhost->address = m_strdup(result);
+#ifdef IPV6
+    if (!norev && !getnameinfo(sa, slen, addr, sizeof addr, NULL, 0, 0))
+    {
+        vhost->hostname = m_strdup(addr);
+    }
+    else
+    {
+	    vhost->hostname = m_strdup(result);
+    }
+#else
+    if (!norev && (host = gethostbyaddr(&sin->sin_addr, sizeof(sin->sin_addr),
+        AF_INET)))
+    {
+        vhost->hostname = m_strdup(host->h_name);
+    }
+    else
+    {
+	    vhost->hostname = m_strdup(result);
+    }
+#endif
+
+    add_to_list((List **)vhost_list, (List *)vhost);
+
+    return;
+}
+
+#ifdef IPV6
+/* add_addrs_getifaddrs()
+ *
+ * This uses getifaddrs() to find local interface addresses. 
+ * On some older versions of glibc this only finds IPv4 addreses. */
+void add_addrs_getifaddrs(Virtuals **vhost_list, int norev)
+{
+    struct ifaddrs *addr_list, *ifa;
+
+    if (getifaddrs(&addr_list) != 0)
+    {
+       yell("getifaddrs() failed."); 
+       return;
+    }
+
+    for (ifa = addr_list; ifa; ifa = ifa->ifa_next)
+    {
+        if ((ifa->ifa_flags & IFF_UP) && ifa->ifa_addr)
+            add_address(vhost_list, norev, ifa->ifa_addr);
+    }
+
+    freeifaddrs(addr_list);
+    return;
+}
+
+/* add_addrs_proc_net
+ *
+ * For the benefit of systems with the older glibc, this function looks
+ * in /proc/net/if_inet6 for IPv6 addresses.  This is called on all IPv6
+ * platforms, but if /proc/net/if_inet6 doesn't exist, no harm, no foul.
+ *
+ * A line in this file looks like:
+fe80000000000000025056fffec00008 0a 40 20 80   vmnet8
+ */
+void add_addrs_proc_net(Virtuals **vhost_list, int norev)
+{
+    FILE *fptr;
+    char proc_net_line[200];
+    char address[64];
+    char *p;
+    int i;
+    struct sockaddr_in6 sin6;
+
+	if ((fptr = fopen("/proc/net/if_inet6", "r")) == NULL)
+    {
+        return;
+    }
+
+
+    while (fgets(proc_net_line, sizeof proc_net_line, fptr))
+    {
+        /* Copy the address, adding : as necessary */
+        p = address;
+        
+        for (i = 0; i < 32 && proc_net_line[i]; i++)
+        {
+             *p++ = proc_net_line[i];
+             if ((i < 31) && (i % 4 == 3))
+             {
+                *p++ = ':';
+             }
+        }
+        *p = '\0';
+
+        /* We rely on inet_pton to catch any bogus addresses here */
+   		if (inet_pton(AF_INET6, p, &sin6.sin6_addr) > 0)
+        {
+            sin6.sin6_family = AF_INET6;
+
+            add_address(vhost_list, norev, (struct sockaddr *)&sin6);
+        }
+    }
+
+    fclose(fptr);
+    return;
+}
+
+#endif /* ifdef IPV6 */
+
+#if defined(SANE_SIOCGIFCONF)
+/* add_addrs_ioctl
+ *
+ * This uses the old SIOCGIFCONF ioctl to find local interface addresses.
+ * It can only find IPv4 addresses.
+ */
+void add_addrs_ioctl(Virtuals **vhost_list, int norev)
+{
+    int s;
+    size_t len;
+    char *buf = NULL;
+    struct ifconf ifc;
+    struct ifreq *ifr;
+
+    if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        return;
+
+    len = 0;
+    do {
+        len += 4 * sizeof(*ifr);
+        RESIZE(buf, char, len);
+
+        ifc.ifc_buf = buf;
+        ifc.ifc_len = len;
+
+        if (ioctl(s, SANE_SIOCGIFCONF, &ifc) < 0)
+            return;
+    } while ((ifc.ifc_len + sizeof(*ifr) + 64 >= len) && (len < 200000));
+
+    for (ifr = (struct ifreq *)buf; (char *)ifr < buf + ifc.ifc_len; ifr++)
+    {
+        if (ioctl(s, SIOCGIFFLAGS, (char *)ifr) != 0)
+            continue;
+    
+        if (!(ifr->ifr_flags & IFF_UP))
+            continue;
+
+        if (ioctl(s, SIOCGIFADDR,(char *)ifr) != 0)
+            continue;
+
+        add_address(vhost_list, norev, &ifr->ifr_addr);
+    }
+    
+    close(s);
+    return;
+}
+#endif /* if defined(SANE_SIOCGIFCONF) */
+
+/* get_local_addrs
+ *
+ * Construct a linked list of local interface addresses, using whatever
+ * methods are appropriate on the platform.
+ */
+void get_local_addrs(Virtuals **vhost_list, int norev)
+{
+    *vhost_list = NULL;
+
+#ifdef IPV6
+    add_addrs_getifaddrs(vhost_list, norev);
+    add_addrs_proc_net(vhost_list, norev);
+#elif defined(SANE_SIOCGIFCONF)
+    add_addrs_ioctl(vhost_list, norev);
+#endif
+}
 
 BUILT_IN_COMMAND(e_hostname)
 {
-	struct hostent *hp;
 	int norev = 0;
+    char *newhost = NULL;
 	
 	if (args && !strcasecmp(args, "-norev"))
 	{
@@ -2599,263 +2817,58 @@ BUILT_IN_COMMAND(e_hostname)
 	
 	if (args && *args && *args != '#')
 	{
-		int reconn = 0;
-
-		if (LocalHostName && strcmp(LocalHostName, args))
-			reconn = 1;
-		malloc_strcpy(&LocalHostName, args);
-#ifndef IPV6
-		if ((hp = gethostbyname(LocalHostName)))
-			memcpy((void *)&LocalHostAddr.sf_addr, hp->h_addr, sizeof(struct in_addr));
-#endif
-		bitchsay("Local host name is now %s", LocalHostName);
-		if (reconn)
-			reconnect_cmd(NULL, NULL, NULL, NULL);
+		malloc_strcpy(&newhost, args);
 	} 
 	else
 	{
-#if !defined(__linux__) && !defined(BSD) && !defined(__EMX__)
-		bitchsay("Local Host Name is [%s]", (LocalHostName)? LocalHostName: hostname);
-#elif defined(old_hostname)
-		char filename[81];
-		char comm[200];
-		FILE *fptr;
-		char *p = NULL, *q;
-		unsigned long ip;
-		Virtuals *new = NULL;
-		struct hostent *host;
-		int i;
-		char *newhost = NULL;
-#if !defined(__linux__) && !defined(__EMX__)
-#if defined(_BSDI_VERSION) && _BSDI_VERSION < 199701
-		char device[80];
-#endif
-#endif
+        Virtuals *virtuals, *new;
+        int i;
 
-		tmpnam(filename);
-#if defined(_BSDI_VERSION) && _BSDI_VERSION < 199701
-		if (!(p = path_search("netstat", "/sbin:/usr/sbin:/bin:/usr/bin")))
-		{
-			yell("No Netstat to be found");
-			return;
-		}
-		sprintf(comm, "%s -in >%s", p, filename);
-#elif defined(__EMX__)
-		sprintf(comm, "netstat -a > %s", filename);
-#else
-		if (!(p = path_search("ifconfig", "/sbin:/usr/sbin:/bin:/usr/bin")))
-		{
-			yell("Can't find ifconfig");
-			return;
-		}
-                sprintf(comm, "%s -a >%s", p, filename);
-#endif
-		system(comm);
+        get_local_addrs(&virtuals, norev);
 
-#ifdef __EMXPM__
-		pm_seticon(last_input_screen);
-#endif
-		if ((fptr = fopen(filename, "r")) == NULL)
-		{
-			unlink(filename);
-			return;
-		}
-#if defined(_BSDI_VERSION) && _BSDI_VERSION < 199701
-		fgets(comm, 200, fptr);
-		fgets(comm, 200, fptr);
-		p = next_arg(comm, &q);
-		strncpy(device, p, 79);
-		bitchsay("Looking for hostnames on device %s", device);
-#else
-		bitchsay("Looking for hostnames on all devices");
-#endif
-
-		while((fgets(comm, 200, fptr)))
-		{
-#if defined(__linux__)
-
-#ifdef IPV6
-			if (strstr(comm, "inet6 addr") || strstr(comm, "inet addr"))
-#else
-			if (strstr(comm, "inet addr"))
-#endif
-			{
-				/* inet addr:127.0.0.1  Mask:... */
-				/* inet6 addr: ::1/128 Scope:... */
-
-				if ((p = strstr(comm, "inet addr")))
-				{
-					p += 10;
-					q = strchr(p, ' ');
-				}
-				else
-				{	
-					p = strstr(comm, "inet6 addr") + 12;
-					q = strchr(p, '/');
-				}
-				*q = 0;
-
-#elif defined(_BSDI_VERSION) && _BSDI_VERSION < 199701
-			if (!strncmp(comm, device, strlen(device)))
-			{
-				p = comm;
-				p += 24;
-				while (*p && *p == ' ') p++;
-				q = strchr(p, ' ');
-				*q = 0;
-#elif defined(__EMX__)
-			if (strstr(comm, "addr "))
-			{
-				/* addr 127.0.0.1 Interface... */
-
-				if ((p = strstr(comm, "addr ")))
-				{
-					p += 5;
-					q = strchr(p, ' ');
-					*q = 0;
-				}
-
-#else
-
-#ifdef IPV6
-			if (strstr(comm, "inet ") || strstr(comm, "inet6 "))
-#else
-			if (strstr(comm, "inet "))
-#endif
-			{
-				/* inet6 fe80::1@lo0 prefixlen... */
-				/* inet6 ::1 prefixlen... */
-				/* inet 127.0.0.1 netmask... */
-
-				if ((p = strstr(comm, "inet ")))
-				{
-					p += 5;
-					q = strchr(p, ' ');
-				}
-				else
-				{
-					p = strstr(comm, "inet6 ") + 6;
-					if (!(q = strchr(p, '@')))
-						q = strchr(p, ' ');
-				}
-				*q = 0;
-#endif
-
-				if (p && (!*p || !strcmp(p, "127.0.0.1") || !strcmp(p, "::1") || !strncmp(p, "fe80:", 5) || !strncmp(p, "ff80:", 5))) continue;
-
-#ifdef IPV6
-				{
-					char vhost[128], vip[128];
-					struct sockaddr_foobar sf;
-
-					if (inet_pton(AF_INET6, p, &sf.sf_addr6))
-						sf.sf_family = AF_INET6;
-					else
-					{
-						inet_pton(AF_INET, p, &sf.sf_addr);
-						sf.sf_family = AF_INET;
-					}
-
-					new = (Virtuals *) new_malloc(sizeof(Virtuals));
-					if (!norev && !getnameinfo((struct sockaddr*) &sf, sizeof(sf), vhost, 128, NULL, 0, 0))
-						new->hostname = m_strdup(vhost);
-					else
-						new->hostname = m_strdup(inet_ntop(sf.sf_family, (sf.sf_family == AF_INET) ? (void*)&sf.sf_addr : (void*)&sf.sf_addr6, vhost, 128));
-					add_to_list((List **)&virtuals, (List *)new);
-					
-				}
-#else
-				new = (Virtuals *) new_malloc(sizeof(Virtuals));
-				ip = inet_addr(p);
-				if (!norev && (host = gethostbyaddr((char *)&ip, sizeof(ip), AF_INET)))
-					new->hostname = m_strdup(host->h_name);
-				else
-					new->hostname = m_strdup(p);
-				add_to_list((List **)&virtuals, (List *)new);
-#endif
-
-			}
-		}
-		fclose(fptr);
-		unlink(filename);
-		for (new = virtuals, i = 1; virtuals; i++)
+		for (i = 1; virtuals; i++)
 		{
 			new = virtuals;
 			virtuals = virtuals->next;
 			if (i == 1)
 				put_it("%s", convert_output_format("$G Current hostnames available", NULL, NULL));
+
 			put_it("%s", convert_output_format("%K[%W$[3]0%K] %B$1", "%d %s", i, new->hostname));
 			if (args && *args)
 			{
 				if (*args == '#') args++;
 				if (args && *args && (i == my_atol(args)))
 					malloc_strcpy(&newhost, new->hostname);
-					
 			}
-			new_free(&new->hostname);
+			new_free(&new->address);
+            new_free(&new->hostname);
 			new_free(&new);			
 		}
-		if (newhost)
-		{
-			malloc_strcpy(&LocalHostName, newhost);
+    }
+
+    if (newhost)
+	{
+		int reconn = 0;
 #ifndef IPV6
-			if ((hp = gethostbyname(LocalHostName)))
-				memcpy((void *)&LocalHostAddr.sf_addr, hp->h_addr, sizeof(struct in_addr));
+	    struct hostent *hp;
 #endif
-			bitchsay("Local host name is now [%s]", LocalHostName);
-			new_free(&newhost);
-			reconnect_cmd(NULL, NULL, NULL, NULL);
-		}
-#else
-		int		s;
-		char		*buffer;
-		struct ifconf	ifc;
-		char		name[100];
-		struct ifreq	*ifptr, 
-				*end, 
-				ifr;
-		int		ifflags, 
-				selectflag = -1;
-		int		oldbufsize,
-				bufsize = sizeof(struct ifreq);
 
-		if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-		{
-			error("ifconfig: socket %s", strerror(errno));
-			return;
-		}
-		buffer = new_malloc(bufsize+1);
-		ifc.ifc_len = bufsize;
-		do 
-		{
-			oldbufsize = ifc.ifc_len;
-			bufsize += 1+sizeof(struct ifreq);
-			RESIZE(buffer, int, bufsize);
-			ifc.ifc_len = bufsize;
-			ifc.ifc_buf = buffer;
-			if (ioctl(s, SIOCGIFCONF, (char *) &ifc) < 0) 
-			{
-				error("ifconfig (SIOCGIFCONF) %s", strerror(errno));
-				new_free(&buffer);
-				return;
-			}
-		} while (ifc.ifc_len > oldbufsize);
+        /* Reconnect if hostname has changed */
+		if (LocalHostName && strcmp(LocalHostName, newhost))
+			reconn = 1;
 
-		ifflags = ifc.ifc_req->ifr_flags;
-		end = (struct ifreq *) (ifc.ifc_buf + ifc.ifc_len);
-		ifptr = ifc.ifc_req;
-
-		while (ifptr < end) 
-		{
-			sprintf(ifr.ifr_name,"%s",ifptr->ifr_name);   
-			sprintf(name,"%s",ifptr->ifr_name);
-			close(s);
-			check_inter(name);
-			ifptr++;
-		}
-		new_free(&buffer);
+        malloc_strcpy(&LocalHostName, newhost);
+#ifndef IPV6
+        if ((hp = gethostbyname(LocalHostName)))
+            memcpy((void *)&LocalHostAddr.sf_addr, hp->h_addr, sizeof(struct in_addr));
 #endif
-	}
+
+        bitchsay("Local host name is now [%s]", LocalHostName);
+        new_free(&newhost);
+
+		if (reconn)
+            reconnect_cmd(NULL, NULL, NULL, NULL);
+    }
 }
 
 extern void display_bitchx (int);

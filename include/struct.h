@@ -1128,6 +1128,7 @@ typedef struct _ircvariable
 typedef struct _virtuals_struc
 {
 	struct _virtuals_struc *next;
+	char *address;      /* IPv4 or IPv6 address */
 	char *hostname;
 } Virtuals;
 
