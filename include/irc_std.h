@@ -190,10 +190,6 @@ extern  char    *sys_errlist[];
 extern	int	gettimeofday(struct timeval *tv, struct timezone *tz);
 #endif
 
-#ifndef STPCPY_DECLARED
-char *  stpcpy (char *to, const char *from);
-#endif
-
 #ifndef GETPGID_DECLARED
 pid_t	getpgid (pid_t pid);
 #endif
