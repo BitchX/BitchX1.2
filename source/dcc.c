@@ -1175,7 +1175,7 @@ UserList *ul = NULL;
 	TempInt = (unsigned)strtoul(port, NULL, 10);
 	if (TempInt < 1024)
 	{
-		put_it("%s", convert_output_format("$G %RDCC%n Priveleged port attempt [$0]", "%d", TempInt));
+		put_it("%s", convert_output_format("$G %RDCC%n Privileged port attempt [$0]", "%d", TempInt));
 		reset_display_target();
 		return;
 	}
