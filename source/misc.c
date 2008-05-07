@@ -4380,7 +4380,7 @@ static int cparse_recurse = -1;
 #endif
 #define RECURSE_CPARSE
 
-/* One buffer for each recursive implementation.  We also keep track of the 
+/* One buffer for each recursive invocation.  We also keep track of the 
  * buffer size, so that it can be resized when necessary.
  */
 static char *cof_buffer[MAX_RECURSE + 1] = { NULL };
@@ -4465,6 +4465,12 @@ char *timestamp_str = get_string_var(TIMESTAMP_STRING_VAR);
 				case 'c':
 				{
 					char c = (char )va_arg(args, int);
+#ifdef RECURSE_CPARSE
+                    if (c == '%')
+                        buffer2[strlen(buffer2)] = '%';
+                    else if (c == '$')
+                        buffer2[strlen(buffer2)] = '$';
+#endif
 					buffer2[strlen(buffer2)] = c;
 					break;
 				}
