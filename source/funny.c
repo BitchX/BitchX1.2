@@ -222,7 +222,7 @@ int cols = get_int_var(NAMES_COLUMNS_VAR);
 		do {
 			if (!count && fget_string_var(FORMAT_NAMES_BANNER_FSET))
 				strcpy(buffer, convert_output_format(fget_string_var(FORMAT_NAMES_BANNER_FSET), NULL, NULL));
-			if (*t == '@' || *t == '+' || *t == '~' || *t == '-')
+			if (*t == '@' || *t == '+' || *t == '~' || *t == '-' || *t == '%')
 			{
 				special = *t;
 				if (special == '+')
