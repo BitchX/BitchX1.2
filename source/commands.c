@@ -1377,13 +1377,15 @@ int cols = get_int_var(NAMES_COLUMNS_VAR);
 	{
 		if (voice && nick_isvoice(nick))
 			count++;
-		else if (ops && nick_isop(nick))
+		else if (ops && (nick_isop(nick) || nick_ishalfop(nick)))
 			count++;
-		else if (nops && !nick_isop(nick))
+		else if (nops && !nick_isop(nick) && !nick_ishalfop(nick))
 			count++;
 		else if (ircops && nick_isircop(nick))
 			count++;
 		else if (friends && nick->userlist)
+			count++;
+		else if (shit && nick->shitlist)
 			count++;
 		else if (all)
 			count++;
@@ -1411,6 +1413,9 @@ int cols = get_int_var(NAMES_COLUMNS_VAR);
 		count = 0;
 		for (nick = snick; nick; nick = nick->next)
 		{
+            char *nick_format;
+            char nick_sym;
+
 			if (match_host)
 			{
 				int len = strlen(nick->nick)+strlen(nick->host)+4;
@@ -1420,24 +1425,45 @@ int cols = get_int_var(NAMES_COLUMNS_VAR);
 				if (!wild_match(match_host, t))
 					continue;
 			}
-			if (all && (nick_isop(nick) || nick_isvoice(nick)))
-				malloc_strcat(&buffer, convert_output_format(fget_string_var(nick_isop(nick)?FORMAT_NAMES_OPCOLOR_FSET:FORMAT_NAMES_VOICECOLOR_FSET),"%c %s",nick_isop(nick)?'@':'+', nick->nick));
-			else if (all)
-				malloc_strcat(&buffer, convert_output_format(fget_string_var(FORMAT_NAMES_NICKCOLOR_FSET),"%c %s",'$', nick->nick));
-			else if (voice && nick_isvoice(nick))
-				malloc_strcat(&buffer, convert_output_format(fget_string_var(FORMAT_NAMES_VOICECOLOR_FSET),"%c %s",'+', nick->nick));
-			else if (ops && nick_isop(nick))
-				malloc_strcat(&buffer, convert_output_format(fget_string_var(FORMAT_NAMES_OPCOLOR_FSET),"%c %s",'@', nick->nick));
-			else if (friends && nick->userlist)
-				malloc_strcat(&buffer, convert_output_format(nick_isop(nick)?fget_string_var(FORMAT_NAMES_FRIENDCOLOR_FSET):fget_string_var(FORMAT_NAMES_NICKCOLOR_FSET),"%c %s",nick_isop(nick)?'@':'ÿ', nick->nick));
-			else if (nops && !nick_isop(nick))
-				malloc_strcat(&buffer, convert_output_format(fget_string_var(FORMAT_NAMES_NICKCOLOR_FSET),"%c %s",'$', nick->nick));
-			else if (ircops && nick_isircop(nick))
-				malloc_strcat(&buffer, convert_output_format(fget_string_var(FORMAT_NAMES_OPCOLOR_FSET),"%c %s",'*', nick->nick));
-			else if (shit && nick->shitlist)
-				malloc_strcat(&buffer, convert_output_format(fget_string_var(FORMAT_NAMES_SHITCOLOR_FSET),"%c %s",'*', nick->nick));
-			else 
-				continue;
+
+            /* Determine if the nick should be shown. */
+            if (  (voice && !nick_isvoice(nick))
+               || (ops && !nick_isop(nick) && !nick_ishalfop(nick))
+               || (nops && (nick_isop(nick) || nick_ishalfop(nick)))
+               || (ircops && !nick_isircop(nick))
+               || (friends && !nick->userlist)
+               || (shit && !nick->shitlist))
+                continue;
+            
+            /* Determine the format string to use */
+            if (nick->userlist)
+                nick_format = fget_string_var(FORMAT_NAMES_FRIENDCOLOR_FSET);
+            else if (nick->shitlist)
+                nick_format = fget_string_var(FORMAT_NAMES_SHITCOLOR_FSET);
+            else if (nick_isop(nick) || nick_ishalfop(nick))
+                nick_format = fget_string_var(FORMAT_NAMES_OPCOLOR_FSET);
+            else if (nick_isvoice(nick))
+                nick_format = fget_string_var(FORMAT_NAMES_VOICECOLOR_FSET);
+            else if (nick_isircop(nick))
+                nick_format = fget_string_var(FORMAT_NAMES_OPCOLOR_FSET);
+            else
+                nick_format = fget_string_var(FORMAT_NAMES_NICKCOLOR_FSET);
+
+            /* Determine the special symbol, if any, to use. */
+            if (nick_isop(nick))
+                nick_sym = '@';
+            else if (nick_ishalfop(nick))
+                nick_sym = '%';
+            else if (nick_isvoice(nick))
+                nick_sym = '+';
+            else if (nick_isircop(nick))
+                nick_sym = '*';
+            else
+                nick_sym = '.';
+
+            malloc_strcat(&buffer, 
+                convert_output_format(nick_format, "%c %s", nick_sym, 
+                    nick->nick));
 			malloc_strcat(&buffer, space);
 			if (count++ >= (cols - 1))
 			{
