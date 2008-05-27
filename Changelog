@@ -1,5 +1,9 @@
 [Changes 1.2c01 ]
 
+* Rework /SCAN and /NAMES formatting.  This removes the /FSETs NAMES_BOTCOLOR,
+  NAMES_FRIENDCOLOR, NAMES_NICKCOLOR, NAMES_OPCOLOR, NAMES_SHITCOLOR and
+  NAMES_VOICECOLOR and replaces them with new /FSETs. (caf)
+
 * Add $ishalfop(<nick> <channel) scripting function, just like the
   existing function in EPIC. (caf)
 

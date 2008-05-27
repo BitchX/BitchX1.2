@@ -1414,6 +1414,8 @@ int cols = get_int_var(NAMES_COLUMNS_VAR);
 		for (nick = snick; nick; nick = nick->next)
 		{
             char *nick_format;
+            char *user_format;
+            char *nick_buffer = NULL;
             char nick_sym;
 
 			if (match_host)
@@ -1435,36 +1437,54 @@ int cols = get_int_var(NAMES_COLUMNS_VAR);
                || (shit && !nick->shitlist))
                 continue;
             
-            /* Determine the format string to use */
-            if (nick->userlist)
-                nick_format = fget_string_var(FORMAT_NAMES_FRIENDCOLOR_FSET);
+            /* Determine the nick format string to use */
+            if (my_stricmp(nick->nick, get_server_nickname(server)) == 0)
+                nick_format = fget_string_var(FORMAT_NAMES_NICK_ME_FSET);
+            else if (nick->userlist && (nick->userlist->flags & ADD_BOT))
+                nick_format = fget_string_var(FORMAT_NAMES_NICK_BOT_FSET);
+            else if (nick->userlist)
+                nick_format = fget_string_var(FORMAT_NAMES_NICK_FRIEND_FSET);
             else if (nick->shitlist)
-                nick_format = fget_string_var(FORMAT_NAMES_SHITCOLOR_FSET);
-            else if (nick_isop(nick) || nick_ishalfop(nick))
-                nick_format = fget_string_var(FORMAT_NAMES_OPCOLOR_FSET);
-            else if (nick_isvoice(nick))
-                nick_format = fget_string_var(FORMAT_NAMES_VOICECOLOR_FSET);
-            else if (nick_isircop(nick))
-                nick_format = fget_string_var(FORMAT_NAMES_OPCOLOR_FSET);
+                nick_format = fget_string_var(FORMAT_NAMES_NICK_SHIT_FSET);
             else
-                nick_format = fget_string_var(FORMAT_NAMES_NICKCOLOR_FSET);
+                nick_format = fget_string_var(FORMAT_NAMES_NICK_FSET);
 
-            /* Determine the special symbol, if any, to use. */
+            /* Determine the user format and indicator symbol to use. */
             if (nick_isop(nick))
+            {
+                user_format = fget_string_var(FORMAT_NAMES_USER_CHANOP_FSET);
                 nick_sym = '@';
+            }
             else if (nick_ishalfop(nick))
+            {
+                user_format = fget_string_var(FORMAT_NAMES_USER_CHANOP_FSET);
                 nick_sym = '%';
+            }
             else if (nick_isvoice(nick))
+            {
+                user_format = fget_string_var(FORMAT_NAMES_USER_VOICE_FSET);
                 nick_sym = '+';
+            }
             else if (nick_isircop(nick))
+            {
+                user_format = fget_string_var(FORMAT_NAMES_USER_IRCOP_FSET);
                 nick_sym = '*';
+            }
             else
+            {
+                user_format = fget_string_var(FORMAT_NAMES_USER_FSET);
                 nick_sym = '.';
+            }
 
+            /* Construct the string */
+            malloc_strcpy(&nick_buffer, convert_output_format(nick_format,
+                "%s", nick->nick));
             malloc_strcat(&buffer, 
-                convert_output_format(nick_format, "%c %s", nick_sym, 
-                    nick->nick));
+                convert_output_format(user_format, "%c %s", nick_sym, 
+                    nick_buffer));
 			malloc_strcat(&buffer, space);
+            new_free(&nick_buffer);
+
 			if (count++ >= (cols - 1))
 			{
 				if (fget_string_var(FORMAT_NAMES_BANNER_FSET))

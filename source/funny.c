@@ -206,42 +206,76 @@ void funny_list(char *from, char **ArgList)
 	reset_display_target();
 }
 
+/* print_funny_names
+ *
+ * This handles presenting the output of a NAMES reply.  It is a cut-down
+ * version of the /SCAN output formatting.
+ */
 void print_funny_names(char *line)
 {
-register char *t;
-int count = 0;
-char buffer[BIG_BUFFER_SIZE+1];
-char special = '\0';
-int cols = get_int_var(NAMES_COLUMNS_VAR);
+    char *t;
+    int count = 0;
+    char buffer[BIG_BUFFER_SIZE];
+    int cols = get_int_var(NAMES_COLUMNS_VAR);
+
 	if (!cols)
 		cols = 1;
+
 	if (line && *line)
 	{	
 		*buffer = 0;
-		t = next_arg(line, &line);
-		do {
+
+		while (t = next_arg(line, &line)) {
+            char *nick;
+            char *nick_format;
+            char nick_buffer[BIG_BUFFER_SIZE];
+
 			if (!count && fget_string_var(FORMAT_NAMES_BANNER_FSET))
-				strcpy(buffer, convert_output_format(fget_string_var(FORMAT_NAMES_BANNER_FSET), NULL, NULL));
-			if (*t == '@' || *t == '+' || *t == '~' || *t == '-' || *t == '%')
-			{
-				special = *t;
-				if (special == '+')
-					strcat(buffer, convert_output_format(fget_string_var(FORMAT_NAMES_VOICECOLOR_FSET),"%c %s", special, ++t));
-				else
-					strcat(buffer, convert_output_format(fget_string_var(FORMAT_NAMES_OPCOLOR_FSET),"%c %s", special, ++t));
-			}
+				strlcat(buffer, convert_output_format(
+                    fget_string_var(FORMAT_NAMES_BANNER_FSET), NULL, NULL), 
+                    sizeof buffer);
+
+            /* Seperate the nick and the possible status presets that might 
+             * preceede it. */
+            nick = t + strspn(t, "@%+~-");
+            nick_format = fget_string_var(isme(nick) ? 
+                FORMAT_NAMES_NICK_ME_FSET : FORMAT_NAMES_NICK_FSET);
+            strlcpy(nick_buffer, 
+                convert_output_format(nick_format, "%s", nick), 
+                sizeof nick_buffer);
+
+            if (nick != t)
+            {
+                char special = *t;
+
+                if (special == '+')
+				    strlcat(buffer, 
+                        convert_output_format(
+                            fget_string_var(FORMAT_NAMES_USER_VOICE_FSET),
+                            "%c %s", special, nick_buffer), sizeof buffer);
+                else
+				    strlcat(buffer, 
+                        convert_output_format(
+                            fget_string_var(FORMAT_NAMES_USER_CHANOP_FSET),
+                            "%c %s", special, nick_buffer), sizeof buffer);
+            }
 			else
-				strcat(buffer, convert_output_format(fget_string_var(FORMAT_NAMES_NICKCOLOR_FSET), "$ %s", t));
-			strcat(buffer, space);
-			if (count++ >= (cols - 1))
+				strlcat(buffer, 
+                    convert_output_format(
+                        fget_string_var(FORMAT_NAMES_USER_FSET), ". %s", 
+                        nick_buffer), sizeof buffer);
+
+			strlcat(buffer, space, sizeof buffer);
+
+			if (++count >= cols)
 			{
 				put_it("%s", buffer);
 				*buffer = 0;
 				count = 0;
 			}
-		} while ((t = next_arg(line, &line)));
+		}
 
-		if (buffer)
+		if (count)
 			put_it("%s", buffer);
 	}
 }

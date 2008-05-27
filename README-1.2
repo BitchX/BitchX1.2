@@ -1,0 +1,38 @@
+BitchX 1.2 README
+=================
+
+/NAMES and /SCAN
+----------------
+
+The formatting of /NAMES and /SCAN output has been substantially reworked.
+The old /FSETs NAMES_BOTCOLOR, NAMES_FRIENDCOLOR, NAMES_NICKCOLOR,
+NAMES_OPCOLOR, NAMES_SHITCOLOR and NAMES_VOICECOLOR have been replaced
+with these new /FSETs:
+
+....................NAMES_NICK %B$[10]0
+................NAMES_NICK_BOT %G$[10]0
+.............NAMES_NICK_FRIEND %Y$[10]0
+.................NAMES_NICK_ME %W$[10]0
+...............NAMES_NICK_SHIT %R$[10]0
+....................NAMES_USER %K[ %n$1-%K]
+.............NAMES_USER_CHANOP %K[%C$0%n$1-%K]
+..............NAMES_USER_IRCOP %K[%R$0%n$1-%K]
+..............NAMES_USER_VOICE %K[%M$0%n$1-%K]
+
+The NAMES_NICK formats control how the nick itself is displayed, depending
+on the status of the nick as recognised by BitchX (the priority order is
+NAMES_NICK_ME > NAMES_NICK_BOT > NAMES_NICK_FRIEND > NAMES_NICK_SHIT >
+NAMES_NICK).  The NAMES_USER formats control how the overall entry appears in
+the /NAMES or /SCAN line, depending on the channel status of the nick (the
+priority order is NAMES_USER_CHANOP > NAMES_USER_VOICE > NAMES_USER_IRCOP >
+NAMES_USER).
+
+You'll need to update any scripts or custom formats that altered the old
+formats.  If you just use the defaults, the main difference you'll see is
+that your own nick is now shown in white, and voiced users are shown with
+the '+' sent by the server instead of the 'v'.  You can go back to the old
+look by setting these formats:
+
+/FSET NAMES_NICK_ME %B$[10]0
+/FSET NAMES_USER_VOICE %K[%Mv%n$1-%K]
+
