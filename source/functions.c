@@ -984,7 +984,7 @@ BuiltInDllFunctions *dll = NULL;
 			if (++(*cnt) == matches_size)
 			{
 				matches_size += 5;
-				matches = (char	**) RESIZE(matches, char *, matches_size);
+				RESIZE(matches, char *, matches_size);
 			}
 		}
 	}
