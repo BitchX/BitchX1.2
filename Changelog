@@ -1,5 +1,10 @@
 [Changes 1.2c01 ]
 
+* Add halfop nick prefix to default status line, and change the voice prefix
+  so it appears whether or not you're opped. (caf)
+
+* Add halfop support to $channel() scripting function. (caf)
+
 * Rework /SCAN and /NAMES formatting.  This removes the /FSETs NAMES_BOTCOLOR,
   NAMES_FRIENDCOLOR, NAMES_NICKCOLOR, NAMES_OPCOLOR, NAMES_SHITCOLOR and
   NAMES_VOICECOLOR and replaces them with new /FSETs. (caf)
