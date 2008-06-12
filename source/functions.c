@@ -5419,6 +5419,8 @@ int		sort_order = NICKSORT_NORMAL;
 				malloc_strcat(&nicks, "!");
 			if (nick_isop(tmp)) 
 				m_3cat(&nicks, "@", tmp->nick);
+            else if (nick_ishalfop(tmp))
+                m_3cat(&nicks, "%", tmp->nick);
 			else if (nick_isvoice(tmp))
 				m_3cat(&nicks, "+", tmp->nick);
 			else
