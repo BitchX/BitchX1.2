@@ -1304,44 +1304,102 @@ int	server = from_server;
 	my_send_to_server(server, "MODE %s +oooo %s %s %s %s", chan->channel, nick, nick, nick, nick);
 }
 
+enum SCAN_TYPE {
+    SCAN_ALL, SCAN_VOICES, SCAN_CHANOPS, SCAN_NONOPS, SCAN_IRCOPS, 
+    SCAN_FRIENDS, SCAN_SHITLISTED
+};
+
+/* nick_in_scan
+ *
+ * Test if a nick should be shown in a /SCAN, according to the
+ * scan type and nick!user@host mask.  A NULL mask matches all nicks.
+ */
+int nick_in_scan(NickList *nick, enum SCAN_TYPE scan_type, char *mask)
+{
+    switch(scan_type)
+    {
+    case SCAN_VOICES:
+        if (!nick_isvoice(nick)) return 0;
+        break;
+
+    case SCAN_CHANOPS:
+        if (!nick_isop(nick) && !nick_ishalfop(nick)) return 0;
+        break;
+
+    case SCAN_NONOPS:
+        if (nick_isop(nick) || nick_ishalfop(nick)) return 0;
+        break;
+
+    case SCAN_IRCOPS:
+        if (!nick_isircop(nick)) return 0;
+        break;
+
+    case SCAN_FRIENDS:
+        if (!nick->userlist) return 0;
+        break;
+        
+    case SCAN_SHITLISTED:
+        if (!nick->shitlist) return 0;
+        break;
+
+    case SCAN_ALL:
+    default:
+        break;
+    }
+
+    /* mask == NULL matches all nicks */
+    if (!mask)
+        return 1;
+
+    return nick_match(nick, mask);
+}
+ 
 BUILT_IN_COMMAND(do_scan)
 {
-int voice = 0, ops = 0, nops = 0, ircops = 0, all = 0, friends = 0, shit = 0;
-char *channel = NULL;
-ChannelList *chan;
-NickList *nick, *snick = NULL;
-char *s;
-char *buffer = NULL;
-int count = 0;
-int server;
-int sorted = NICKSORT_NORMAL;
-char *match_host = NULL;
-int cols = get_int_var(NAMES_COLUMNS_VAR);
+    enum SCAN_TYPE scan_type = SCAN_ALL;
+    char *channel = NULL;
+    ChannelList *chan;
+    NickList *nick, *snick = NULL;
+    char *s;
+    char *buffer = NULL;
+    int n_inscan = 0, n_total = 0;
+    int count = 0;
+    int server;
+    int sorted = NICKSORT_NORMAL;
+    char *match_host = NULL;
+    int cols = get_int_var(NAMES_COLUMNS_VAR);
+
 	if (!cols)
 		cols = 1;	
-
 	
-	if (command && !my_stricmp(command, "scanv"))
-		voice = 1;
-	else if (command && !my_stricmp(command, "scano"))
-		ops = 1;
-	else if (command && !my_stricmp(command, "scann"))
-		nops = 1;
-	else if (command && !my_stricmp(command, "scanf"))
-		friends = 1;
-	else if (command && !my_stricmp(command, "scans"))
-		shit = 1;
-	else if (command && !my_stricmp(command, "scani"))
-		ircops = 1;
-	else 
-		all = 1;
+    if (command)
+    {
+        if (!my_stricmp(command, "scanv"))
+            scan_type = SCAN_VOICES;
+        else if (!my_stricmp(command, "scano"))
+            scan_type = SCAN_CHANOPS;
+        else if (!my_stricmp(command, "scann"))
+            scan_type = SCAN_NONOPS;
+        else if (!my_stricmp(command, "scanf"))
+            scan_type = SCAN_FRIENDS;
+        else if (!my_stricmp(command, "scans"))
+            scan_type = SCAN_SHITLISTED;
+        else if (!my_stricmp(command, "scani"))
+		    scan_type = SCAN_IRCOPS;
+    }
 
-	while (args && *args)
+	while (s = next_arg(args, &args))
 	{
-		s = next_arg(args, &args);
-		if (is_channel(s))
-			channel = s;
-		else if (s && *s == '-')
+		if (is_channel(s)) {
+            if (!channel)
+            {
+                channel = s;
+            }
+
+            continue;
+        }
+
+		if (*s == '-')
 		{
 			if (!my_strnicmp(s, "-sort", 3))
 				sorted = NICKSORT_NONE;
@@ -1349,163 +1407,194 @@ int cols = get_int_var(NAMES_COLUMNS_VAR);
 				sorted = NICKSORT_NICK;
 			else if (!my_strnicmp(s, "-host", 3))
 				sorted = NICKSORT_HOST;
+
+            continue;
 		}
-		else if (s && all)
+
+		if ((strlen(s) == 1) && (scan_type == SCAN_ALL))
 		{
-			if (*s == 'v')
-				voice = 1, all = 0;
-			else if (*s == 'o')
-				ops = 1, all = 0;
-			else if (*s == 'n')
-				nops = 1, all = 0;
-			else if (*s == 'i')
-				ircops = 1, all = 0;
-			else if (*s == 'f')
-				friends = 1, all = 0;
-			else if (*s == 's')
-				shit = 1, all = 0;
-			else 
-				malloc_strcpy(&match_host, s);
+            switch(*s)
+            {
+            case 'v':
+            case 'V':
+                scan_type = SCAN_VOICES;
+                break;
+
+            case 'o':
+            case 'O':
+                scan_type = SCAN_CHANOPS;
+                break;
+
+            case 'n':
+            case 'N':
+                scan_type = SCAN_NONOPS;
+                break;
+
+            case 'f':
+            case 'F':
+                scan_type = SCAN_FRIENDS;
+                break;
+
+            case 's':
+            case 'S':
+                scan_type = SCAN_SHITLISTED;
+                break;
+
+            case 'i':
+            case 'I':
+                scan_type = SCAN_IRCOPS;
+                break;
+            }
+
+            continue;
 		}
-		else
-			malloc_strcpy(&match_host, s);
+
+        if (!match_host)
+        {
+            match_host = s;
+        }
 	}
+
 	if (!(chan = prepare_command(&server, channel, NO_OP)))
 		return;
+
 	reset_display_target();
-	for (nick = next_nicklist(chan, NULL); nick; nick = next_nicklist(chan, nick))
-	{
-		if (voice && nick_isvoice(nick))
-			count++;
-		else if (ops && (nick_isop(nick) || nick_ishalfop(nick)))
-			count++;
-		else if (nops && !nick_isop(nick) && !nick_ishalfop(nick))
-			count++;
-		else if (ircops && nick_isircop(nick))
-			count++;
-		else if (friends && nick->userlist)
-			count++;
-		else if (shit && nick->shitlist)
-			count++;
-		else if (all)
-			count++;
-	}
 
 	snick = sorted_nicklist(chan, sorted);
-	if (voice) 
-		s = fget_string_var(FORMAT_NAMES_VOICE_FSET);
-	else if (ops)
-		s = fget_string_var(FORMAT_NAMES_OP_FSET);
-	else if (ircops)
-		s = fget_string_var(FORMAT_NAMES_IRCOP_FSET);
-	else if (friends)
-		s = fget_string_var(FORMAT_NAMES_FRIEND_FSET);
-	else if (nops)
-		s = fget_string_var(FORMAT_NAMES_NONOP_FSET);
-	else if (shit)
-		s = fget_string_var(FORMAT_NAMES_SHIT_FSET);
-	else
-		s = fget_string_var(FORMAT_NAMES_FSET);
 
-	put_it("%s", convert_output_format(s, "%s %s %d %s", update_clock(GET_TIME), chan->channel, count, space));
-	if (count)
+    /* Count nicks - total and shown */
+	for (nick = snick; nick; nick = nick->next)
 	{
-		count = 0;
-		for (nick = snick; nick; nick = nick->next)
-		{
-            char *nick_format;
-            char *user_format;
-            char *nick_buffer = NULL;
-            char nick_sym;
+        n_total++;
 
-			if (match_host)
-			{
-				int len = strlen(nick->nick)+strlen(nick->host)+4;
-				char *t = alloca(len);
-				*t = 0;
-				strmopencat(t, len, nick->nick, "!", nick->host, NULL);
-				if (!wild_match(match_host, t))
-					continue;
-			}
+        if (nick_in_scan(nick, scan_type, match_host))
+            n_inscan++;
+	}
 
-            /* Determine if the nick should be shown. */
-            if (  (voice && !nick_isvoice(nick))
-               || (ops && !nick_isop(nick) && !nick_ishalfop(nick))
-               || (nops && (nick_isop(nick) || nick_ishalfop(nick)))
-               || (ircops && !nick_isircop(nick))
-               || (friends && !nick->userlist)
-               || (shit && !nick->shitlist))
-                continue;
+    /* Output the header line */
+    switch(scan_type)
+    {
+    case SCAN_VOICES:
+		s = fget_string_var(FORMAT_NAMES_VOICE_FSET);
+        break;
+
+    case SCAN_CHANOPS:
+		s = fget_string_var(FORMAT_NAMES_OP_FSET);
+        break;
+
+    case SCAN_IRCOPS:
+		s = fget_string_var(FORMAT_NAMES_IRCOP_FSET);
+        break;
+
+    case SCAN_FRIENDS:
+		s = fget_string_var(FORMAT_NAMES_FRIEND_FSET);
+        break;
+        
+    case SCAN_NONOPS:
+		s = fget_string_var(FORMAT_NAMES_NONOP_FSET);
+        break;
+
+    case SCAN_SHITLISTED:
+		s = fget_string_var(FORMAT_NAMES_SHIT_FSET);
+        break;
+
+    case SCAN_ALL:
+    default:
+		s = fget_string_var(FORMAT_NAMES_FSET);
+    }
+
+	put_it("%s", 
+        convert_output_format(s, "%s %s %d %d %s", 
+            update_clock(GET_TIME), chan->channel, n_inscan, n_total, 
+            match_host ? match_host : empty_string));
+
+    for (nick = snick; nick; nick = nick->next)
+    {
+        char *nick_format;
+        char *user_format;
+        char *nick_buffer = NULL;
+        char nick_sym;
+
+        if (!nick_in_scan(nick, scan_type, match_host))
+            continue;
             
-            /* Determine the nick format string to use */
-            if (my_stricmp(nick->nick, get_server_nickname(server)) == 0)
-                nick_format = fget_string_var(FORMAT_NAMES_NICK_ME_FSET);
-            else if (nick->userlist && (nick->userlist->flags & ADD_BOT))
-                nick_format = fget_string_var(FORMAT_NAMES_NICK_BOT_FSET);
-            else if (nick->userlist)
-                nick_format = fget_string_var(FORMAT_NAMES_NICK_FRIEND_FSET);
-            else if (nick->shitlist)
-                nick_format = fget_string_var(FORMAT_NAMES_NICK_SHIT_FSET);
-            else
-                nick_format = fget_string_var(FORMAT_NAMES_NICK_FSET);
+        /* Determine the nick format string to use */
+        if (!my_stricmp(nick->nick, get_server_nickname(server)))
+            nick_format = fget_string_var(FORMAT_NAMES_NICK_ME_FSET);
+        else if (nick->userlist && (nick->userlist->flags & ADD_BOT))
+            nick_format = fget_string_var(FORMAT_NAMES_NICK_BOT_FSET);
+        else if (nick->userlist)
+            nick_format = fget_string_var(FORMAT_NAMES_NICK_FRIEND_FSET);
+        else if (nick->shitlist)
+            nick_format = fget_string_var(FORMAT_NAMES_NICK_SHIT_FSET);
+        else
+            nick_format = fget_string_var(FORMAT_NAMES_NICK_FSET);
 
-            /* Determine the user format and indicator symbol to use. */
-            if (nick_isop(nick))
-            {
-                user_format = fget_string_var(FORMAT_NAMES_USER_CHANOP_FSET);
-                nick_sym = '@';
-            }
-            else if (nick_ishalfop(nick))
-            {
-                user_format = fget_string_var(FORMAT_NAMES_USER_CHANOP_FSET);
-                nick_sym = '%';
-            }
-            else if (nick_isvoice(nick))
-            {
-                user_format = fget_string_var(FORMAT_NAMES_USER_VOICE_FSET);
-                nick_sym = '+';
-            }
-            else if (nick_isircop(nick))
-            {
-                user_format = fget_string_var(FORMAT_NAMES_USER_IRCOP_FSET);
-                nick_sym = '*';
-            }
-            else
-            {
-                user_format = fget_string_var(FORMAT_NAMES_USER_FSET);
-                nick_sym = '.';
-            }
+        /* Determine the user format and indicator symbol to use. */
+        if (nick_isop(nick))
+        {
+            user_format = fget_string_var(FORMAT_NAMES_USER_CHANOP_FSET);
+            nick_sym = '@';
+        }
+        else if (nick_ishalfop(nick))
+        {
+            user_format = fget_string_var(FORMAT_NAMES_USER_CHANOP_FSET);
+            nick_sym = '%';
+        }
+        else if (nick_isvoice(nick))
+        {
+            user_format = fget_string_var(FORMAT_NAMES_USER_VOICE_FSET);
+            nick_sym = '+';
+        }
+        else if (nick_isircop(nick))
+        {
+            user_format = fget_string_var(FORMAT_NAMES_USER_IRCOP_FSET);
+            nick_sym = '*';
+        }
+        else
+        {
+            user_format = fget_string_var(FORMAT_NAMES_USER_FSET);
+            nick_sym = '.';
+        }
 
-            /* Construct the string */
-            malloc_strcpy(&nick_buffer, convert_output_format(nick_format,
-                "%s", nick->nick));
-            malloc_strcat(&buffer, 
+        /* Construct the string */
+        malloc_strcpy(&nick_buffer, convert_output_format(nick_format,
+                    "%s", nick->nick));
+        malloc_strcat(&buffer, 
                 convert_output_format(user_format, "%c %s", nick_sym, 
                     nick_buffer));
-			malloc_strcat(&buffer, space);
-            new_free(&nick_buffer);
+        malloc_strcat(&buffer, space);
+        new_free(&nick_buffer);
 
-			if (count++ >= (cols - 1))
-			{
-				if (fget_string_var(FORMAT_NAMES_BANNER_FSET))
-					put_it("%s%s", convert_output_format(fget_string_var(FORMAT_NAMES_BANNER_FSET), NULL, NULL), buffer);
-				else
-					put_it("%s", buffer);
-				new_free(&buffer);
-				count = 0;
-			}
-		}
-		if (count && buffer)
-		{
-			if (fget_string_var(FORMAT_NAMES_BANNER_FSET))
-				put_it("%s%s", convert_output_format(fget_string_var(FORMAT_NAMES_BANNER_FSET), NULL, NULL), buffer);
-			else
-				put_it("%s", buffer);
-		}
-		if (fget_string_var(FORMAT_NAMES_FOOTER_FSET))
-			put_it("%s", convert_output_format(fget_string_var(FORMAT_NAMES_FOOTER_FSET), NULL, NULL));
-		new_free(&buffer);
-	}
+        /* If this completes a line, output it */
+        if (count++ >= (cols - 1))
+        {
+            if (fget_string_var(FORMAT_NAMES_BANNER_FSET))
+                put_it("%s%s", convert_output_format(fget_string_var(FORMAT_NAMES_BANNER_FSET), NULL, NULL), buffer);
+            else
+                put_it("%s", buffer);
+            new_free(&buffer);
+            count = 0;
+        }
+    }
+
+    /* If a partial line is left, output it */
+    if (count)
+    {
+        if (fget_string_var(FORMAT_NAMES_BANNER_FSET))
+            put_it("%s%s", convert_output_format(fget_string_var(FORMAT_NAMES_BANNER_FSET), NULL, NULL), buffer);
+        else
+            put_it("%s", buffer);
+        new_free(&buffer);
+    }
+
+    /* Write the footer */
+    if (fget_string_var(FORMAT_NAMES_FOOTER_FSET))
+        put_it("%s", 
+            convert_output_format(fget_string_var(FORMAT_NAMES_FOOTER_FSET), 
+                "%s %s %d %d %s", update_clock(GET_TIME), chan->channel, 
+                n_inscan, n_total, match_host ? match_host : empty_string));
+
 	clear_sorted_nicklist(&snick);
 }
 

@@ -316,7 +316,7 @@ int user_count = 0;
 			&& do_hook(NAMES_LIST, "%s %s", channel, line)
 			&& get_int_var(SHOW_CHANNEL_NAMES_VAR))
 		{
-			put_it("%s", convert_output_format(fget_string_var(FORMAT_NAMES_FSET), "%s %s %d",update_clock(GET_TIME), channel, user_count));
+			put_it("%s", convert_output_format(fget_string_var(FORMAT_NAMES_FSET), "%s %s %d %d",update_clock(GET_TIME), channel, user_count, user_count));
 			print_funny_names(line);
 		} 
 		if ((user_count == 1) && (*line == '@'))
@@ -359,7 +359,7 @@ int user_count = 0;
 			set_display_target(channel, LOG_CRAP);
 			if (fget_string_var(FORMAT_NAMES_FSET))
 			{
-				put_it("%s", convert_output_format(fget_string_var(FORMAT_NAMES_FSET), "%s %s %d", update_clock(GET_TIME), channel, user_count));
+				put_it("%s", convert_output_format(fget_string_var(FORMAT_NAMES_FSET), "%s %s %d %d", update_clock(GET_TIME), channel, user_count, user_count));
 				print_funny_names(line);
 			} 
 			else

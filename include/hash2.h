@@ -41,6 +41,9 @@ void	show_nicklist_hashtable(ChannelList *);
 void show_whowas_hashtable(WhowasWrapList *cptr, char *);
 int show_wholeft_hashtable(WhowasWrapList *cptr, time_t ltime, int *total, int *hook, char *);
 
+/* Determines if the Nick matches the nick!user@host mask given. */
+int nick_match(NickList *nick, char *mask);
+
 /* Added to sort a hash'd nicklist and them remove the sorted list */
 NickList *BX_sorted_nicklist(ChannelList *, int);
 void BX_clear_sorted_nicklist(NickList **);

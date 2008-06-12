@@ -782,6 +782,18 @@ int a_isvoice, b_isvoice;
 	return 0;
 }
 
+/* Determines if the Nick matches the nick!user@host mask given. */
+int nick_match(NickList *nick, char *mask)
+{
+    int match = 0;
+    char *nuh = m_3dup(nick->nick, "!", nick->host);
+
+    match = wild_match(mask, nuh);
+    new_free(&nuh);
+
+    return match;
+}
+ 
 NickList *BX_sorted_nicklist(ChannelList *chan, int sort)
 {
 	NickList *tmp, *l = NULL, *list = NULL, *last = NULL;

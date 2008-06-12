@@ -36,3 +36,6 @@ look by setting these formats:
 /FSET NAMES_NICK_ME %B$[10]0
 /FSET NAMES_USER_VOICE %K[%Mv%n$1-%K]
 
+Also, the NAMES header and NAMES_FOOTER formats are now called with $3 set
+to the total number of nicks in the channel, and $4 to the mask given to
+/SCAN (if any).
