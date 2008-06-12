@@ -789,7 +789,7 @@
 #define DEFAULT_FORMAT_WHOLEFT_FOOTER_FSET NULL
 
 #define DEFAULT_STATUS_FORMAT " [0;44;36m[[1;37m%T[0;44;36m][%*%@%=[0;44;37m%N%#%A[0;44;36m]%M [0;44;36m[%C%+%W[0;44;36m] %Q %H%B%F "
-#define DEFAULT_STATUS_FORMAT1 " [0;44;36m[[1;37m%T[0;44;36m][%*[1;37m%@%=[0;44;37m%N%#%A[0;44;36m]%M [0;44;36m[%C%+%W[0;44;36m] %Q %H%B%F "
+#define DEFAULT_STATUS_FORMAT1 " [0;44;36m[[1;37m%T[0;44;36m][%*[1;37m%@%G%=[0;44;37m%N%#%A[0;44;36m]%M [0;44;36m[%C%+%W[0;44;36m] %Q %H%B%F "
 #define DEFAULT_STATUS_FORMAT2 " %L %! %K %>%D %J[%u:%a:%f:%b:%h]"
 #define DEFAULT_STATUS_FORMAT3 "BitchX by panasync "
 

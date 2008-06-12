@@ -1124,21 +1124,25 @@ static char my_buffer[MY_BUFFER/2+1];
 
 static	char	*status_chanop(Window *window)
 {
-	char	*text;
-	if (window->current_channel && get_channel_oper(window->current_channel, window->server) && 
-			(text = get_wset_string_var(window->wset, STATUS_CHANOP_WSET)))
-		return (text);
-	else
-		RETURN_EMPTY;
+    char	*text;
+
+	if (window->current_channel && 
+        get_channel_oper(window->current_channel, window->server) && 
+        (text = get_wset_string_var(window->wset, STATUS_CHANOP_WSET)))
+        return text;
+
+    RETURN_EMPTY;
 }
 static	char	*status_halfop(Window *window)
 {
-	char	*text;
-	if (window->current_channel && get_channel_halfop(window->current_channel, window->server) &&
-			(text = get_wset_string_var(window->wset, STATUS_HALFOP_WSET)))
-		return (text);
-	else
-		RETURN_EMPTY;
+    char	*text;
+
+    if (window->current_channel && 
+        get_channel_halfop(window->current_channel, window->server) &&
+        (text = get_wset_string_var(window->wset, STATUS_HALFOP_WSET)))
+        return text;
+
+    RETURN_EMPTY;
 }
 
 
@@ -1386,7 +1390,6 @@ static	char	*status_voice(Window *window)
 char	*text;
 	if (window->current_channel &&
 	    get_channel_voice(window->current_channel, window->server) &&
-	    !get_channel_oper(window->current_channel, window->server) &&
 	    (text = get_wset_string_var(window->wset, STATUS_VOICE_WSET)))
 		return text;
 	RETURN_EMPTY;
