@@ -1390,7 +1390,7 @@ BUILT_IN_COMMAND(do_scan)
 		    scan_type = SCAN_IRCOPS;
     }
 
-	while (s = next_arg(args, &args))
+	while ((s = next_arg(args, &args)))
 	{
 		if (is_channel(s)) {
             if (!channel)
