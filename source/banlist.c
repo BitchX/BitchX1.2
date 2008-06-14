@@ -580,20 +580,18 @@ register NickList *nicks;
 
 BUILT_IN_COMMAND(doop)
 {
-	char	*to = NULL, 
+	char *to = NULL, 
 		*temp = NULL;
-ChannelList	*chan = NULL;
+	ChannelList	*chan = NULL;
 	int	count,
 		max = get_int_var(NUM_OPMODES_VAR);
-	char	buffer[BIG_BUFFER_SIZE + 1];
 	int	old_server = from_server;
-	int	voice = 0;
-	
-	
-	if (command)
-		voice = 1;
+
+	/* command is mode char to use - if none given, default to op */
+	if (!command)
+		command = "o";
+
 	count = 0;
-	*buffer = 0;
 
 	if (!(to = next_arg(args, &args)))
 		to = NULL;
@@ -612,7 +610,7 @@ ChannelList	*chan = NULL;
 	while (temp && *temp)
 	{
 		count++;
-		add_mode(chan, voice?"v":"o", 1, temp, NULL, max);
+		add_mode(chan, command, 1, temp, NULL, max);
 		temp = next_arg(args, &args);
 	}
 	flush_mode_all(chan);
@@ -624,19 +622,15 @@ BUILT_IN_COMMAND(dodeop)
 	char *to = NULL, *temp;
 	int count, max;
 	ChannelList *chan;
-	char	buffer[BIG_BUFFER_SIZE + 1];
-	int isvoice = 0;
 	int server = from_server;
 		
-	
 	count = 0;
 	temp = NULL;
 	max = get_int_var(NUM_OPMODES_VAR);
 
-	*buffer = 0;
-
-	if (command && (!my_stricmp(command, "unvoice") || !my_stricmp(command, "devoice")))
-		isvoice = 1;
+	/* command is mode char to use - if none given, default to deop */
+	if (!command)
+		command = "o";
 	
 	if (!(to = next_arg(args, &args)))
 		to = NULL;
@@ -655,7 +649,7 @@ BUILT_IN_COMMAND(dodeop)
 	while (temp && *temp)
 	{
 		count++;
-		add_mode(chan, isvoice?"v":"o", 0, temp, NULL, max);
+		add_mode(chan, command, 0, temp, NULL, max);
 		temp = next_arg(args, &args);
 	}
 	flush_mode_all(chan);

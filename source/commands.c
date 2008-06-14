@@ -341,13 +341,14 @@ IrcCommand irc_command[] =
 #ifdef WANT_USERLIST
 	{ "DEBUGUSER",	NULL,		debug_user,		0,	NULL },
 #endif
-	{ "DEOP",	NULL,		dodeop,			SERVERREQ,	"%Y<%C%nnick(s)%Y>%n\n- Deops %Y<%Cnick%y(%Cs%y)%Y>%n" },
+	{ "DEHOP",	"h",		dodeop,			SERVERREQ,	"%Y<%C%nnick(s)%Y>%n\n- Removes halfops from %Y<%Cnick%y(%Cs%y)%Y>%n" },
+	{ "DEOP",	"o",		dodeop,			SERVERREQ,	"%Y<%C%nnick(s)%Y>%n\n- Deops %Y<%Cnick%y(%Cs%y)%Y>%n" },
 	{ "DEOPER",	NULL,		deop,			SERVERREQ,	"%Y*%n Requires irc operator status\n- Removes irc operator status" },
 	{ "DESCRIBE",	NULL,		describe,		SERVERREQ,	"%Y<%Cnick%G|%Bchannel%Y>%n %Y<%naction%Y>%n\n- Describes to %Y<%Cnick%G|%Bchannel%Y>%n with %Y<%naction%Y>%n" },
 #ifdef ALLOW_DETACH
 	{ "DETACH",	NULL,		detachcmd,		0,	NULL },
 #endif
-	{ "DEVOICE",	"DeVoice",	dodeop,			SERVERREQ,	"%Y<%C%nnick(s)%Y>%n\n- de-voices %Y<%Cnick%y(%Cs%y)%Y>%n" },
+	{ "DEVOICE",	"v",	dodeop,			SERVERREQ,	"%Y<%C%nnick(s)%Y>%n\n- de-voices %Y<%Cnick%y(%Cs%y)%Y>%n" },
 #if !defined(WINNT) && !defined(__EMX__)
 	{ "DF",		"df",		exec_cmd,		0,	"- Show disk space usage" },
 #endif
@@ -360,7 +361,7 @@ IrcCommand irc_command[] =
 	{ "DME",	"dme",		me,			SERVERREQ,	"<action>\n- Sends an action to current dcc" },
 	{ "DNS",	"NSlookup",	nslookup,		0,	"%YDNS<%nnick|hostname%y>%n\n- Attempts to nslookup on nick or hostname"},
 	{ "DO",		NULL,		docmd,			0,	scripting_command },
-	{ "DOP",	NULL,		dodeop,			SERVERREQ,	"- See deop" },
+	{ "DOP",	"o",		dodeop,			SERVERREQ,	"- See deop" },
 	{ "DS",		NULL,		dcc_stat_comm,		0,	"- Displays some dcc file transfer stats" },
 	{ "DUMP",	"Dump",		dumpcmd,		0,	"%Y<%ntype%Y>%n\n- Dumps %Y<%ntype%Y>%n to screen\n%Y<%ntype%Y>%n:\n%YAlias%n  %YAll%n  %YBind%n  %YChstats%n  %YFsets%n\n%YFile%n  %YOn%n  %YVar%n  %YTimers%n  %YWsets%n  %YCsets%n" },
 	{ "ECHO",	NULL,		echocmd,		0,	"<text>\n- Echos text to the screen" },
@@ -405,6 +406,7 @@ IrcCommand irc_command[] =
 #endif
 	{ "HISTORY",	NULL,		history,		0,	"- Shows recently typed commands" },
 	{ "HOOK",	NULL,		hookcmd,		0,	scripting_command },
+	{ "HOP",		"h",		doop,			SERVERREQ,	"%Y<%Cnick%Y>%n\n- Gives %Y<%Cnick%Y>%n +h" },
 	{ "HOST",	"USERHOST",	userhostcmd,		0,	"- Shows host of yourself or %R[%Cnick%R]%n" },
 	{ "HOSTNAME",	"HOSTNAME",	e_hostname,		0,	"%Y<%nhostname%Y>%n\n- Shows list of possible hostnames with option to change it on virtual hosts" },
 	{ "I",		"INVITE",	do_invite,		SERVERREQ,	"- See %YINVITE%n" },
@@ -510,7 +512,7 @@ IrcCommand irc_command[] =
 	{ "OFFERS",	"Offers",	do_offers,		0,	NULL },
 	{ "ON",		NULL,		oncmd,			0,	scripting_command },
 	{ "OOPS",	NULL,		do_oops,		SERVERREQ,	"%Y<%Cnick%Y>%n\n- Sends a oops message to last recipient of a message and sends the correct message to %Y<%Cnick%Y>%n" },
-	{ "OP",		NULL,		doop,			SERVERREQ,	"%Y<%Cnick%Y>%n\n- Gives %Y<%Cnick%Y>%n +o" },
+	{ "OP",		"o",		doop,			SERVERREQ,	"%Y<%Cnick%Y>%n\n- Gives %Y<%Cnick%Y>%n +o" },
 	{ "OPER",	"OPER",		oper,			SERVERREQ,	"%Y*%n Requires irc operator status\n%Y<%Cnick%Y>%n %R[%npassword%R]%n" },
 #ifdef WANT_CHAN_NICK_SERV
 	{ "OPERSERV",	"OPERSERV",	send_comm,		SERVERREQ,	NULL },
@@ -700,7 +702,7 @@ IrcCommand irc_command[] =
 #ifdef WANT_USERLIST
 	{ "UNUSER",	"UnUser",	add_user,		0,	"%Y<%nnick%W|%nnick!user@hostname%Y> <%n#channel%W|%n*%Y>%n" },
 #endif
-	{ "UNVOICE",	"Unvoice",	dodeop,			0,	NULL },
+	{ "UNVOICE",	"v",	dodeop,			0,	NULL },
 	{ "UNWORDKICK",	"UnWordKick",	add_ban_word,		0,	"%Y<%n#channel%Y> <%nword%Y>%n" },
 	{ "UPING",	"uPing",	pingcmd,		0,	NULL },
 	{ "UPTIME",	NULL,		do_uptime,		0,	NULL },
@@ -722,7 +724,7 @@ IrcCommand irc_command[] =
 	{ "USRIP",	"USRIP",	usripcmd,		0,	NULL },
 	{ "VER",	"Version",	ctcp_version,		0,	NULL },
 	{ "VERSION",	"VERSION",	version1,		0,	NULL },
-	{ "VOICE",	"Voice",	doop,			0,	NULL },
+	{ "VOICE",	"v",	doop,			0,	NULL },
 	{ "W",		"W",		whocmd,			0,	NULL },
 	{ "WAIT",	NULL,		waitcmd,		0,	scripting_command },
 	{ "WALL",	"WALL",		ChanWallOp,		0,	NULL },
