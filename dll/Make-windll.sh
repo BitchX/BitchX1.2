@@ -13,7 +13,6 @@ CP=cp
 $GCC -c init.cc 
 $GCC -c fixup.cc
 $GCC -I../include -c pkga.c 
-$GCC -I../include -c scan.c 
 
 echo EXPORTS > pkga.def
 $NM pkga.o init.o fixup.o | grep '^........ [T] _' | sed 's/[^_]*_//' >> pkga.def
@@ -32,24 +31,6 @@ $LD pkga.exp --dll -o pkga.dll pkga.o init.o fixup.o\
 
 # Build the pkgaB.a lib to link to:
 $DLLTOOL --as=$AS --dllname pkga.dll --def pkga.def --output-lib pkga.a
-
-echo EXPORTS > scan.def
-$NM scan.o init.o fixup.o | grep '^........ [T] _' | sed 's/[^_]*_//' >> scan.def
-
-# Link DLL.
-$LD --base-file scan.base --dll -o scan.dll scan.o init.o fixup.o\
- $LIBPATH/libcygwin.a $LIBPATH/libkernel32.a -e _dll_entry@12
-$DLLTOOL --as=$AS --dllname scan.dll --def scan.def --base-file\
- scan.base --output-exp scan.exp
-$LD --base-file scan.base scan.exp --dll -o scan.dll scan.o\
- init.o fixup.o $LIBPATH/libcygwin.a $LIBPATH/libkernel32.a -e _dll_entry@12
-$DLLTOOL --as=$AS --dllname scan.dll --def scan.def --base-file\
- scan.base --output-exp scan.exp
-$LD scan.exp --dll -o scan.dll scan.o init.o fixup.o\
- $LIBPATH/libcygwin.a $LIBPATH/libkernel32.a -e _dll_entry@12
-
-# Build the scanB.a lib to link to:
-$DLLTOOL --as=$AS --dllname scan.dll --def scan.def --output-lib scan.a
 
 $RM *.base *.def *.exp
 (cd abot; sh ./abot.sh)

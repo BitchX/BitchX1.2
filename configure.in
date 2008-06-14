@@ -1021,7 +1021,6 @@ dll/pkga/Makefile
 dll/possum/Makefile
 dll/qbx/Makefile
 dll/qmail/Makefile
-dll/scan/Makefile
 dll/wavplay/Makefile
 dll/xmms/Makefile
 source/Makefile ])

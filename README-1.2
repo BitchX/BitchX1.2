@@ -39,3 +39,16 @@ look by setting these formats:
 Also, the NAMES header and NAMES_FOOTER formats are now called with $3 set
 to the total number of nicks in the channel, and $4 to the mask given to
 /SCAN (if any).
+
+/SCAN now supports a new sort flag "-stat", which sorts the output by
+channel status (chanops, then halfops, then voices, then the riff-raff).
+
+PLUGINS
+-------
+
+The "scan" plugin has been removed - its functionality is now built-in,
+accessed by /scan -stat (see above). If you want this to be the default, 
+just set this alias (the double-slash is REQUIRED):
+
+/ALIAS SCAN { //SCAN -STAT }
+

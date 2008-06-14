@@ -1407,6 +1407,8 @@ BUILT_IN_COMMAND(do_scan)
 				sorted = NICKSORT_NICK;
 			else if (!my_strnicmp(s, "-host", 3))
 				sorted = NICKSORT_HOST;
+			else if (!my_strnicmp(s, "-stat", 3))
+				sorted = NICKSORT_STAT;
 
             continue;
 		}

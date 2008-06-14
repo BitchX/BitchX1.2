@@ -752,34 +752,23 @@ unsigned long at, bt;
 	return strcmp(a1->nick, b1->nick);
 }
 
-int cmp_op (List *a, List *b)
+/* Compare two Nicks by channel status, chanop > halfop > voice */
+int cmp_stat (List *a, List *b)
 {
-NickList *a1 = (NickList *)a, *b1 = (NickList *)b;
-int a_isop, b_isop;
-	a_isop = nick_isop(a1);
-	b_isop = nick_isop(b1);
-	if ((!a_isop && !b_isop))
-		return strcmp(a1->nick, b1->nick);
-	if (!a_isop)
-		return 1;
-	if (!b_isop)
-		return -1;
-	return 0;
-}
+	NickList *a1 = (NickList *)a, *b1 = (NickList *)b;
+	int a_status = 
+		nick_isop(a1) ? 0 : nick_ishalfop(a1) ? 1 : nick_isvoice(a1) ? 2 : 3;
+	int b_status = 
+		nick_isop(b1) ? 0 : nick_ishalfop(b1) ? 1 : nick_isvoice(b1) ? 2 : 3;
+	int cmp;
 
-int cmp_voice (List *a, List *b)
-{
-NickList *a1 = (NickList *)a, *b1 = (NickList *)b;
-int a_isvoice, b_isvoice;
-	a_isvoice = nick_isvoice(a1);
-	b_isvoice = nick_isvoice(b1);
-	if ((!a_isvoice && !b_isvoice) || (a_isvoice && b_isvoice))
-		return strcmp(a1->nick, b1->nick);
-	if (!a_isvoice)
-		return -1;
-	if (!b_isvoice)
-		return 1;
-	return 0;
+	cmp = a_status - b_status;
+
+	/* Equal status */
+	if (cmp == 0)
+		cmp = strcmp(a1->nick, b1->nick);
+
+	return cmp;
 }
 
 /* Determines if the Nick matches the nick!user@host mask given. */
@@ -807,11 +796,8 @@ NickList *BX_sorted_nicklist(ChannelList *chan, int sort)
 			case NICKSORT_HOST:
 				add_to_list_ext((List **)&list, (List *)l, cmp_host);
 				break;
-			case NICKSORT_OP:
-				add_to_list_ext((List **)&list, (List *)l, cmp_op);
-				break;
-			case NICKSORT_VOICE:
-				add_to_list_ext((List **)&list, (List *)l, cmp_voice);
+			case NICKSORT_STAT:
+				add_to_list_ext((List **)&list, (List *)l, cmp_stat);
 				break;
 			case NICKSORT_TIME:
 				add_to_list_ext((List **)&list, (List *)l, cmp_time);
@@ -826,6 +812,7 @@ NickList *BX_sorted_nicklist(ChannelList *chan, int sort)
 					list = l;
 				break;
 			default:
+			case NICKSORT_NICK:
 			case NICKSORT_NORMAL:
 				add_to_list((List **)&list, (List *)l);
 				break;

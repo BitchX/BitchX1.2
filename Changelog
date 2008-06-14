@@ -1,5 +1,12 @@
 [Changes 1.2c01 ]
 
+* Removed "scan" plugin, this functionality is now covered by /SCAN -stat.
+
+* Change NICKSORT_OP to NICKSORT_STAT (sorts nicks by channel status - 
+  chanop first, then halops, voices and others).  Added /SCAN -stat
+  to sort nicks using NICKSORT_OP.  Removed NICKSORT_VOICE - it was broken
+  anyway.
+
 * Add halfop nick prefix to default status line, and change the voice prefix
   so it appears whether or not you're opped. (caf)
 

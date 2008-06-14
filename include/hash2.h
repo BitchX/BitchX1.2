@@ -48,15 +48,15 @@ int nick_match(NickList *nick, char *mask);
 NickList *BX_sorted_nicklist(ChannelList *, int);
 void BX_clear_sorted_nicklist(NickList **);
 
-
+/* Warning: These numeric values can be taken directly from scripts via
+ * the $channel() function - so BEWARE if you change them! */
 #define NICKSORT_NORMAL 0
 #define NICKSORT_NONE 1
 #define NICKSORT_NICK 2
 #define NICKSORT_HOST 3
 #define NICKSORT_TIME 4
 #define NICKSORT_IP 5
-#define NICKSORT_OP 6
-#define NICKSORT_VOICE 7
+#define NICKSORT_STAT 6
 
 Flooding *BX_find_name_in_floodlist(char *, char *, HashEntry *, unsigned int, int);
 Flooding *BX_add_name_to_floodlist(char *, char *, char *, HashEntry *, unsigned int);
