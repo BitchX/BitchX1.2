@@ -1130,10 +1130,20 @@ void numbered_command(char *from, int comm, char **ArgList)
 	case 464:		/* #define ERR_PASSWDMISMATCH   464 */
 	{
 		PasteArgs(ArgList, 0);
+
 		if (!is_server_open(from_server))
 			break; 
+
 		flag = do_hook(current_numeric, "%s %s", from, ArgList[0]);
-		if (oper_command)
+
+		/* If we get this numeric before registering, it means that 
+		 * our server password was wrong - so reprompt and reconnect.
+		 *
+		 * However if we're already registered, the server is trying to
+		 * tell us something else (usually, OPER password wrong) so just
+		 * pass it on to the user.
+		 */
+		if (is_server_connected(from_server))
 		{
 			if (flag)
 				display_msg(from, ArgList);
@@ -1141,7 +1151,7 @@ void numbered_command(char *from, int comm, char **ArgList)
 		}
 		else
 		{
-			char	server_num[8];
+			static char	server_num[8];
 
 			say("Password required for connection to server %s",
 				get_server_name(from_server));

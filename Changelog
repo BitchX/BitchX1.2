@@ -1,5 +1,8 @@
 [Changes 1.2c01 ]
 
+* Fix bug where you got disconnected if the server sent a 464 numeric
+  (bad password) that the client wasn't expecting. (caf)
+
 * Add /HOP and /DEHOP commands for halfop. (caf)
 
 * Removed "scan" plugin, this functionality is now covered by /SCAN -stat.
