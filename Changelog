@@ -1,5 +1,8 @@
 [Changes 1.2c01 ]
 
+* Cleaned up the handling of channel mode changes a little, including fixing
+  buggy handling of certain key and limit mode changes. (caf)
+
 * Fix bug where you got disconnected if the server sent a 464 numeric
   (bad password) that the client wasn't expecting. (caf)
 

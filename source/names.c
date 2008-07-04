@@ -53,7 +53,7 @@ static	void	show_channel (ChannelList *);
 static	void	clear_channel (ChannelList *);
 	char	*BX_recreate_mode (ChannelList *);
 static	void	clear_mode_list (int);
-static	int	decifer_mode (char *, char *, ChannelList **, unsigned long *, char *, char *, char **);
+static	void	apply_channel_modes (char *, char *, ChannelList *);
 	void	BX_clear_bans (ChannelList *);
 
 static	char	mode_str[] = "aciklmnprstzR";
@@ -852,17 +852,17 @@ int in_join = 0;
 }
 
 /*
- * decifer_mode: This will figure out the mode string as returned by mode
- * commands and convert that mode string into a one byte bit map of modes 
+ * apply_channel_modes
+ *
+ * This looks at a set of channel mode changes from a MODE command and
+ * applies them to the Channel structure (old decifer_mode()).
  */
-static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsigned long *mode, char *have_op, char *voice, char **key)
+static void apply_channel_modes(char *from, char *mode_str, 
+	ChannelList *channel)
 {
 
-	char	*limit = 0;
 	register char	*person;
 	int	add = 0;
-	int	limit_set = 0;
-	int	limit_reset = 0;
 	int	splitter = 0;
 	char	*rest;
 	
@@ -872,9 +872,7 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 	int	its_me = 0;
 		
 	if (!(mode_str = next_arg(mode_str, &rest)))
-		return -1;
-
-	
+		return;
 
 	its_me = !my_stricmp(from, get_server_nickname(from_server)) ? 1 : 0;
 	splitter = wild_match("*.*.*", from);
@@ -898,15 +896,27 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 			value = MODE_LIMIT;
 			if (add)
 			{
-				limit_set = 1;
-				if (!(limit = next_arg(rest, &rest)))
-					limit = empty_string;
-				else if (!strncmp(limit, zero, 1))
-					limit_reset = 1, limit_set = 0, add = 0;
+				char *limit  = next_arg(rest, &rest);
+
+				if (limit)
+				{
+					channel->limit = atoi(limit);
+					
+					/* Setting +l 0 is the same as setting -l */
+					if (channel->limit == 0)
+						add = 0;
+				}
+				else
+				{
+					/* +l with no argument - broken server, just ignore
+					 * it. */
+					value = 0;
+				}
 			}
 			else
-				limit_reset = 1;
-			(*channel)->i_mode = -1;
+			{
+				channel->limit = 0;
+			}
 			break;
 		case 'a':
 			value = MODE_ANONYMOUS;
@@ -940,9 +950,9 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 				break;
 			if (!my_stricmp(person, get_server_nickname(from_server)))
 			{
-				(*channel)->hop = add;
+				channel->hop = add;
 			}			
-			if ((ThisNick = find_nicklist_in_channellist(person, *channel, 0)))
+			if ((ThisNick = find_nicklist_in_channellist(person, channel, 0)))
 			{
 /*				ThisNick->halfop=add;*/
 				if (add)
@@ -950,8 +960,8 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 				else
 					ThisNick->flags &= ~NICK_HALFOP;
 			}			
-			ThisNick = find_nicklist_in_channellist(from, *channel, 0);
-			update_stats(add ? MODEHOPLIST: MODEDEHOPLIST, (*channel)->channel, ThisNick, *channel, splitter);
+			ThisNick = find_nicklist_in_channellist(from, channel, 0);
+			update_stats(add ? MODEHOPLIST: MODEDEHOPLIST, channel->channel, ThisNick, channel, splitter);
 			break;
 		case 'o':
 		{
@@ -959,14 +969,14 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 				person = get_server_nickname(from_server);
 			if (!my_stricmp(person, get_server_nickname(from_server)))
 			{
-				*have_op = (char)got_ops(add, *channel);
-				(*channel)->have_op = add;
+				got_ops(add, channel);
+				channel->have_op = add;
 				if (add)
-					do_hook(CHANOP_LIST, "%s", (*channel)->channel);
+					do_hook(CHANOP_LIST, "%s", channel->channel);
 			}
-			ThisNick = find_nicklist_in_channellist(from, *channel, 0);
-			update_stats(add ? MODEOPLIST: MODEDEOPLIST, (*channel)->channel, ThisNick, *channel, splitter);
-			if ((ThisNick = find_nicklist_in_channellist(person, *channel, 0)))
+			ThisNick = find_nicklist_in_channellist(from, channel, 0);
+			update_stats(add ? MODEOPLIST: MODEDEOPLIST, channel->channel, ThisNick, channel, splitter);
+			if ((ThisNick = find_nicklist_in_channellist(person, channel, 0)))
 			{
 				if (add)
 					ThisNick->flags |= NICK_CHANOP;
@@ -981,15 +991,15 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 				        ThisNick->sent_deop--;
 			}			
 
-			if (!its_me && (*channel)->have_op)
+			if (!its_me && channel->have_op)
 			{
 				if (add && splitter)
-					check_hack(person, *channel, ThisNick, from);
+					check_hack(person, channel, ThisNick, from);
 #ifdef WANT_USERLIST
 				else if (!add)
-					check_prot(from, person, *channel, NULL, ThisNick);
+					check_prot(from, person, channel, NULL, ThisNick);
 				else if (ThisNick)
-					check_auto((*channel)->channel,ThisNick,*channel);
+					check_auto(channel->channel,ThisNick,channel);
 #endif
 			}
 			break;
@@ -1001,28 +1011,28 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 				char *pass;
 				pass = next_arg(rest, &rest);
 				if (pass)
-					malloc_strcpy(&(*channel)->chanpass, pass);
+					malloc_strcpy(&channel->chanpass, pass);
 			}
 			else
-				new_free(&(*channel)->chanpass);
+				new_free(&channel->chanpass);
 			break;
 		case 'k':
 			value = MODE_KEY;
 			if (add)
-				malloc_strcpy(key, next_arg(rest, &rest));
+				malloc_strcpy(&channel->key, next_arg(rest, &rest));
 			else
 			{
-				if (rest && *key && (!my_strnicmp(rest, *key, strlen(*key)) || rest[0] == '*'))
+				if (rest)
 					next_arg(rest, &rest);
 
-				new_free(key);
+				new_free(&channel->key);
 			}
-			(*channel)->i_mode = -1;
+			channel->i_mode = -1;
 			break;	
 		case 'v':
 			if ((person = next_arg(rest, &rest)))
 			{
-				if ((ThisNick = find_nicklist_in_channellist(person, *channel, 0)))
+				if ((ThisNick = find_nicklist_in_channellist(person, channel, 0)))
 				{
 					if (add)
 						ThisNick->flags |= NICK_VOICE;
@@ -1037,36 +1047,36 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 						ThisNick->sent_voice = 0;
 				}
 				if (!my_stricmp(person, get_server_nickname(from_server)))
-					(*channel)->voice = add;
+					channel->voice = add;
 			}
 			break;
 		case 'b':
 			if (!(person = next_arg(rest, &rest)))
 				break;
 
-			ThisNick = find_nicklist_in_channellist(from, *channel, 0);
-			update_stats(add?MODEBANLIST:MODEUNBANLIST, (*channel)->channel, ThisNick, *channel, splitter);
+			ThisNick = find_nicklist_in_channellist(from, channel, 0);
+			update_stats(add?MODEBANLIST:MODEUNBANLIST, channel->channel, ThisNick, channel, splitter);
 			if (add)
 			{
-				ThisNick = find_nicklist_in_channellist(person, *channel, 0);
-				if (!(new = (BanList *)find_in_list((List **)&(*channel)->bans, person, 0)) || my_stricmp(person, new->ban))
+				ThisNick = find_nicklist_in_channellist(person, channel, 0);
+				if (!(new = (BanList *)find_in_list((List **)&channel->bans, person, 0)) || my_stricmp(person, new->ban))
 				{
 					new = (BanList *) new_malloc(sizeof(BanList));
 					malloc_strcpy(&new->ban, person);
-					add_to_list((List **)&(*channel)->bans, (List *)new);
+					add_to_list((List **)&channel->bans, (List *)new);
 				} 
 				new->sent_unban = 0;
 				if (!new->setby)
 					malloc_strcpy(&new->setby, from?from:get_server_name(from_server));
 				new->time = now;
 #ifdef WANT_USERLIST
-				if (!its_me && (*channel)->have_op)
-					check_prot(from, person, *channel, new, ThisNick);
+				if (!its_me && channel->have_op)
+					check_prot(from, person, channel, new, ThisNick);
 #endif
 			} 
 			else
 			{
-				if ((new = (BanList *)remove_from_list((List **)&(*channel)->bans, person)))
+				if ((new = (BanList *)remove_from_list((List **)&channel->bans, person)))
 				{
 					new_free(&new->setby);
 					new_free(&new->ban);
@@ -1078,16 +1088,16 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 			if (!(person = next_arg(rest, &rest)))
 				break;
 
-			ThisNick = find_nicklist_in_channellist(from, *channel, 0);
-			update_stats(add?MODEEBANLIST:MODEUNEBANLIST, (*channel)->channel, ThisNick, *channel, splitter);
+			ThisNick = find_nicklist_in_channellist(from, channel, 0);
+			update_stats(add?MODEEBANLIST:MODEUNEBANLIST, channel->channel, ThisNick, channel, splitter);
 			if (add)
 			{
-				ThisNick = find_nicklist_in_channellist(person, *channel, 0);
-				if (!(new = (BanList *)find_in_list((List **)&(*channel)->exemptbans, person, 0)) || my_stricmp(person, new->ban))
+				ThisNick = find_nicklist_in_channellist(person, channel, 0);
+				if (!(new = (BanList *)find_in_list((List **)&channel->exemptbans, person, 0)) || my_stricmp(person, new->ban))
 				{
 					new = (BanList *) new_malloc(sizeof(BanList));
 					malloc_strcpy(&new->ban, person);
-					add_to_list((List **)&(*channel)->exemptbans, (List *)new);
+					add_to_list((List **)&channel->exemptbans, (List *)new);
 				} 
 				new->sent_unban = 0;
 				if (!new->setby)
@@ -1096,7 +1106,7 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 			} 
 			else
 			{
-				if ((new = (BanList *)remove_from_list((List **)&(*channel)->exemptbans, person)))
+				if ((new = (BanList *)remove_from_list((List **)&channel->exemptbans, person)))
 				{
 					new_free(&new->setby);
 					new_free(&new->ban);
@@ -1106,21 +1116,14 @@ static	int decifer_mode(char *from, char *mode_str, ChannelList **channel, unsig
 			break;
 		}
 		if (add)
-			*mode |= value;
+			channel->mode |= value;
 		else
-			*mode &= ~value;
+			channel->mode &= ~value;
 	}
 #ifdef WANT_USERLIST
-	check_shit(*channel);
+	check_shit(channel);
 #endif
-	flush_mode_all(*channel);
-
-	if (limit_set)
-		return (atoi(limit));
-	else if (limit_reset)
-		return(0);
-	else
-		return(-1);
+	flush_mode_all(channel);
 }
 
 /*
@@ -1173,12 +1176,14 @@ char	*BX_get_channel_bans(char *channel, int server, int type_mode)
  */
 void update_channel_mode(char *from, char *channel, int server, char *mode, ChannelList *tmp)
 {
-	int	limit;
-	
-	if (tmp || (channel && (tmp = lookup_channel(channel, server, CHAN_NOUNLINK))))
+	if (!tmp && channel)
 	{
-		if ((limit = decifer_mode(from, mode, &(tmp), &(tmp->mode), &(tmp->have_op), &(tmp->voice), &(tmp->key))) != -1)
-			tmp->limit = limit;
+		tmp = lookup_channel(channel, server, CHAN_NOUNLINK);
+	}
+
+	if (tmp)
+	{
+		apply_channel_modes(from, mode, tmp);
 	}
 }
 
