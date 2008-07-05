@@ -225,7 +225,7 @@ void print_funny_names(char *line)
 	{	
 		*buffer = 0;
 
-		while (t = next_arg(line, &line)) {
+		while ((t = next_arg(line, &line))) {
             char *nick;
             char *nick_format;
             char nick_buffer[BIG_BUFFER_SIZE];
