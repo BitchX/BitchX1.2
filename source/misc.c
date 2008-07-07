@@ -702,7 +702,7 @@ put_it("%s", convert_output_format("  %CIdle user check is %K[%R$0-%K]", "%s", n
 
 }
 
-void update_stats(int what, char *channel, NickList *nick, ChannelList *chan, int splitter)
+void update_stats(int what, NickList *nick, ChannelList *chan, int splitter)
 {
 time_t this_time = now;
 int t = 0;
@@ -1073,7 +1073,7 @@ unsigned char *newline;
 }
 
 
-int check_split(char *nick, char *reason, char *chan)
+int check_split(char *nick, char *reason)
 {
 char *bogus = get_string_var(FAKE_SPLIT_PATS_VAR);
 char *Reason;

@@ -51,7 +51,7 @@ void		list_channels (void);
 void		reconnect_all_channels (int);
 void		switch_channels (char, char *);
 char		*what_channel (char *, int);
-char		*walk_channels (char *, int, int);
+ChannelList	*walk_channels (char *, int, int);
 char		*real_channel (void);
 void		BX_rename_nick (char *, char *, int);
 void		update_channel_mode (char *, char *, int, char *, ChannelList *);

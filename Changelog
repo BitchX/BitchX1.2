@@ -1,5 +1,8 @@
 [Changes 1.2c01 ]
 
+* Some cleanups in quit message handling, fixed a bug where a quit from an
+  unexpected source could crash the client. (caf)
+
 * Cleaned up the handling of channel mode changes a little, including fixing
   buggy handling of certain key and limit mode changes. (caf)
 

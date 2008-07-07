@@ -4008,7 +4008,7 @@ struct target_type target[4] =
 				if ((chan = lookup_channel(channel, from_server, 0)))
 				{
 					nick = find_nicklist_in_channellist(get_server_nickname(from_server), chan, 0);
-					update_stats((i == 1) ?PUBLIC_LIST : NOTICE_LIST, channel, nick, chan, 0);
+					update_stats((i == 1) ?PUBLIC_LIST : NOTICE_LIST, nick, chan, 0);
 				}
 			}
 		}

@@ -398,7 +398,7 @@ ChannelList *BX_add_to_channel(char *channel, char *nick, int server, int oper, 
 				if (server1)
 					malloc_strcpy(&new->server, server1);			
 				add_nicklist_to_channellist(new, chan);				
-				update_stats(JOINLIST, chan->channel, new, chan, serv_split);
+				update_stats(JOINLIST, new, chan, serv_split);
 			}
 			malloc_strcpy(&new->host, userhost);
 			if (ischop > 0)
@@ -961,7 +961,7 @@ static void apply_channel_modes(char *from, char *mode_str,
 					ThisNick->flags &= ~NICK_HALFOP;
 			}			
 			ThisNick = find_nicklist_in_channellist(from, channel, 0);
-			update_stats(add ? MODEHOPLIST: MODEDEHOPLIST, channel->channel, ThisNick, channel, splitter);
+			update_stats(add ? MODEHOPLIST: MODEDEHOPLIST, ThisNick, channel, splitter);
 			break;
 		case 'o':
 		{
@@ -975,7 +975,7 @@ static void apply_channel_modes(char *from, char *mode_str,
 					do_hook(CHANOP_LIST, "%s", channel->channel);
 			}
 			ThisNick = find_nicklist_in_channellist(from, channel, 0);
-			update_stats(add ? MODEOPLIST: MODEDEOPLIST, channel->channel, ThisNick, channel, splitter);
+			update_stats(add ? MODEOPLIST: MODEDEOPLIST, ThisNick, channel, splitter);
 			if ((ThisNick = find_nicklist_in_channellist(person, channel, 0)))
 			{
 				if (add)
@@ -1055,7 +1055,7 @@ static void apply_channel_modes(char *from, char *mode_str,
 				break;
 
 			ThisNick = find_nicklist_in_channellist(from, channel, 0);
-			update_stats(add?MODEBANLIST:MODEUNBANLIST, channel->channel, ThisNick, channel, splitter);
+			update_stats(add?MODEBANLIST:MODEUNBANLIST, ThisNick, channel, splitter);
 			if (add)
 			{
 				ThisNick = find_nicklist_in_channellist(person, channel, 0);
@@ -1089,7 +1089,7 @@ static void apply_channel_modes(char *from, char *mode_str,
 				break;
 
 			ThisNick = find_nicklist_in_channellist(from, channel, 0);
-			update_stats(add?MODEEBANLIST:MODEUNEBANLIST, channel->channel, ThisNick, channel, splitter);
+			update_stats(add?MODEEBANLIST:MODEUNEBANLIST, ThisNick, channel, splitter);
 			if (add)
 			{
 				ThisNick = find_nicklist_in_channellist(person, channel, 0);
@@ -1687,20 +1687,19 @@ char *what_channel(char *nick, int server)
 	return NULL;
 }
 
-char	*walk_channels(char *nick, int init, int server)
+ChannelList *walk_channels(char *nick, int init, int server)
 {
 	static	ChannelList *tmp = NULL;
 
-	
 	if (init)
 		tmp = get_server_channels(server);
 	else if (tmp)
 		tmp = tmp->next;
+	
 	for (;tmp ; tmp = tmp->next)
 	{
-		if ((tmp->server == from_server) && 
-		    (find_nicklist_in_channellist(nick, tmp, 0)))
-			return (tmp->channel);
+		if (find_nicklist_in_channellist(nick, tmp, 0))
+			return tmp;
 	}
 	return NULL;
 }

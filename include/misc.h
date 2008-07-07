@@ -67,8 +67,8 @@ extern LastMsg last_sent_ctcp[2];
 
 
 
-	void	update_stats	(int, char *, NickList *, ChannelList *, int);
-	int	check_split	(char *, char *, char *);
+	void	update_stats	(int, NickList *, ChannelList *, int);
+	int	check_split	(char *, char *);
 	void	BX_userage		(char *, char *);
 	void	stats_k_grep_end (void);
 	char	*stripansicodes (const unsigned char *);

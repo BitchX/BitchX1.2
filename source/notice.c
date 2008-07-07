@@ -713,7 +713,7 @@ void parse_notice(char *from, char **Args)
 		type = NOTICE_LIST;
 	}
 
-	update_stats(NOTICELIST, to, nick, tmpc, 0);		
+	update_stats(NOTICELIST, nick, tmpc, 0);		
 
 	set_display_target(target, LOG_NOTICE);
 	doing_notice = 1;

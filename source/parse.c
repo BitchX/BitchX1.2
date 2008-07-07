@@ -354,7 +354,7 @@ ChannelList *tmp;
 		{ fake(); return; }
 	if ((tmp = lookup_channel(ArgList[0], from_server, CHAN_NOUNLINK)))
 	{
-		update_stats(TOPICLIST, tmp->channel, find_nicklist_in_channellist(from, tmp, 0), tmp, 0);
+		update_stats(TOPICLIST, find_nicklist_in_channellist(from, tmp, 0), tmp, 0);
 		if (tmp->topic_lock)
 		{
 			if (my_stricmp(from, get_server_nickname(from_server)))
@@ -561,7 +561,7 @@ static	void p_privmsg(char *from, char **Args)
 		}
 	}
 #endif
-	update_stats(PUBLICLIST, to, tmpnick, channel, 0);
+	update_stats(PUBLICLIST, tmpnick, channel, 0);
 
 	level = set_lastlog_msg_level(log_type);
 	com_do_log = 0;
@@ -708,67 +708,77 @@ static	void p_privmsg(char *from, char **Args)
 static	void p_quit(char *from, char **ArgList)
 {
 	int	one_prints = 0;
-	char	*chan = NULL;
-	char	*Reason;
-	char	*tmp = NULL;
-	ChannelList *tmpc;
+	char *reason;
+	char *chanlist = NULL;
+	ChannelList *chan;
 	int netsplit = 0;
 	int ignore;
 				
-
-	
 	PasteArgs(ArgList, 0);
 	if (ArgList[0])
 	{
-		Reason = ArgList[0];
-		netsplit = check_split(from, Reason, chan);
+		reason = ArgList[0];
+		netsplit = check_split(from, reason);
 	}
 	else
-		Reason = "?";
-		
-	for (chan = walk_channels(from, 1, from_server); chan; chan = walk_channels(from, 0, -1))
+		reason = "?";
+
+	for (chan = walk_channels(from, 1, from_server); chan; 
+		chan = walk_channels(from, 0, -1))
 	{
-		ignore = check_ignore(from, FromUserHost, chan, (netsplit?IGNORE_SPLITS:IGNORE_QUITS), NULL);
-		if ((tmpc = lookup_channel(chan, from_server, CHAN_NOUNLINK)))
-		{
-			update_stats(CHANNELSIGNOFFLIST, chan, find_nicklist_in_channellist(from, tmpc, 0), tmpc, netsplit);
+		update_stats(CHANNELSIGNOFFLIST, 
+			find_nicklist_in_channellist(from, chan, 0), chan, netsplit);
+
 #ifdef WANT_TCL
-			if (netsplit)
-				check_tcl_split(from, FromUserHost, from, chan);
-			else
-				check_tcl_sign(from, FromUserHost, from, chan, Reason);
-#endif
-			if (!netsplit)
-			{
-				do_logchannel(LOG_PART, tmpc, "%s %s %s %s", from, FromUserHost, chan, Reason?Reason:empty_string);
-				check_channel_limit(tmpc);
-			}
-		}
-		if (tmp)
-			m_3cat(&tmp, ",", chan);
+		if (netsplit)
+			check_tcl_split(from, FromUserHost, from, chan->channel);
 		else
-			malloc_strcpy(&tmp, chan);
+			check_tcl_sign(from, FromUserHost, from, chan->channel, reason);
+#endif
+
+		if (!netsplit)
+		{
+			do_logchannel(LOG_PART, chan, "%s %s %s %s", from, FromUserHost, 
+				chan->channel, reason);
+			check_channel_limit(chan);
+		}
+
+		if (chanlist)
+			m_3cat(&chanlist, ",", chan->channel);
+		else
+			malloc_strcpy(&chanlist, chan->channel);
+
+		ignore = check_ignore(from, FromUserHost, chan->channel, 
+			(netsplit?IGNORE_SPLITS:IGNORE_QUITS), NULL);
 		if (ignore != IGNORED)
 		{
-			set_display_target(chan, LOG_CRAP);
-			if (do_hook(CHANNEL_SIGNOFF_LIST, "%s %s %s", chan, from, Reason))
+			set_display_target(chan->channel, LOG_CRAP);
+			if (do_hook(CHANNEL_SIGNOFF_LIST, "%s %s %s", chan->channel, 
+				from, reason))
 				one_prints = 1;
 		}
 	}
+
 	if (one_prints)
 	{
-		chan = what_channel(from, from_server);
-		ignore = check_ignore(from, FromUserHost, chan, (netsplit?IGNORE_SPLITS:IGNORE_QUITS), NULL);
-		set_display_target(chan, LOG_CRAP);
-		if ((ignore != IGNORED) && do_hook(SIGNOFF_LIST, "%s %s", from, Reason) && !netsplit)
-			put_it("%s",convert_output_format(fget_string_var(FORMAT_CHANNEL_SIGNOFF_FSET), "%s %s %s %s %s",update_clock(GET_TIME), from, FromUserHost, tmp, Reason));
+		char *channel = what_channel(from, from_server);
+		ignore = check_ignore(from, FromUserHost, channel, 
+			(netsplit?IGNORE_SPLITS:IGNORE_QUITS), NULL);
+		set_display_target(channel, LOG_CRAP);
+		if ((ignore != IGNORED) && do_hook(SIGNOFF_LIST, "%s %s", from, reason)
+			&& !netsplit)
+			put_it("%s", convert_output_format(
+				fget_string_var(FORMAT_CHANNEL_SIGNOFF_FSET), 
+				"%s %s %s %s %s", update_clock(GET_TIME), from, FromUserHost, 
+				chanlist, reason));
 	}
-	logmsg(LOG_PART, from, 0, "%s %s", tmp, Reason?Reason:empty_string);
+
+	logmsg(LOG_PART, from, 0, "%s %s", chanlist ? chanlist : "<NONE>", reason);
 	check_orig_nick(from);
 	notify_mark(from, FromUserHost, 0, 0);
-	remove_from_channel(NULL, from, from_server, netsplit, Reason);
+	remove_from_channel(NULL, from, from_server, netsplit, reason);
 	update_all_status(current_window, NULL, 0);
-	new_free(&tmp);
+	new_free(&chanlist);
 	reset_display_target();
 #ifdef GUI
 	gui_update_nicklist(NULL);
@@ -1583,7 +1593,7 @@ static	void p_kick(char *from, char **ArgList)
 	set_display_target(channel, LOG_CRAP);
 	if (channel && who && chan)
 	{
-		update_stats(KICKLIST, channel, tmpnick, chan, 0);
+		update_stats(KICKLIST, tmpnick, chan, 0);
 #ifdef WANT_TCL
 		check_tcl_kick(from, FromUserHost, from, channel, who, comment);
 #endif
@@ -1692,7 +1702,7 @@ static	void p_part(char *from, char **ArgList)
 	set_display_target(channel, LOG_CRAP);
 
 	if ((tmpc = lookup_channel(channel, from_server, CHAN_NOUNLINK)))
-		update_stats(LEAVELIST, channel, find_nicklist_in_channellist(from, tmpc, 0), tmpc, 0);
+		update_stats(LEAVELIST, find_nicklist_in_channellist(from, tmpc, 0), tmpc, 0);
 
 	if ((check_ignore(from, FromUserHost, channel, IGNORE_PARTS, NULL) != IGNORED) &&
 	    do_hook(LEAVE_LIST, "%s %s %s %s", from, channel, FromUserHost, ArgList[1]?ArgList[1]:empty_string))
