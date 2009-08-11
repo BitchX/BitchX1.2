@@ -607,8 +607,8 @@
 #define DEFAULT_JOIN_NEW_WINDOW_TYPE "create hide swap last double on split on"
 #define DEFAULT_QUERY_NEW_WINDOW_TYPE "create hide swap last double on split on"
 #else
-#define DEFAULT_JOIN_NEW_WINDOW_TYPE "new hide_others swap last double on split on"
-#define DEFAULT_QUERY_NEW_WINDOW_TYPE "new hide_others swap last double on split on"
+#define DEFAULT_JOIN_NEW_WINDOW_TYPE "new hide_others double on"
+#define DEFAULT_QUERY_NEW_WINDOW_TYPE "new hide_others double on"
 #endif
 
 #define DEFAULT_MDI OFF

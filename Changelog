@@ -1,5 +1,8 @@
 [Changes 1.2c01 ]
 
+* Changed the defaults for JOIN_NEW_WINDOW_TYPE and QUERY_NEW_WINDOW_TYPE
+  so that they work out of the box. (caf)
+
 * Some cleanups in quit message handling, fixed a bug where a quit from an
   unexpected source could crash the client. (caf)
 
