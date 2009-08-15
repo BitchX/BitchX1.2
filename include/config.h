@@ -35,100 +35,71 @@
  * on any servers you add into this list. also the very last server should not 
  * have a continuation char.
  *
- * List last updated: 03/24/01.  -dialtone.
+ * List last updated: 15-Aug-2009 (caf).
  */
 #define DEFAULT_SERVER  "[efnet] "\
-				"irc.foxlink.net "\
-				"irc.weblook2k.com "\
-				"irc.wh.verio.net "\
+				"irc.eversible.com "\
 				"irc.choopa.net "\
 				"irc.easynews.com "\
-				"irc.limelight.us "\
-				"irc.desync.com "\
-				"irc.nac.net "\
-				"irc.mindspring.com "\
-				"irc.secsup.org "\
-				"irc.aol.com "\
 				"irc.blessed.net "\
-				"irc.homelien.no "\
-				"irc.isprime.com "\
 				"irc.servercentral.net "\
 				"irc.umich.edu "\
-			"[ircnet] "\
-				"irc.webbernet.net "\
-				"irc.stealth.net "\
-				"irc.funet.fi "\
+				"irc.he.net "\
+				"irc.mzima.net "\
+				"irc.paraphysics.net "\
+				"irc.shoutcast.com "\
+				"irc.vel.net "\
+				"irc.wh.verio.net "\
+			"[xsirc] "\
+				"irc.BitchX.org "\
+				"ircd.ircii.org "\
+				"irc.gibbed.net "\
+			"[ircnet US] "\
+				"ircnet.eversible.com "\
+				"ircnet.choopa.net "\
+				"us.ircnet.org "\
+			"[ircnet EU] "\
+				"irc.dotsrc.org "\
+				"uk.ircnet.org "\
+				"irc.xs4all.nl "\
+				"irc.belwue.de "\
+				"ircnet.nerim.fr "\
+				"irc.eutelia.it "\
+				"krakow.irc.pl "\
+				"ircnet.netvision.net.il "\
 			"[dalnet] "\
 				"irc.dal.net "\
 			"[Undernet US] "\
-				"irc.cic.net "\
-				"irc.erols.com "\
-				"irc3.concentric.net "\
-				"irc.wwa.com "\
-				"irc.oc.com "\
-				"irc.wfire.net "\
-				"irc.connectnet.com "\
-			"[Undernet Canada] "\
-				"step.polymtl.ca "\
-				"oceanus.magic.ca "\
-				"irc.direct.ca "\
+				"Dallas.TX.US.Undernet.org "\
+				"mesa.az.us.undernet.org "\
+				"newyork.ny.us.undernet.org "\
+				"SantaAna.CA.US.Undernet.org "\
+				"Tampa.FL.US.Undernet.org "\
+			"[Undernet CA] "\
+				"Vancouver.BC.CA.Undernet.org "\
 			"[Undernet EU] "\
-				"irc.tip.nl "\
-				"th2-eth0.aladdin.net "\
-				"ns.ensicaen.ismra.fr "\
-				"irc.sol.no "\
-				"alaska.mdv.gwdg.de "\
-				"irc.iconz.co.nz "\
-			"[nullnet] "\
-				"irc.assault.org "\
-				"irc.BitchX.com "\
-				"irc.BitchX.org "\
-				"irc.kythri.net "\
-				"irc.shell-o-matic.net "\
+				"Diemen.NL.EU.Undernet.Org "\
+				"Helsinki.FI.EU.Undernet.org "\
+				"trondheim.no.eu.undernet.org "\
+				"graz.at.Eu.UnderNet.org "\
+				"Elsene.Be.Eu.undernet.org "\
+				"bucharest.ro.eu.undernet.org "\
+				"Ede.NL.EU.UnderNet.Org "\
+				"oslo.no.eu.undernet.org "\
+				"Zagreb.Hr.EU.UnderNet.org "\
+				"Lelystad.NL.EU.UnderNet.Org "\
+			"[Anynet] "\
+				"irc.bluecherry.net "\
+				"irc.irule.net "\
 			"[AfterNet] "\
 				"irc.afternet.org "\
-				"digitald.uk.afternet.org "\
-				"boston.afternet.org "\
-				"EU.afternet.org "\
-				"US.afternet.org "\
-				"infinet.ca.afternet.org "\
-				"sanity.afternet.org "\
-				"Frodo.AfterNet.org "\
-				"Before-R.Afternet.Org "\
-				"Agora.us.AfterNet.org "\
-			"[opennet] "\
-				"irc.securiflex.net "\
-				"irc.sanitarium.org "\
-				"ircd.fordys.co.uk "\
-				"irc.unixbum.com "\
-				"irc.aginet.com "\
-				"irc.vulnerable.org "\
-				"irc.got-rice.org "\
-				"irc.BLUEZnet.com "\
-				"irc.linux-2000.org "\
-				"irc-w.clubi.net "\
-				"irc.420.net "\
-			"[eggdrop] "\
-				"irc.eggdrop.net "\
-				"raistlin.toledolink.com "\
-			"[relicnet] "\
-				"convicts.us.relic.net "\
-			"[openprojects] "\
-				"irc.freshmeat.net "\
-				"irc.linux.com "\
-				"irc.openprojects.net "\
-			"[other] "\
-				"irc.myweb.net "\
-				"irc-rr.vitamina.ca "\
-				"irc.phrozen.org "\
-				"irc.openface.ca "\
-				"irc.skie.net "\
-				"irc.anynet.org "\
-				"irc.slashnet.org "\
-				"radon.slashnet.org "\
-				"irc.dude-suit.net "\
-				"irc.krushnet.org "\
-				"irc.solarconnections.com"
+			"[oftc] "\
+				"irc.oftc.net "\
+			"[SlashNET] "\
+				"pinky.slashnet.org "\
+				"blago.slashnet.org "\
+				"moo.slashnet.org "\
+				"coruscant.slashnet.org "
 #endif
 
 /*
