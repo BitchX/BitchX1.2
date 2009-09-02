@@ -654,19 +654,22 @@ SocketList *s;
 
 int cmd_cmsg(int idx, char *par)
 {
-char *nick, *user;
-SocketList *s, *s1 = NULL;
+	char *nick, *user;
+	SocketList *s, *s1 = NULL;
 
-	nick = LOCAL_COPY(next_arg(par, &par));
-	if ((user = strchr(nick, '@')))
-		*user++ = '\0';
+	nick = next_arg(par, &par);
+
 	if (nick)
 	{
 		int i;
+
+		if ((user = strchr(nick, '@')))
+			*user++ = '\0';
+
 		for (i = 0; i < get_max_fd()+1; i++)
 		{
 			if (!check_dcc_socket(i)) continue;
-			if (idx == i) { s1 = get_socketinfo(i); break; }
+			if (idx == i) { s1 = get_socket(i); break; }
 		}
 		if (!s1) return TCL_OK;
 		s = find_dcc(nick, "chat", NULL, DCC_CHAT, 0, 1, -1);
