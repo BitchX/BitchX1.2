@@ -430,7 +430,7 @@ int     lastlog_level;
 	{
 		va_list args;
 		va_start (args, format);
-		vsnprintf(napbuf, 2*NAP_BUFFER_SIZE, format, args);
+		vsnprintf(napbuf, sizeof(napbuf), format, args);
 		va_end(args);
 		if (get_dllint_var("napster_show_numeric"))
 			strmopencat(napbuf, sizeof(napbuf)-1, " ", "[", ltoa(nap_numeric), "]", NULL);
