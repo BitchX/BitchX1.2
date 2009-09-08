@@ -102,7 +102,7 @@ static QueueSend *serverqueue = NULL;
  */
 void	BX_close_server (int cs_index, char *message)
 {
-	char	buffer[BIG_BUFFER_SIZE/4 + 1];
+	char buffer[IRCD_BUFFER_SIZE + 1];
 
 	if (cs_index < 0 || cs_index > number_of_servers)
 		return;
@@ -151,7 +151,8 @@ void	BX_close_server (int cs_index, char *message)
 			if (x_debug & DEBUG_OUTBOUND)
 				yell("Closing server %d because [%s]",
 					   cs_index, message ? message : empty_string);
-			snprintf(buffer, BIG_BUFFER_SIZE, "QUIT :%s\n", message);
+			snprintf(buffer, MAX_PROTOCOL_SIZE + 1, "QUIT :%s", message);
+			strlcat(buffer, "\r\n", IRCD_BUFFER_SIZE + 1);
 #ifdef HAVE_SSL
 			if (get_server_ssl(cs_index))
 				SSL_write(server_list[cs_index].ssl_fd, buffer, strlen(buffer));
