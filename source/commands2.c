@@ -2575,7 +2575,7 @@ unsigned short port = 0;
 	{
 		char buf[BIG_BUFFER_SIZE+1];
 		sprintf(buf, socket_path, port);
-		if ((u = open(buf, O_CREAT|O_WRONLY)) != -1)
+		if ((u = open(buf, O_CREAT|O_WRONLY, 0600)) != -1)
 		{
 			chmod(buf, SOCKMODE);
 			chown(buf, getuid(), getgid());
