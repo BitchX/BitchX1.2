@@ -2273,7 +2273,7 @@ char *nick;
 			tmp = m_strdup(new->filename);
 		if (!(fullname = expand_twiddle(tmp)))
 			malloc_strcpy(&fullname, tmp);
-		if ((new->file = open(fullname, O_WRONLY | O_CREAT | O_BINARY)) != -1)
+		if ((new->file = open(fullname, O_WRONLY | O_CREAT | O_BINARY, 0644)) != -1)
 		{
 			if ((new = dcc_create(nick, new->filename, passwd, 0, port? atol(port) : 0, DCC_REFILEREAD, (tdcc?DCC_TDCC:0) | DCC_TWOCLIENTS|DCC_OFFER, start_dcc_get)))
 				new->blocksize = blocksize;
