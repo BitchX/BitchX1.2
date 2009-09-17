@@ -393,7 +393,6 @@ static		char *	function_parse_and_return (char *, char *);
 static		char *	function_dccitem	(char *, char *);
 static		char *	function_winitem	(char *, char *);
 static  	char *  function_servgroup      (char *, char *);
-static  	char *  function_serverport     (char *, char *);
 static  	char *  function_ajoinitem      (char *, char *);
 static		char *	function_long_to_comma	(char *, char *);
 static		char *	function_nohighlight	(char *, char *);
@@ -713,7 +712,7 @@ static BuiltInFunctions built_in_functions[] =
 	{ "SERVERPASS",		function_serverpass	},
 	{ "SERVPORTS",		function_servports	},
 	{ "SETINFO",		function_set_info	},
-	{ "SERVERPORT",		function_serverport	},
+	{ "SERVERPORT",		function_servports	},
 	{ "SETITEM",            function_setitem 	},
 	{ "SHIFT",		function_shift 		},
 	{ "SORT",		function_sort		},
@@ -3945,23 +3944,6 @@ BUILT_IN_FUNCTION(function_servername, input)
 	RETURN_STR(which);
 }
 
-BUILT_IN_FUNCTION(function_serverport, input)
-{
-	int	servnum = from_server;
-
-	if (*input)
-		GET_INT_ARG(servnum, input);
-
-	if (servnum == -1)
-		servnum = from_server;
-	if (servnum < 0 || servnum > server_list_size())
-		RETURN_EMPTY;
-
-	return m_sprintf("%d %d", get_server_port(servnum),
-				  get_server_local_port(servnum));
-}
-
-
 BUILT_IN_FUNCTION(function_lastserver, input)
 {
 	RETURN_INT(last_server);
@@ -6313,20 +6295,24 @@ BUILT_IN_FUNCTION(function_rest, input)
  */
 BUILT_IN_FUNCTION(function_servref, input)
 {
-char *servname = NULL;
-int i;
-char *s;
-	if (!input || !*input)
+	char *servname = NULL;
+	int i;
+
+	if (input)
+		servname = new_next_arg(input, &input);
+
+	if (empty(servname))
 		RETURN_INT(from_server);
-	GET_STR_ARG(servname, input);
 
 	for (i = 0; i < server_list_size(); i++)
 	{
-		if ((s = get_server_itsname(i)) && !my_stricmp(s, servname))
+		if (!my_stricmp(get_server_itsname(i), servname) ||
+			!my_stricmp(get_server_name(i), servname))
+		{
 			RETURN_INT(i);
-		else if (!my_stricmp(s, get_server_name(i)))
-			RETURN_INT(i);
+		}
 	}
+
 	RETURN_INT(-1);
 }
 

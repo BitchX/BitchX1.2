@@ -1,5 +1,8 @@
 [Changes 1.2c01 ]
 
+* Fixed $servernum() scripting function, it was returning the wrong server
+  reference in most cases. (caf)
+
 * [1.1s01] Fixed .cmsg crash reported by zimzum. (caf)
 
 * Changed the defaults for JOIN_NEW_WINDOW_TYPE and QUERY_NEW_WINDOW_TYPE
