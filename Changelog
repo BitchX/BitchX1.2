@@ -1,5 +1,10 @@
 [Changes 1.2c01 ]
 
+* Fixed two cases where the client was incorrectly deciding that a numeric
+  originated from a remote server rather than the local server - this caused
+  BitchX to falsely report channel desynch and incorrectly hide some
+  numerics. (caf)
+
 * Fixed $servernum() scripting function, it was returning the wrong server
   reference in most cases. (caf)
 

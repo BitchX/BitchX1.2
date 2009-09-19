@@ -222,18 +222,18 @@ char *rest = PasteArgs(ArgList, 0);
 
 static int check_server_sync(char *from, char **ArgList)
 {
-static char *desync = NULL;
+	static char *desync = NULL;
 
-	
-	if (!desync || (desync && !wild_match(desync, from)))
+	/* If we get a "permission denied" type numeric from a _remote_ server,
+	 * then it means the network is desyched.
+	 */
+	if (my_stricmp(from, get_server_itsname(from_server)) && 
+		(!desync || my_stricmp(desync, from)))
 	{
-		if (!wild_match(from, get_server_name(from_server)))
-		{
-			malloc_strcpy(&desync, from);
-			if (do_hook(DESYNC_MESSAGE_LIST, "%s %s", from, ArgList[0]))
-				put_it("%s", convert_output_format(fget_string_var(FORMAT_DESYNC_FSET), "%s %s %s", update_clock(GET_TIME), ArgList[0], from));
-			return 1;
-		}	 
+		malloc_strcpy(&desync, from);
+		if (do_hook(DESYNC_MESSAGE_LIST, "%s %s", from, ArgList[0]))
+			put_it("%s", convert_output_format(fget_string_var(FORMAT_DESYNC_FSET), "%s %s %s", update_clock(GET_TIME), ArgList[0], from));
+		return 1;
 	} 
 	return 0;
 }
@@ -307,14 +307,11 @@ static	void channel_topic(char *from, char **ArgList, int what)
 static	void not_valid_channel(char *from, char **ArgList)
 {
 	char	*channel;
-	char	*s;
-
 	
 	if (!(channel = ArgList[0]) || !ArgList[1])
 		return;
 	PasteArgs(ArgList, 1);
-	s = get_server_name(from_server);
-	if (!my_strnicmp(s, from, strlen(s)))
+	if (!my_stricmp(from, get_server_itsname(from_server)))
 	{
 		if (strcmp(channel, "*"))
 			remove_channel(channel, from_server);
