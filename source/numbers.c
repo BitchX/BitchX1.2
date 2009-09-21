@@ -892,16 +892,13 @@ void numbered_command(char *from, int comm, char **ArgList)
 		break;
 	}
 
-// Seems ircd-ratbox-1.1 has different formatting for this, and parsing it was only displaying
-// correctly for non ratbox-1.1 servers.  Taking this out and just showing what the server
-// gives us for a 338 string until people can standardize.
-//	case 338:		/* #define RPL_WHOISACTUALLY    338 */
-//	{
-//		PasteArgs(ArgList, 1);
-//		if (do_hook(current_numeric, "%s %s", from, ArgList[0]))
-//			put_it("%s", convert_output_format(fget_string_var(FORMAT_WHOIS_ACTUALLY_FSET),"%s", ArgList[0]));
-//		break;
-//	}
+	case 338:		/* #define RPL_WHOISACTUALLY    338 */
+	{
+		PasteArgs(ArgList, 1);
+		if (do_hook(current_numeric, "%s %s %s", from, ArgList[0], ArgList[1]))
+			put_it("%s", convert_output_format(fget_string_var(FORMAT_WHOIS_ACTUALLY_FSET),"%s %s", ArgList[0], ArgList[1]));
+		break;
+	}
 	case 340:		/* #define RPL_INVITING_OTHER	340 */
 	{
 		if (ArgList[2])

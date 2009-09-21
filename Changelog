@@ -1,4 +1,7 @@
-[Changes 1.2c01 ]
+[Changes 1.2c01]
+
+* Reinstate RPL_WHOISACTUALLY numeric - things seem to have stabilised in
+  the ircd world on this. (caf)
 
 * Fixed two cases where the client was incorrectly deciding that a numeric
   originated from a remote server rather than the local server - this caused
