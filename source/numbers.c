@@ -381,6 +381,21 @@ static	void cannot_join_channel(char *from, char **ArgList)
 	reset_display_target();
 }
 
+/* divide_rounded()
+ *
+ * Implements an integer division of a / b, where 1.5 rounds up to 2 and 
+ * 1.49 rounds down to 1. Returns zero if divisor is zero.
+ */
+static int divide_rounded(int a, int b)
+{
+	if (a < 0)
+	{
+		a = -a;
+		b = -b;
+	}
+
+	return b ? (a + abs(b / 2)) / b : 0;
+}
 
 int handle_server_stats(char *from, char **ArgList, int comm)
 {
@@ -394,7 +409,6 @@ static	int 	norm = 0,
 		local_users = 0,
 		total_users = 0,
 		services_flag = 0;
-	char	tmp[80];
 	int	ret = 1;
 	char	*line;
 
@@ -434,26 +448,33 @@ static	int 	norm = 0,
 			total_users = norm + invisible;
 			if (total_users)
 			{
-				sprintf(tmp, "%3.0f", (float)(((float)local_users / (float)total_users) * 100));
-				put_it("%s", convert_output_format("$G %K[%nlocal users on irc%K(%n\002$0\002%K)]%n $1%%", "%d %s", local_users, tmp));
-				sprintf(tmp, "%3.0f", (float)(((float)norm / (float)total_users) * 100));
-				put_it("%s", convert_output_format("$G %K[%nglobal users on irc%K(%n\002$0\002%K)]%n $1%%", "%d %s", norm, tmp));
+				put_it("%s", convert_output_format("$G %K[%nlocal users on irc%K(%n\002$0\002%K)]%n $1%%", 
+					"%d %d", local_users, divide_rounded(local_users * 100, total_users)));
+				put_it("%s", convert_output_format("$G %K[%nglobal users on irc%K(%n\002$0\002%K)]%n $1%%",
+					"%d %d", norm, divide_rounded(norm * 100, total_users)));
 				if (services_flag)
 				{
-					sprintf(tmp, "%3.0f", (float)(((float)invisible / (float)total_users) * 100));
-					put_it("%s", convert_output_format("$G %K[%ninvisible users on irc%K(%n\002$0\002%K)]%n $1%%", "%d %s", invisible, tmp));
+					put_it("%s", convert_output_format("$G %K[%ninvisible users on irc%K(%n\002$0\002%K)]%n $1%%",
+						 "%d %d", invisible, divide_rounded(invisible * 100, total_users)));
 				}
 				else
-					put_it("%s", convert_output_format("$G %K[%nservices on irc%K(%n\002$0\002%K)]%n", "%d", services));
-				sprintf(tmp, "%3.0f", (float)(((float)ircops / (float)total_users) * 100));
-				put_it("%s", convert_output_format("$G %K[%nircops on irc%K(%n\002$0\002%K)]%n $1%%", "%d %s", ircops, tmp));
+					put_it("%s", convert_output_format("$G %K[%nservices on irc%K(%n\002$0\002%K)]%n", 
+						"%d", services));
+				put_it("%s", convert_output_format("$G %K[%nircops on irc%K(%n\002$0\002%K)]%n $1%%", 
+					"%d %d", ircops, divide_rounded(ircops * 100, total_users)));
 			}
-			put_it("%s", convert_output_format("$G %K[%ntotal users on irc%K(%n\002$0\002%K)]%n", "%d", total_users));
-			put_it("%s", convert_output_format("$G %K[%nunknown connections%K(%n\002$0\002%K)]%n", "%d", unknown));
+			put_it("%s", convert_output_format("$G %K[%ntotal users on irc%K(%n\002$0\002%K)]%n", 
+				"%d", total_users));
+			put_it("%s", convert_output_format("$G %K[%nunknown connections%K(%n\002$0\002%K)]%n", 
+				"%d", unknown));
 
-			put_it("%s", convert_output_format("$G %K[%ntotal servers on irc%K(%n\002$0\002%K)]%n %K(%navg. $1 users per server%K)", "%d %d", servers, (servers) ? (int)(total_users/servers) : 0));
+			put_it("%s", convert_output_format(
+				"$G %K[%ntotal servers on irc%K(%n\002$0\002%K)]%n %K(%navg. $1 users per server%K)", 
+				"%d %d", servers, divide_rounded(total_users, servers)));
 
-			put_it("%s", convert_output_format("$G %K[%ntotal channels created%K(%n\002$0\002%K)]%n %K(%navg. $1 users per channel%K)", "%d %d", chans, (chans) ? (int)(total_users/chans) : 0));
+			put_it("%s", convert_output_format(
+				"$G %K[%ntotal channels created%K(%n\002$0\002%K)]%n %K(%navg. $1 users per channel%K)",
+				"%d %d", chans, divide_rounded(total_users, chans)));
 			break;
 		case 250:
 		{
