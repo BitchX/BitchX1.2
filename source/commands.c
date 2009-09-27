@@ -2948,21 +2948,31 @@ BUILT_IN_COMMAND(e_hostname)
 {
 	int norev = 0;
     char *newhost = NULL;
+	char *arg = next_arg(args, &args);
 	
-	if (args && !strcasecmp(args, "-norev"))
+	if (arg && !strcasecmp(arg, "-norev"))
 	{
 		norev = 1;
-		next_arg(args, &args);
+		arg = next_arg(args, &args);
 	}
 	
-	if (args && *args && *args != '#')
+	if (arg && *arg && *arg != '#' && !is_number(arg))
 	{
-		malloc_strcpy(&newhost, args);
+		malloc_strcpy(&newhost, arg);
 	} 
 	else
 	{
         Virtuals *virtuals, *new;
         int i;
+		int switch_to = 0;
+
+		if (arg)
+		{
+			if (*arg == '#')
+				arg++;
+
+			switch_to = my_atol(arg);
+		}
 
         get_local_addrs(&virtuals, norev);
 
@@ -2974,14 +2984,11 @@ BUILT_IN_COMMAND(e_hostname)
 				put_it("%s", convert_output_format("$G Current hostnames available", NULL, NULL));
 
 			put_it("%s", convert_output_format("%K[%W$[3]0%K] %B$1", "%d %s", i, new->hostname));
-			if (args && *args)
-			{
-				if (*args == '#') args++;
-				if (args && *args && (i == my_atol(args)))
-					malloc_strcpy(&newhost, new->hostname);
-			}
+			if (i == switch_to)
+				newhost = new->hostname;
+			else
+				new_free(&new->hostname);
 			new_free(&new->address);
-            new_free(&new->hostname);
 			new_free(&new);			
 		}
     }
