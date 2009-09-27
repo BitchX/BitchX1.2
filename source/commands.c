@@ -2751,6 +2751,7 @@ void add_address(Virtuals **vhost_list, int norev, struct sockaddr *sa)
     if (!strcmp(result, "127.0.0.1") || 
         !strcmp(result, "0.0.0.0") ||
         !strcmp(result, "::1") || 
+        !strcmp(result, "0::1") || 
         !strcmp(result, "::") ||
         !strcmp(result, "0::0") ||
         !strncasecmp(result, "fe8", 3) || 
