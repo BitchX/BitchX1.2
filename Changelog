@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Improve argument-handling in /hostname command - now supports doing
+  /hostname 2 to switch to second vhost.
+
 * Change the display of server stats so that the averages (eg. users per
   channel) are correctly rounded. (caf)
 
