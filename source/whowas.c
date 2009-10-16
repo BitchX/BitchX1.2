@@ -57,11 +57,23 @@ static int whowas_userlist_count = 0;
 static int whowas_reg_count = 0;
 static int whowas_chan_count = 0;
 
-extern	WhowasList *check_whowas_buffer(char *nick, char *userhost, char *channel, int unlink)
+extern	WhowasList *check_whowas_buffer(char *nick, char *userhost, char *channel)
 {
-	WhowasList *tmp = NULL;
-	if (!(tmp = find_userhost_channel(userhost, channel, unlink, &whowas_userlist_list)))
-		tmp = find_userhost_channel(userhost, channel, unlink, &whowas_reg_list);
+	WhowasList *tmp;
+
+	tmp = find_userhost_channel(userhost, channel, 1, &whowas_userlist_list);
+	if (tmp)
+	{
+		whowas_userlist_count--;
+		return tmp;
+	}
+
+	tmp = find_userhost_channel(userhost, channel, 1, &whowas_reg_list);
+	if (tmp)
+	{
+		whowas_reg_count--;
+	}
+	
 	return tmp;
 }
 
@@ -111,11 +123,11 @@ void add_to_whowas_buffer(NickList *nicklist, char *channel, char *server1, char
 
 	if (nicklist->userlist) 
 	{
-		if (whowas_userlist_count >= whowas_userlist_max) 
+		if (whowas_userlist_count >= WHOWAS_USERLIST_MAX) 
 		{
 			whowas_userlist_count -=
 			   remove_oldest_whowas(&whowas_userlist_list, 0,
-			   (whowas_userlist_max + 1) - whowas_userlist_count); 
+			   (whowas_userlist_count + 1) - WHOWAS_USERLIST_MAX); 
 		}
 		new = (WhowasList *) new_malloc(sizeof(WhowasList));
 		new->has_ops = nick_isop(nicklist);
@@ -130,11 +142,11 @@ void add_to_whowas_buffer(NickList *nicklist, char *channel, char *server1, char
 	}
 	else 
 	{
-		if (whowas_reg_count >= whowas_reg_max) 
+		if (whowas_reg_count >= WHOWAS_REG_MAX) 
 		{
 			whowas_reg_count -=
 			   remove_oldest_whowas(&whowas_reg_list, 0,
-			   (whowas_reg_max + 1) - whowas_reg_count); 
+			   (whowas_reg_count + 1) - WHOWAS_REG_MAX); 
 		}
 		new = (WhowasList *) new_malloc(sizeof(WhowasList));
 		new->has_ops = nick_isop(nicklist);
@@ -299,11 +311,11 @@ void add_to_whowas_chan_buffer(ChannelList *channel)
 	WhowasChanList *new;
 	WhowasChanList **slot;
 
-	if (whowas_chan_count >= whowas_chan_max) 
+	if (whowas_chan_count >= WHOWAS_CHAN_MAX) 
 	{
 		whowas_chan_count -=
 		   remove_oldest_chan_whowas(&whowas_chan_list, 0,
-		   (whowas_chan_max + 1) - whowas_chan_count); 
+		   (whowas_chan_count + 1) - WHOWAS_CHAN_MAX); 
 	}
 	new = (WhowasChanList *) new_malloc(sizeof(WhowasChanList));
 

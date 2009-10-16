@@ -2,9 +2,9 @@
 #ifndef _WhoWas_h
 #define _WhoWas_h
 
-#define whowas_userlist_max 300
-#define whowas_reg_max 500
-#define whowas_chan_max 20
+#define WHOWAS_USERLIST_MAX 300
+#define WHOWAS_REG_MAX 500
+#define WHOWAS_CHAN_MAX 20
 #include "hash.h"
 
 typedef struct _whowaschan_str {
@@ -38,7 +38,7 @@ typedef struct _whowas_wrap_str {
 	HashEntry NickListTable[WHOWASLIST_HASHSIZE];
 } WhowasWrapList;
 
-WhowasList *check_whowas_buffer (char *, char *, char *, int);
+WhowasList *check_whowas_buffer (char *, char *, char *);
 WhowasList *check_whowas_nick_buffer (char *, char *, int);
 WhowasList *check_whosplitin_buffer (char *, char *, char *, int);
 

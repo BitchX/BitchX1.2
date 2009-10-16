@@ -357,7 +357,7 @@ ChannelList *BX_add_to_channel(char *channel, char *nick, int server, int oper, 
 			if (!(new = find_nicklist_in_channellist(nick, chan,  0)))
 			{
 			
-				if (!(whowas = check_whowas_buffer(nick, userhost, channel, 1)))
+				if (!(whowas = check_whowas_buffer(nick, userhost, channel)))
 				{
 					new = (NickList *) new_malloc(sizeof(NickList));
 
