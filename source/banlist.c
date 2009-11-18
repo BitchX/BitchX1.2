@@ -69,18 +69,19 @@ int ofs = from_server;
 	channel = next_arg(args, &args);
 	if ((serv_num = next_arg(args, &args)))
 		from_server = atoi(serv_num);
-        if (channel && *channel && mode_str && user)
-        {
-                sprintf(buffer, "MODE %s %s%s %s\r\n", channel, plus_mode, mode_str, user);
-                push_len = strlen(buffer);
-                add_mode_buffer(buffer, push_len);
-                mode_str_len = 0;
-                new_free(&mode_str);
-                new_free(&user);
-                memset(plus_mode, 0, sizeof(plus_mode));
-                push_len = 0;
-        }
-        flush_mode(NULL);
+	if (channel && *channel && mode_str && user)
+	{
+		sprintf(buffer, "MODE %s %s%s %s\r\n", channel, plus_mode, mode_str, user);
+		push_len = strlen(buffer);
+		add_mode_buffer(buffer, push_len);
+		mode_str_len = 0;
+		new_free(&mode_str);
+		new_free(&user);
+		memset(plus_mode, 0, sizeof(plus_mode));
+		push_len = 0;
+	}
+	flush_mode(NULL);
+	new_free(&arg);
 	from_server = ofs;
 	return 0;
 }
