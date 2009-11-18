@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Apply a fix contributed by cpet for the configure script on
+  FreeBSD 9. (caf)
+
 * Fix a refcounting issue in the whowas list handling, which should make
   the listing of users that left in a netsplit right again. (caf)
 
