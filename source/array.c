@@ -982,7 +982,7 @@ char *ret = NULL;
 
 		}
 	}
-	RETURN_STR(ret ? ret : empty_string);
+	RETURN_STR(ret);
 }
 
 BUILT_IN_FUNCTION(function_igetrmatches)
