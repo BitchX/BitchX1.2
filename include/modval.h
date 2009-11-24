@@ -127,8 +127,8 @@ extern Function_ptr *global;
 #define m_2dup (*(char * (*)(const char *, const char *))global[M_2DUP])
 #define m_e3cat (*(char * (*)(char **, const char *, const char *))global[M_E3CAT])
 
-#define my_stricmp (*(int (*)(const unsigned char *, const unsigned char *))global[MY_STRICMP])
-#define my_strnicmp (*(int (*)(const unsigned char *, const unsigned char *, size_t))global[MY_STRNICMP])
+#define my_stricmp (*(int (*)(const char *, const char *))global[MY_STRICMP])
+#define my_strnicmp (*(int (*)(const char *, const char *, size_t))global[MY_STRNICMP])
 
 #define my_strnstr (*(int (*)(const unsigned char *, const unsigned char *, size_t))global[MY_STRNSTR])
 #define chop (*(char * (*)(char *, int))global[CHOP])
@@ -212,7 +212,7 @@ extern Function_ptr *global;
 #define move_word_rel (*(char *(*)(const char *, char **, int ))global[MOVE_WORD_REL])
 #define extract (*(char *(*)(char *, int , int ))global[EXTRACT])
 #define extract2 (*(char *(*)(const char *, int , int ))global[EXTRACT2])
-#define wild_match (*(int (*)(const unsigned char *, const unsigned char *))global[WILD_MATCH])
+#define wild_match (*(int (*)(const char *, const char *))global[WILD_MATCH])
 
 /* network.c */
 #define connect_by_number (*(int (*)(char *, unsigned short *, int , int , int ))global[CONNECT_BY_NUMBER])

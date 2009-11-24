@@ -729,23 +729,23 @@ unsigned char stricmp_table [] =
 };
 
 /* my_stricmp: case insensitive version of strcmp */
-int	BX_my_stricmp (register const unsigned char *str1, register const unsigned char *str2)
+int	BX_my_stricmp (const char *str1, const char *str2)
 {
-	while (*str1 && *str2 && (stricmp_table[(unsigned short)*str1] == stricmp_table[(unsigned short)*str2]))
+	while (*str1 && *str2 && (stricmp_table[(unsigned char)*str1] == stricmp_table[(unsigned char)*str2]))
 		str1++, str2++;
-	return (stricmp_table[(unsigned short)*str1] -
-		stricmp_table[(unsigned short)*str2]);
+	return (stricmp_table[(unsigned char)*str1] -
+		stricmp_table[(unsigned char)*str2]);
 
 }
 
 /* my_strnicmp: case insensitive version of strncmp */
-int	BX_my_strnicmp (register const unsigned char *str1, register const unsigned char *str2, register size_t n)
+int	BX_my_strnicmp (const char *str1, const char *str2, size_t n)
 {
-	while (n && *str1 && *str2 && (stricmp_table[(unsigned short)*str1] == stricmp_table[(unsigned short)*str2]))
+	while (n && *str1 && *str2 && (stricmp_table[(unsigned char)*str1] == stricmp_table[(unsigned char)*str2]))
 		str1++, str2++, n--;
 	return (n ?
-		(stricmp_table[(unsigned short)*str1] -
-		stricmp_table[(unsigned short)*str2]) : 0);
+		(stricmp_table[(unsigned char)*str1] -
+		stricmp_table[(unsigned char)*str2]) : 0);
 }
 
 /* my_strnstr: case insensitive version of strstr */

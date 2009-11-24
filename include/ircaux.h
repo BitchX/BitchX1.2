@@ -62,8 +62,8 @@ char *	BX_my_ctime 		(time_t);
 #define my_stricmp(x, y) strcasecmp(x, y) /* unable to use these for reasons of case sensitivity and finish */
 #define my_strnicmp(x, y, n) strncasecmp(x, y, n)
 #else
-int	BX_my_stricmp 	(const unsigned char *, const unsigned char *);
-int	BX_my_strnicmp	(const unsigned char *, const unsigned char *, size_t);
+int	BX_my_stricmp 	(const char *, const char *);
+int	BX_my_strnicmp	(const char *, const char *, size_t);
 #endif
 
 int	BX_my_strnstr 		(const unsigned char *, const unsigned char *, size_t);
@@ -143,7 +143,7 @@ char	*BX_move_to_abs_word	(const register char *, char **, int);
 char	*BX_move_word_rel		(const register char *, char **, int);
 char	*BX_extract		(char *, int, int);
 char	*BX_extract2		(const char *, int, int);
-int	BX_wild_match		(register const unsigned char *, register const unsigned char *);
+int	BX_wild_match		(const char *, const char *);
 
 /* Used for connect_by_number */
 #define SERVICE_SERVER 0

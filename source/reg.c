@@ -79,7 +79,7 @@ int old_match(const char *pattern, const char *string)
 }
 #endif
 
-int new_match (const unsigned char *pattern, const unsigned char *string)
+int new_match (const char *pattern, const char *string)
 {
 	int		count = 1;
 	int 		asterisk = 0;
@@ -129,7 +129,7 @@ int new_match (const unsigned char *pattern, const unsigned char *string)
 			if (*pattern == '\\')
 			{
 				pattern++;
-				if (tolower(*string) != tolower(*pattern))
+				if (tolower((unsigned char)*string) != tolower((unsigned char)*pattern))
 					continue;
 			}
 
@@ -145,7 +145,7 @@ int new_match (const unsigned char *pattern, const unsigned char *string)
 			 * if we dont match
 			 */
 			else if (*pattern == '?' || 
-				(tolower(*string) == tolower(*pattern)))
+				(tolower((unsigned char)*string) == tolower((unsigned char)*pattern)))
 			{
 				asterisk = 0;
 				last_asterisk_point = string;
@@ -188,7 +188,7 @@ int new_match (const unsigned char *pattern, const unsigned char *string)
 			if (*pattern == '\\')
 			{
 				pattern++;
-				if (tolower(*string) != tolower(*pattern))
+				if (tolower((unsigned char)*string) != tolower((unsigned char)*pattern))
 					continue;
 			}
 
@@ -208,7 +208,7 @@ int new_match (const unsigned char *pattern, const unsigned char *string)
 			 * If this is not the char we're looking for, then
 			 * keep looking.
 			 */
-			else if (tolower(*string) != tolower(*pattern))
+			else if (tolower((unsigned char)*string) != tolower((unsigned char)*pattern))
 				string++;
 
 			/*
@@ -308,7 +308,7 @@ int new_match (const unsigned char *pattern, const unsigned char *string)
 			 * Check to see if the dequoted character and
 			 * the next string character are the same.
 			 */
-			if (tolower(*pattern) != tolower(*string))
+			if (tolower((unsigned char)*pattern) != tolower((unsigned char)*string))
 				return 0;
 
 			count++, string++, pattern++;
@@ -330,7 +330,7 @@ int new_match (const unsigned char *pattern, const unsigned char *string)
 			 * and string.  Are they the same?  If they are, walk 
 			 * past them and go to the next character.
 			 */
-			if (tolower(*pattern) == tolower(*string))
+			if (tolower((unsigned char)*pattern) == tolower((unsigned char)*string))
 			{
 				count++, pattern++, string++;
 			}
@@ -375,7 +375,7 @@ int new_match (const unsigned char *pattern, const unsigned char *string)
  *
  * \\[ and \\] handling done by Jeremy Nelson
  */
-int BX_wild_match (register const unsigned char *p, register const unsigned char *str)
+int BX_wild_match (const char *p, const char *str)
 {
 	/*
 	 * Is there a \[ in the pattern to be expanded? 
