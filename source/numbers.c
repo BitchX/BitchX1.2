@@ -915,9 +915,18 @@ void numbered_command(char *from, int comm, char **ArgList)
 
 	case 338:		/* #define RPL_WHOISACTUALLY    338 */
 	{
-		PasteArgs(ArgList, 1);
-		if (do_hook(current_numeric, "%s %s %s", from, ArgList[0], ArgList[1]))
-			put_it("%s", convert_output_format(fget_string_var(FORMAT_WHOIS_ACTUALLY_FSET),"%s %s", ArgList[0], ArgList[1]));
+		if (ArgList[2])
+		{
+			/* hybrid / ratbox: <nick> <ip> :actually using host */
+			if (do_hook(current_numeric, "%s %s %s %s", from, ArgList[0], ArgList[2], ArgList[1]))
+				put_it("%s", convert_output_format(fget_string_var(FORMAT_WHOIS_ACTUALLY_FSET),"%s %s %s", ArgList[0], ArgList[2], ArgList[1]));
+		}
+		else
+		{
+			/* Bahamut: <nick> :is actually user@host [ip] */
+			if (do_hook(current_numeric, "%s %s %s", from, ArgList[0], ArgList[1]))
+				put_it("%s", convert_output_format(fget_string_var(FORMAT_WHOIS_ACTUALLY_FSET),"%s %s", ArgList[0], ArgList[1]));
+		}
 		break;
 	}
 	case 340:		/* #define RPL_INVITING_OTHER	340 */
