@@ -113,7 +113,9 @@
  * I took this from the autoconf documentation
  */
 #if defined(__GNUC__) && !defined(HAVE_ALLOCA_H)
-# define alloca __builtin_alloca
+# ifndef alloca
+#  define alloca __builtin_alloca
+# endif
 #else
 # if HAVE_ALLOCA_H
 #  include <alloca.h>
