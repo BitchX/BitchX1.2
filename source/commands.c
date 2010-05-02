@@ -5190,8 +5190,6 @@ BUILT_IN_COMMAND(cd)
 		*expand;
 	char buffer[BIG_BUFFER_SIZE + 1];
 
-	
-	*buffer = 0;
 	if ((arg = new_next_arg(args, &args)) != NULL && *arg)
 	{
 		if ((expand = expand_twiddle(arg)) != NULL)
@@ -5206,12 +5204,14 @@ BUILT_IN_COMMAND(cd)
 		}
 		else
 		{
-			bitchsay("CD No such dir %s", arg);
+			bitchsay("CD: %s No such directory", arg);
 			return;
 		}
 	}
-	getcwd(buffer, BIG_BUFFER_SIZE);
-	bitchsay("Current directory: %s", buffer);
+	if (getcwd(buffer, BIG_BUFFER_SIZE))
+		bitchsay("Current directory: %s", buffer);
+	else
+		bitchsay("CD: %s", strerror(errno));
 }
 
 BUILT_IN_COMMAND(exec_cmd)

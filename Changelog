@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Handle error return from getcwd() in /cd (caf).
+
 * Fix alloca warnings on freebsd. (caf)
 
 * Fix memory leak in banlist.c. (caf)
