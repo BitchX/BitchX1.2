@@ -119,7 +119,6 @@ extern	int	doing_notice;
 static	void	oper_password_received (char *, char *);
 
 int	no_hook_notify = 0;
-char	*last_sent_msg_body = NULL;
 int	load_depth = -1;
 
 extern char	cx_function[];
@@ -138,13 +137,6 @@ extern char	cx_function[];
 
 /* The maximum number of recursive LOAD levels allowed */
 #define MAX_LOAD_DEPTH 10
-
-/* recv_nick: the nickname of the last person to send you a privmsg */
-	char	*recv_nick = NULL;
-
-/* sent_nick: the nickname of the last person to whom you sent a privmsg */
-	char	*sent_nick = NULL;
-	char	*sent_body = NULL;
 
 	int	interactive = 0;
 	
@@ -1085,18 +1077,18 @@ BUILT_IN_COMMAND(blesscmd)
 
 BUILT_IN_COMMAND(do_oops)
 {
-	char 	*newmsg;
+	const char      *to = next_arg(args, &args);
+	const char      *sent_nick = get_server_sent_nick(from_server);
+	const char      *sent_body = get_server_sent_body(from_server);
 
-	
-	if (args && *args && last_sent_msg_body)
+	if (sent_nick && sent_body && to && *to)
 	{
-		newmsg = next_arg(args, &args);
 		send_to_server("PRIVMSG %s :Oops, that /msg wasn't for you", sent_nick);
-		send_to_server("PRIVMSG %s :%s", newmsg, last_sent_msg_body);
-		if (window_display && do_hook(SEND_MSG_LIST, "%s %s", newmsg, last_sent_msg_body))
-			put_it("%s", convert_output_format(fget_string_var(FORMAT_SEND_MSG_FSET),"%s %s %s %s", update_clock(GET_TIME), newmsg, get_server_nickname(from_server), last_sent_msg_body));
+		send_to_server("PRIVMSG %s :%s", to, sent_body);
+		if (window_display && do_hook(SEND_MSG_LIST, "%s %s", to, sent_body))
+			put_it("%s", convert_output_format(fget_string_var(FORMAT_SEND_MSG_FSET), "%s %s %s %s", update_clock(GET_TIME),
+				to, get_server_nickname(from_server), sent_body));
 	}
-	return;
 }
 
 /*
@@ -1640,7 +1632,7 @@ BUILT_IN_COMMAND(my_whois)
 	{
 		char *nick = NULL;
 		if (!strcmp(command, "WILM"))
-			nick = recv_nick;
+			nick = get_server_recv_nick(from_server);
 		else if (!strcmp(command, "WILN"))
 			nick = last_notice[0].to;
 		else if (!strcmp(command, "WILC"))
@@ -3312,7 +3304,7 @@ BUILT_IN_COMMAND(e_privmsg)
 	{
 		if (!strcmp(nick, "."))
 		{
-			if (!(nick = sent_nick))
+			if (!(nick = get_server_sent_nick(from_server)))
 			{
 				bitchsay("You have not sent a message to anyone yet");
 				return;
@@ -3320,7 +3312,7 @@ BUILT_IN_COMMAND(e_privmsg)
 		}
 		else if (!strcmp(nick, ","))
 		{
-			if (!(nick = recv_nick))
+			if (!(nick = get_server_recv_nick(from_server)))
 			{
 				bitchsay("You have not received a message from anyone yet");
 				return;
@@ -4004,8 +3996,6 @@ struct target_type target[4] =
 			logmsg(LOG_SEND_MSG, target[i].nick_list, 0, "%s", copy);
 		/* save this for /oops */
 	
-		malloc_strcpy(&last_sent_msg_body, copy);
-
 		if (i == 1 || i == 3)
 		{
 			char *channel;
@@ -4040,7 +4030,8 @@ struct target_type target[4] =
 
 		if ((i == 0))
 		{
-			malloc_strcpy(&sent_nick, target[0].nick_list);
+			set_server_sent_nick(from_server, target[0].nick_list);
+			set_server_sent_body(from_server, copy);
 			add_last_type(&last_sent_msg[0], MAX_LAST_MSG, NULL, NULL, target[i].nick_list, copy);
 		}
 		else if ((i == 2) || (i == 3))

@@ -3744,12 +3744,12 @@ Window *window_query (Window *window, char **args, char *usage)
 			host = *args;
 		if (!strcmp(nick, "."))
 		{
-			if (!(nick = sent_nick))
+			if (!(nick = get_server_sent_nick(window->server)))
 				say("You have not messaged anyone yet");
 		}
 		else if (!strcmp(nick, ","))
 		{
-			if (!(nick = recv_nick))
+			if (!(nick = get_server_recv_nick(window->server)))
 				say("You have not recieved a message yet");
 		}
 		else if (!strcmp(nick, "*") && 

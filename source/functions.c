@@ -1084,9 +1084,9 @@ static	char	*alias_dollar 		(void) { return m_strdup("$"); }
 static	char	*alias_detected 	(void) { return m_strdup(last_notify_nick); }
 static	char	*alias_nick 		(void) { return m_strdup((current_window->server != -1? get_server_nickname(current_window->server) : empty_string)); }
 	char	*alias_away		(void) { return m_strdup(get_server_away(from_server)); }
-static	char	*alias_sent_nick 	(void) { return m_strdup((sent_nick) ? sent_nick : empty_string); }
-static	char	*alias_recv_nick 	(void) { return m_strdup((recv_nick) ? recv_nick : empty_string); }
-static	char	*alias_msg_body 	(void) { return m_strdup((sent_body) ? sent_body : empty_string); }
+static	char	*alias_sent_nick 	(void) { return m_strdup(get_server_sent_nick(from_server)); }
+static	char	*alias_recv_nick 	(void) { return m_strdup(get_server_recv_nick(from_server)); }
+static	char	*alias_msg_body 	(void) { return m_strdup(get_server_sent_body(from_server)); }
 static	char	*alias_joined_nick 	(void) { return m_strdup((joined_nick) ? joined_nick : empty_string); }
 static	char	*alias_public_nick 	(void) { return m_strdup((public_nick) ? public_nick : empty_string); }
 static  char    *alias_show_realname 	(void) { return m_strdup(realname); }

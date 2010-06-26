@@ -165,6 +165,12 @@ typedef	struct
 	int ssl_error;
 	SSL* ssl_fd;
 #endif
+
+/* recv_nick: the nickname of the last person to send you a privmsg */
+	char *recv_nick;
+/* sent_nick: the nickname of the last person to whom you sent a privmsg */
+	char *sent_nick;
+	char *sent_body;
 }	Server;
 
 typedef struct ser_group_list
@@ -250,6 +256,13 @@ extern	SGroup	*server_group_list;
 	char *  BX_get_server_away                 (int);
 	time_t	get_server_awaytime		(int);
 	void	set_server_awaytime		(int, time_t);
+
+	void set_server_recv_nick(int server, const char *nick);
+	char *get_server_recv_nick(int server);
+	void set_server_sent_nick(int server, const char *nick);
+	char *get_server_sent_nick(int server);
+	void set_server_sent_body(int server, const char *msg_body);
+	char *get_server_sent_body(int server);
 
 	void    server_redirect                 (int, char *);
 	int     BX_check_server_redirect           (char *);

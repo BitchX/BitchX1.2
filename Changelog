@@ -1,6 +1,11 @@
 [Changes 1.2c01]
 
-* Handle error return from getcwd() in /cd (caf).
+* Backport changes from epic5 to make recv_nick, sent_nick and sent_body 
+  per-server, and apply new version of do_oops from flewid. This means
+  that /oops, "/query .", "/query ,", "/msg ." and "/msg ," are per-server,
+  along with the $. $, and $B aliases. (caf)
+
+* Handle error return from getcwd() in /cd. (caf)
 
 * Fix alloca warnings on freebsd. (caf)
 

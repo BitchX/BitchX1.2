@@ -627,7 +627,7 @@ static	void p_privmsg(char *from, char **Args)
 		{
 			if (!no_flood)
 				break;
-			malloc_strcpy(&recv_nick, from);
+			set_server_recv_nick(from_server, from);
 #ifdef WANT_CDCC
 			if ((msgcdcc(from, to, ptr)) == NULL)
 				break;
@@ -1179,7 +1179,6 @@ static	void p_invite(char *from, char **ArgList)
 		}
 		if (!(chan = lookup_channel(invite_channel, from_server, 0)))
 			check_auto_join(from_server, from, invite_channel, ArgList[2]);
-		malloc_strcpy(&recv_nick, from);
 		add_last_type(&last_invite_channel[0], 1, from, FromUserHost, ArgList[1], ArgList[2]?ArgList[2]:empty_string);
 		reset_display_target();
 	}

@@ -143,6 +143,10 @@ void	BX_close_server (int cs_index, char *message)
 
 	server_list[cs_index].awaytime = 0;
 	new_free(&server_list[cs_index].away);
+	new_free(&server_list[cs_index].recv_nick);
+	new_free(&server_list[cs_index].sent_nick);
+	new_free(&server_list[cs_index].sent_body);
+
 	if (server_list[cs_index].write > -1)
 	{
 		if (message && *message && !server_list[cs_index].closing)
@@ -830,6 +834,9 @@ void 	remove_from_server_list (int i)
 	new_free(&server_list[i].s_nickname);
 	new_free(&server_list[i].d_nickname);
 	new_free(&server_list[i].umodes);
+	new_free(&server_list[i].recv_nick);
+	new_free(&server_list[i].sent_nick);
+	new_free(&server_list[i].sent_body);
 #ifdef HAVE_SSL
 	SSL_CTX_free(server_list[i].ctx);
 #endif
@@ -3069,6 +3076,57 @@ unsigned short port = 113;
 		add_socketread(sock, port, 0, NULL, identd_handler, NULL);
 	identd = sock;
 #endif
+}
+
+void set_server_recv_nick(int server, const char *nick)
+{
+	if (server <= -1 || server >= number_of_servers)
+		return;
+	if (nick)
+		malloc_strcpy(&server_list[server].recv_nick, nick);
+	else
+		new_free(&server_list[server].recv_nick);
+}
+
+char *get_server_recv_nick(int server)
+{
+	if (server <= -1 || server >= number_of_servers)
+		return NULL;
+	return server_list[server].recv_nick;
+}
+
+void set_server_sent_nick(int server, const char *nick)
+{
+	if (server <= -1 || server >= number_of_servers)
+		return;
+	if (nick)
+		malloc_strcpy(&server_list[server].sent_nick, nick);
+	else
+		new_free(&server_list[server].sent_nick);
+}
+
+char *get_server_sent_nick(int server)
+{
+	if (server <= -1 || server >= number_of_servers)
+		return NULL;
+	return server_list[server].sent_nick;
+}
+
+void set_server_sent_body(int server, const char *msg_body)
+{
+	if (server <= -1 || server >= number_of_servers)
+		return;
+	if (msg_body)
+		malloc_strcpy(&server_list[server].sent_body, msg_body);
+	else
+		new_free(&server_list[server].sent_body);
+}
+
+char *get_server_sent_body(int server)
+{
+	if (server <= -1 || server >= number_of_servers)
+		return NULL;
+	return server_list[server].sent_body;
 }
 
 Sping *get_server_sping(int server, char *sname)

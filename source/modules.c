@@ -77,7 +77,6 @@ Packages *install_pack = NULL;
 extern int BX_read_sockets();
 extern int identd;
 extern int doing_notice;
-extern char *sent_nick, *last_sent_msg_body;
 
 extern int (*dcc_open_func) (int, int, unsigned long, int);
 extern int (*dcc_output_func) (int, int, char *, int);
@@ -661,8 +660,8 @@ static int already_done = 0;
 	global_table[OUTPUT_SCREEN]		= (Function_ptr) &output_screen;
 	global_table[SCREEN_LIST]		= (Function_ptr) &screen_list;
 	global_table[DOING_NOTICE]      = (Function_ptr) &doing_notice;
-	global_table[SENT_NICK]         = (Function_ptr) &sent_nick;
-	global_table[LAST_SENT_MSG_BODY]    = (Function_ptr) &last_sent_msg_body;
+	global_table[SENT_NICK]         = 0;	/* No longer used */
+	global_table[LAST_SENT_MSG_BODY]    = 0;	/* No longer used */
                                 
 	global_table[IRCLOG_FP]			= (Function_ptr) &irclog_fp;
 #ifdef WANT_DLL

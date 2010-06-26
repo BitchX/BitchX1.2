@@ -678,8 +678,6 @@ extern Function_ptr *global;
 #define autoreply_array (*((NickTab *)global[AUTOREPLY_ARRAY]))
 #define identd (*((int *)global[IDENTD_SOCKET]))
 #define doing_notice ((int) *((int *)global[DOING_NOTICE]))
-#define last_sent_msg_body (*((char **)global[LAST_SENT_MSG_BODY]))
-#define sent_nick (*((char **)global[SENT_NICK]))
 
 #define default_output_function (*(void (**)(char *))global[DEFAULT_OUTPUT_FUNCTION])
 
