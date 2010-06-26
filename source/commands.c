@@ -2716,7 +2716,7 @@ BUILT_IN_COMMAND(version1)
 void add_address(Virtuals **vhost_list, int norev, struct sockaddr *sa)
 {
     struct sockaddr_in * const sin = (struct sockaddr_in *)sa;
-    char *result = NULL;
+    const char *result = NULL;
     Virtuals *vhost; 
 #ifdef IPV6
     struct sockaddr_in6 * const sin6 = (struct sockaddr_in6 *)sa;
