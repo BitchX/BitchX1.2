@@ -63,6 +63,7 @@ extern LastMsg last_topic[2];
 extern LastMsg last_wall[MAX_LAST_MSG+1];
 extern LastMsg last_invite_channel[2];
 extern LastMsg last_ctcp[2];
+extern LastMsg last_ctcp_reply[2];
 extern LastMsg last_sent_ctcp[2];
 
 

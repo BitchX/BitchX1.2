@@ -1246,9 +1246,9 @@ extern 	char *do_ctcp (char *from, char *to, char *str)
 				continue;
 #endif
 
-			if (do_hook(CTCP_LIST, "%s %s %s %s", from, to, ctcp_command, ctcp_argument))
+			if (do_hook(CTCP_LIST, "%s %s %s %s", from, to, ctcp_command, ctcp_argument) && allow_ctcp_reply)
 			{
-				if (allow_ctcp_reply && get_int_var(CTCP_VERBOSE_VAR))
+				if (get_int_var(CTCP_VERBOSE_VAR))
 				{
 #ifdef WANT_USERLIST
 					if (lookup_userlevelc("*", FromUserHost, "*", NULL))
@@ -1259,6 +1259,8 @@ extern 	char *do_ctcp (char *from, char *to, char *str)
 						put_it("%s", convert_output_format(fget_string_var(get_int_var(CLOAK_VAR)? FORMAT_CTCP_CLOAK_UNKNOWN_FSET:FORMAT_CTCP_UNKNOWN_FSET),
 							"%s %s %s %s %s %s",update_clock(GET_TIME), from, FromUserHost, to, ctcp_command, *ctcp_argument? ctcp_argument : empty_string));
 				}
+
+				add_last_type(&last_ctcp[0], 1, from, FromUserHost, to, ctcp_command);
 			}
 			allow_ctcp_reply = 0;
 			continue;
@@ -1315,6 +1317,7 @@ extern 	char *do_ctcp (char *from, char *to, char *str)
 					put_it("%s", convert_output_format(fget_string_var((get_int_var(CLOAK_VAR)?FORMAT_CTCP_CLOAK_FSET:FORMAT_CTCP_FSET)),
 						"%s %s %s %s %s %s", update_clock(GET_TIME), from, FromUserHost, to, ctcp_command, *ctcp_argument? ctcp_argument : empty_string));
 #endif
+				add_last_type(&last_ctcp[0], 1, from, FromUserHost, to, ctcp_command);
 			}
 		}
 
@@ -1445,7 +1448,7 @@ extern 	char *do_notice_ctcp (char *from, char *to, char *str)
 		if (do_hook(CTCP_REPLY_LIST, "%s %s %s", from, ctcp_command, ctcp_argument))
 		{
 			put_it("%s", convert_output_format(fget_string_var(FORMAT_CTCP_REPLY_FSET),"%s %s %s %s %s", update_clock(GET_TIME), from, FromUserHost, ctcp_command, ctcp_argument));
-			add_last_type(&last_ctcp[0], 1, from, FromUserHost, ctcp_command, ctcp_argument);
+			add_last_type(&last_ctcp_reply[0], 1, from, FromUserHost, ctcp_command, ctcp_argument);
 		}
 
 		allow_ctcp_reply = 0;

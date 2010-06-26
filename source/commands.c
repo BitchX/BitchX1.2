@@ -1634,13 +1634,13 @@ BUILT_IN_COMMAND(my_whois)
 		if (!strcmp(command, "WILM"))
 			nick = get_server_recv_nick(from_server);
 		else if (!strcmp(command, "WILN"))
-			nick = last_notice[0].to;
+			nick = last_notice[0].from;
 		else if (!strcmp(command, "WILC"))
 			nick = last_sent_ctcp[0].to;
 		else if (!strcmp(command, "WILCR"))
-			nick = last_ctcp[0].to;
+			nick = last_ctcp[0].from;
 		if (nick)
-			send_to_server("WHOIS %s", nick);
+			send_to_server("WHOIS %s %s", nick, nick);
 		else
 			bitchsay("You have no friends");
 		return;
@@ -1652,7 +1652,7 @@ BUILT_IN_COMMAND(my_whois)
 	        	send_to_server("WHOIS %s %s", channel, channel);
 	}
 	else if ((nick = get_target_by_refnum(0)) && !is_channel(nick))
-		send_to_server("WHOIS %s", nick);
+		send_to_server("WHOIS %s %s", nick, nick);
 	else
 	{
 		send_to_server("WHOIS %s %s", get_server_nickname(from_server),

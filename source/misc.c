@@ -92,6 +92,7 @@ LastMsg last_topic[2] =  {{ NULL }};
 LastMsg last_wall[MAX_LAST_MSG+1] =  {{ NULL }};
 LastMsg last_invite_channel[2] = {{ NULL }};
 LastMsg last_ctcp[2] = {{ NULL }};
+LastMsg last_ctcp_reply[2] = {{ NULL }};
 LastMsg last_sent_ctcp[2] = {{ NULL }};
 LastMsg last_sent_dcc[MAX_LAST_MSG+1] = {{ NULL }};
 
@@ -1360,7 +1361,7 @@ BUILT_IN_COMMAND(do_dirlasttype)
 
 	if (!my_strnicmp(command, "RELCR", 5))
 	{
-		t = &last_ctcp[0];
+		t = &last_ctcp_reply[0];
 		form = fget_string_var(FORMAT_CTCP_REPLY_FSET);
 		sform = "%s %s %s %s %s";
 		if (len == 6 && command[len-1] == 'T')
