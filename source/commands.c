@@ -1626,11 +1626,10 @@ BUILT_IN_COMMAND(do_mynames)
 
 BUILT_IN_COMMAND(my_whois)
 {
-        char    *channel = NULL;
-	char	*nick = NULL;	
+	char	*nick = NULL;
+
 	if (command)
 	{
-		char *nick = NULL;
 		if (!strcmp(command, "WILM"))
 			nick = get_server_recv_nick(from_server);
 		else if (!strcmp(command, "WILN"))
@@ -1639,25 +1638,28 @@ BUILT_IN_COMMAND(my_whois)
 			nick = last_sent_ctcp[0].to;
 		else if (!strcmp(command, "WILCR"))
 			nick = last_ctcp[0].from;
-		if (nick)
-			send_to_server("WHOIS %s %s", nick, nick);
-		else
+
+		if (!nick)
+		{
 			bitchsay("You have no friends");
+			return;
+		}
+	}
+	else if (args && *args)
+	{
+		while ((nick = next_arg(args, &args)))
+			send_to_server("WHOIS %s %s", nick, nick);
 		return;
 	}
-        if (args && *args)
-	{
-	
-		while ((channel = next_arg(args, &args)))
-	        	send_to_server("WHOIS %s %s", channel, channel);
-	}
-	else if ((nick = get_target_by_refnum(0)) && !is_channel(nick))
-		send_to_server("WHOIS %s %s", nick, nick);
 	else
 	{
-		send_to_server("WHOIS %s %s", get_server_nickname(from_server),
-			get_server_nickname(from_server));
+		nick = get_target_by_refnum(0);
+
+		if (!nick || is_channel(nick))
+			nick = get_server_nickname(from_server);
 	}
+
+	send_to_server("WHOIS %s %s", nick, nick);
 }
 
 BUILT_IN_COMMAND(do_unkey)
