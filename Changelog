@@ -3,7 +3,7 @@
 * Fix up /WILN, /WILC and /WILCR. (caf).
 
 * Backport changes from epic5 to make recv_nick, sent_nick and sent_body 
-  per-server, and apply new version of do_oops from flewid. This means
+  per-server, and apply new version of do_oops from flashback. This means
   that /oops, "/query .", "/query ,", "/msg ." and "/msg ," are per-server,
   along with the $. $, and $B aliases. (caf)
 
