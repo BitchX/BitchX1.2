@@ -3177,10 +3177,15 @@ BUILT_IN_COMMAND(away)
 	{
 		extern char *awaymsg;
 		if (args && *args)
+		{
 			malloc_strcpy(&awaymsg, args);
+			bitchsay("Your auto-away msg has been set to \"%s\"", awaymsg);
+		}
 		else
+		{
 			new_free(&awaymsg);
-		bitchsay("Your auto-away msg has been set to \"%s\"", awaymsg? awaymsg : "nothing");
+			bitchsay("Your auto-away msg has been unset");
+		}
 		return;
 	}
 	if (*args)
