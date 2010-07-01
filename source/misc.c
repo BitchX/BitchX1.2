@@ -1184,7 +1184,7 @@ char *BX_random_str(int min, int max)
 }
 
 
-void auto_away(unsigned long value)
+void auto_away(unsigned long idle_mins)
 {
 	int i;
 	char *msg = NULL;
@@ -1193,9 +1193,9 @@ void auto_away(unsigned long value)
 		return;
 
 	if (awaymsg)
-		malloc_sprintf(&msg, "%s: [%d mins]", convert_output_format(awaymsg, NULL), get_int_var(AUTO_AWAY_TIME_VAR)/60);
+		malloc_sprintf(&msg, "%s: [%lu mins]", convert_output_format(awaymsg, NULL), idle_mins);
 	else
-		malloc_sprintf(&msg, "Auto-Away after %d mins", get_int_var(AUTO_AWAY_TIME_VAR)/60);
+		malloc_sprintf(&msg, "Auto-Away after %lu mins", idle_mins);
 
 	for (i = 0; i < server_list_size(); i++)
 		if (is_server_connected(i) && !get_server_away(i))
