@@ -1026,6 +1026,37 @@ static	char	*parse_args (char *argv[], int argc, char **envp)
 	set_string_var(LOAD_PATH_VAR, irc_path);
 	new_free(&irc_path);
 	
+       /*
+        * Yes... this is EXACTLY what you think it is.  And if you don't know..
+        * then I'm not about to tell you!           -- Jake [WinterHawk] Khuon
+        *
+        * Here we determine our username. It may be set above, by the -z command line
+        * option. If not check IRCUSER, then USER, then the IDENT_HACK file, then
+        * fallback to gecos below.
+        */
+	if (!*username && (ptr = getenv("IRCUSER"))) strmcpy(username, ptr, NAME_LEN);
+	else if (!*username && (ptr = getenv("USER"))) strmcpy(username, ptr, NAME_LEN);
+	else if (!*username)
+	{
+#ifdef IDENT_FAKE
+		char *p = NULL, *q = NULL;
+		FILE *f;
+		malloc_sprintf(&p, "~/%s", get_string_var(IDENT_HACK_VAR));
+		q = expand_twiddle(p);
+		if ((f = fopen(q, "r")))
+		{
+			fgets(username, NAME_LEN, f);
+			if (*username && strchr(username, '\n'))
+				username[strlen(username)-1] = 0;
+		}
+		fclose(f);
+		new_free(&p); new_free(&q);
+		if (!*username)
+#endif
+			strmcpy(username, "Unknown", NAME_LEN); 
+
+	}
+
 #ifndef WINNT
 	if ((entry = getpwuid(getuid())))
 	{
@@ -1080,33 +1111,6 @@ static	char	*parse_args (char *argv[], int argc, char **envp)
 #endif
 	if (!*realname)
 		strmcpy(realname, "* I'm too lame to read BitchX.doc *", REALNAME_LEN);
-
-       /*
-        * Yes... this is EXACTLY what you think it is.  And if you don't know..
-        * then I'm not about to tell you!           -- Jake [WinterHawk] Khuon
-        */
-	if ((ptr = getenv("IRCUSER"))) strmcpy(username, ptr, NAME_LEN);
-	else if ((ptr = getenv("USER"))) strmcpy(username, ptr, NAME_LEN);
-	else if (!*username)
-	{
-#ifdef IDENT_FAKE
-		char *p = NULL, *q = NULL;
-		FILE *f;
-		malloc_sprintf(&p, "~/%s", get_string_var(IDENT_HACK_VAR));
-		q = expand_twiddle(p);
-		if ((f = fopen(q, "r")))
-		{
-			fgets(username, NAME_LEN, f);
-			if (*username && strchr(username, '\n'))
-				username[strlen(username)-1] = 0;
-		}
-		fclose(f);
-		new_free(&p); new_free(&q);
-		if (!*username)
-#endif
-			strmcpy(username, "Unknown", NAME_LEN); 
-
-	}
 
 	if (!LocalHostName && ((ptr = getenv("IRC_HOST")) || (ptr = getenv("IRCHOST"))))
 		LocalHostName = m_strdup(ptr);
