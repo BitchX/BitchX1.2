@@ -788,6 +788,9 @@ void numbered_command(char *from, int comm, char **ArgList)
 #endif
 			new_free(&userhost);
 		}
+
+		/* Make sure we don't hide the /away message */
+		new_free(&last_away_msg);
 		break;
 	}
 	case 312:		/* #define RPL_WHOISSERVER      312 */
