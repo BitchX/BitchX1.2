@@ -328,15 +328,14 @@ char	*BX_update_clock(int flag)
 			do_hook(TIMER_LIST, "%02d:%02d", hour, min);
 			if (min == 0 || new_hour)
 				do_hook(TIMER_HOUR_LIST, "%02d:%02d", hour, min);
-			idlet = (hideous - idle_time) / 60L;
+			idlet = hideous - idle_time;
 			if (from_server != -1)
 				is_away = get_server_away(from_server) ? 1 : 0;
-			if (do_hook(IDLE_LIST, "%lu", (unsigned long)idlet))
+			if (do_hook(IDLE_LIST, "%lu", (unsigned long)idlet / 60))
 			{
 				if (is_away && new_hour && get_int_var(TIMESTAMP_AWAYLOG_HOURLY_VAR))
 					logmsg(LOG_CRAP, NULL, 4, NULL);
-				if (!is_away && get_int_var(AUTO_AWAY_TIME_VAR) && (idlet >= get_int_var(AUTO_AWAY_TIME_VAR)/60))
-					auto_away(idlet);
+				check_auto_away(idlet);
 			}
 			check_channel_limits();
 		}

@@ -79,7 +79,7 @@ extern LastMsg last_sent_ctcp[2];
 	void	clear_array (NickTab **, char *);
 	char	*BX_random_str (int, int);
 	int	check_serverlag (void);
-	void	auto_away (unsigned long);
+	void	check_auto_away (time_t);
 ChannelList *	BX_prepare_command (int *, char *, int);
 	int	rename_file (char *, char **);
 	void	putlog (int, ...);

@@ -1184,24 +1184,26 @@ char *BX_random_str(int min, int max)
 }
 
 
-void auto_away(unsigned long idle_mins)
+void check_auto_away(time_t idlet)
 {
 	int i;
 	char *msg = NULL;
-	
-	if (!get_int_var(AUTO_AWAY_VAR))
+	int auto_away_time = get_int_var(AUTO_AWAY_TIME_VAR);
+	int idle_mins = auto_away_time / 60;
+
+	if (!auto_away_time || !get_int_var(AUTO_AWAY_VAR) || idlet < auto_away_time)
 		return;
 
 	if (awaymsg)
-		malloc_sprintf(&msg, "%s: [%lu mins]", convert_output_format(awaymsg, NULL), idle_mins);
+		malloc_sprintf(&msg, "%s: [%d mins]", convert_output_format(awaymsg, NULL), idle_mins);
 	else
-		malloc_sprintf(&msg, "Auto-Away after %lu mins", idle_mins);
+		malloc_sprintf(&msg, "Auto-Away after %d mins", idle_mins);
 
 	for (i = 0; i < server_list_size(); i++)
 		if (is_server_connected(i) && !get_server_away(i))
 			set_server_away(i, msg, 0);
 
-        update_all_status(current_window, NULL, 0);
+	update_all_status(current_window, NULL, 0);
 	new_free(&msg);		
 }
 
