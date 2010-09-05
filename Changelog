@@ -2,6 +2,8 @@
 
 * Ensure that SHOW_AWAY_ONCE doesn't hide away status in /whois output. (caf)
 
+* Fix the the -z command line option for specifying username. (flashback)
+
 * Fix up /WILN, /WILC and /WILCR. (caf)
 
 * Backport changes from epic5 to make recv_nick, sent_nick and sent_body 
