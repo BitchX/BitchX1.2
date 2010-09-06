@@ -1853,26 +1853,32 @@ int clones = 0;
 	for (nptr = next_nicklist(chan, NULL); nptr; nptr = next_nicklist(chan, nptr))
 	{
 		char *q;
-		nptr1 = NULL;
+
+		if (nptr->check_clone)
+			continue;
+
 		q = strchr(nptr->host, '@'); q++;
-		for (nptr1 = next_nicklist(chan, NULL); nptr1; nptr1 = next_nicklist(chan, nptr1))
+
+		/* Scan forward from this point, looking for clones */
+		for (nptr1 = next_nicklist(chan, nptr); nptr1; nptr1 = next_nicklist(chan, nptr1))
 		{
 			char *p;
-			if (nptr1 == nptr)
-				continue;
+
 			p = strchr(nptr1->host, '@'); p++;
-			if (!strcmp(p, q) && !nptr->check_clone)
+
+			if (!strcmp(p, q))
 			{
 				/* clone detected */
 				if (!clones && do_hook(CLONE_LIST, "Clones detected on %s", chan->channel))
 					bitchsay("Clones detected on %s", chan->channel);
-				if (!nptr->check_clone++ && do_hook(CLONE_LIST, "%s %s %s", nptr->nick, nptr->host, nick_isop(nptr)? "@":empty_string))
+				if (!nptr->check_clone++)
 				{
-					put_it("\t%s %s %s", nick_isop(nptr) ? "@":space, nptr->nick, nptr->host);
+					if (do_hook(CLONE_LIST, "%s %s %s", nptr->nick, nptr->host, nick_isop(nptr)? "@":empty_string))
+						put_user(nptr, chan->channel);
 					clones++;
 				}
-				if (!nptr1->check_clone && do_hook(CLONE_LIST, "%s %s %s", nptr1->nick, nptr1->host, nick_isop(nptr1)? "@":empty_string))
-					put_it("\t%s %s %s", nick_isop(nptr1) ? "@":space, nptr1->nick, nptr1->host);
+				if (do_hook(CLONE_LIST, "%s %s %s", nptr1->nick, nptr1->host, nick_isop(nptr1)? "@":empty_string))
+					put_user(nptr1, chan->channel);
 				nptr1->check_clone++;
 				clones++;
 			}

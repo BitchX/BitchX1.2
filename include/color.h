@@ -700,9 +700,9 @@
 #define DEFAULT_FORMAT_USERLIST_FOOTER_FSET "There are $1 users on the userlist"
 #define DEFAULT_FORMAT_USERLIST_HEADER_FSET "level            nick       password     host                      channels"
 
-#define DEFAULT_FORMAT_USERS_FSET "%K[%n%C$5%B$[9]2%K]%K[%n$[41]3%K]%K[%n$0%K]%n$4"
-#define DEFAULT_FORMAT_USERS_USER_FSET "%K[%n%C$5%B$[9]2%K]%K[%n%B$[41]3%K]%K[%n$0%K]%n$4"
-#define DEFAULT_FORMAT_USERS_SHIT_FSET "%K[%n%C$5%B$[9]2%K]%K[%n%r$[41]3%K]%K[%n$[-15]0%K]%n$4"
+#define DEFAULT_FORMAT_USERS_FSET "%K[%C$[1]5%B$[9]2%K][%n$[41]3%K][%n$[15]0%K](%n$4%K)"
+#define DEFAULT_FORMAT_USERS_USER_FSET "%K[%C$[1]5%B$[9]2%K][%n%B$[41]3%K][%n$0%K](%n$4%K)"
+#define DEFAULT_FORMAT_USERS_SHIT_FSET "%K[%C$[1]5%B$[9]2%K][%n%r$[41]3%K][%n$[-15]0%K](%n$4%K)"
 #define DEFAULT_FORMAT_USERS_TITLE_FSET "$G Channel userlist for %W$1%n at ($0):"
 #define DEFAULT_FORMAT_USERS_HEADER_FSET NULL /*"%K[ %WC%nhannel  %K][ %WN%wickname %K][%n %Wu%wser@host                       %K][%n %Wl%wevel         %K]"*/
 

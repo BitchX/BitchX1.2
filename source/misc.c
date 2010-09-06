@@ -4040,7 +4040,27 @@ bad_ignore:
 	return;
 }
 
+void put_user(const NickList *nick, const char *channel)
+{
+	char *users_format;
 
+	if (nick->userlist)
+		users_format = fget_string_var(FORMAT_USERS_USER_FSET);
+	else if (nick->shitlist)
+		users_format = fget_string_var(FORMAT_USERS_SHIT_FSET);
+	else
+		users_format = fget_string_var(FORMAT_USERS_FSET);
+
+	put_it("%s", convert_output_format(users_format, "%s %s %s %s %d %c", 
+#ifdef WANT_USERLIST
+		nick->userlist ? convert_flags(nick->userlist->flags) : nick->shitlist?ltoa(nick->shitlist->level):"n/a",
+#else
+		"n/a",
+#endif
+		channel, nick->nick,
+		nick->host, nick->serverhops,
+		nick_isop(nick) ? '@' : nick_isvoice(nick)? 'v' : ' '));
+}
 
 BUILT_IN_COMMAND(users)
 {
@@ -4249,15 +4269,7 @@ int	count = 0,
 						nicks->host, nicks->serverhops,
 						nick_isop(nicks) ? '@' : nick_isvoice(nicks) ? 'v' :' ')))
 					{
-						put_it("%s", convert_output_format(fget_string_var(nicks->userlist?FORMAT_USERS_USER_FSET:nicks->shitlist?FORMAT_USERS_SHIT_FSET:FORMAT_USERS_FSET), "%s %s %s %s %d %s", 
-#ifdef WANT_USERLIST
-							nicks->userlist ? convert_flags(nicks->userlist->flags) : nicks->shitlist?ltoa(nicks->shitlist->level):"n/a            ",
-#else
-							"n/a            ",
-#endif
-							chan->channel, nicks->nick,
-							nicks->host, nicks->serverhops,
-							nick_isop(nicks) ? "@" : nick_isvoice(nicks)? "v" : "ÿ"));
+						put_user(nicks, chan->channel);
 					}
 				}
 			}

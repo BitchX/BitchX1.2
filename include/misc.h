@@ -67,7 +67,7 @@ extern LastMsg last_ctcp_reply[2];
 extern LastMsg last_sent_ctcp[2];
 
 
-
+	void	put_user (const NickList *, const char *);
 	void	update_stats	(int, NickList *, ChannelList *, int);
 	int	check_split	(char *, char *);
 	void	BX_userage		(char *, char *);
