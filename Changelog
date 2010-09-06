@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Add definition of BIND_8_COMPAT to fix build problem on Mac OS X. (caf)
+
 * Ensure that SHOW_AWAY_ONCE doesn't hide away status in /whois output. (caf)
 
 * Fix the the -z command line option for specifying username. (flashback)

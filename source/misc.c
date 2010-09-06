@@ -1971,6 +1971,13 @@ void ar_rename_nick(char *old_nick, char *new_nick, int server)
  * of property which results from the use of this software.
  * heavily modified for use in a irc client.
  */
+
+/* In OS X 10.3 onward, we have to define BIND_8_COMPAT to get 
+ * nameser_compat.h included, to get the "old" bind interface. */
+#if defined( __APPLE__ ) && !defined( BIND_8_COMPAT )
+  #define BIND_8_COMPAT
+#endif
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <signal.h>
