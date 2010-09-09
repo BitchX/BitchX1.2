@@ -177,7 +177,7 @@ distclean: clean
 	$(RM) *~ config.status config.cache config.log config.h Makefile
 
 ../dllinit.o:
-	$(CC) -DOS_$(OS) $(DEFS) $(CFLAGS) -o ../dllinit.o -c ../dllinit.c
+	$(CC) -DOS_$(OS) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -o ../dllinit.o -c ../dllinit.c
 
 amp$(SHLIB_SUFFIX): $(OBJ) ../dllinit.o
 	$(SHLIB_LD) -o amp$(SHLIB_SUFFIX) $(OBJ) ../dllinit.o
@@ -187,7 +187,7 @@ SOURCES = $(OBJECTS:%.o=$(srcdir)/%.c)
 OS := $(shell uname -s) 
 
 .c.o:
-	$(CC) -DOS_$(OS) $(DEFS) $(CFLAGS) -c $<
+	$(CC) -DOS_$(OS) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $<
 
 depend:
 	gcc -MM $(CPPFLAGS) $(DEFS) $(CFLAGS) *.c > .depend

@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 fserv.o: $(srcdir)/fserv.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/fserv.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/fserv.c
 
 fserv$(SHLIB_SUFFIX): fserv.o ../dllinit.o
 	$(SHLIB_LD) fserv.o ../dllinit.o $(SHLIB_CFLAGS) -o fserv$(SHLIB_SUFFIX)

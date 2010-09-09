@@ -158,7 +158,7 @@ MFLAGS = \
 
 PLUGIN_NAME = nap
 
-OBJS = nap.o napsend.o nap_file.o napfunc.o napother.o md5.o $(topdir)/source/compat.o
+OBJS = nap.o napsend.o nap_file.o napfunc.o napother.o md5.o compat.o
 
 all: Makefile nap$(SHLIB_SUFFIX)
 
@@ -166,27 +166,27 @@ Makefile: Makefile.in
 	cd $(topdir) \
 	  && ./config.status
 
-$(topdir)/source/compat.o: $(top_srcdir)/source/compat.c
-	$(CC) $(DEFS) $(CFLAGS) \
-		-c $(top_srcdir)/source/compat.c -o $(topdir)/source/compat.o
+compat.o: $(top_srcdir)/source/compat.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) \
+		-c $(top_srcdir)/source/compat.c -o $(srcdir)/compat.o
 
 nap.o: $(srcdir)/nap.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/nap.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/nap.c
 
 napsend.o: $(srcdir)/napsend.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/napsend.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/napsend.c
 
 nap_file.o: $(srcdir)/nap_file.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/nap_file.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/nap_file.c
 
 napfunc.o: $(srcdir)/napfunc.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/napfunc.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/napfunc.c
 
 napother.o: $(srcdir)/napother.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/napother.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/napother.c
 
 md5.o: $(srcdir)/md5.c $(srcdir)/md5.h
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/md5.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/md5.c
 
 nap$(SHLIB_SUFFIX): $(OBJS) 
 	$(SHLIB_LD) $(OBJS) $(SHLIB_CFLAGS) -o nap$(SHLIB_SUFFIX)

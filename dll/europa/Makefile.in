@@ -170,7 +170,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 europa.o: $(srcdir)/europa.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/europa.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/europa.c
 
 europa$(SHLIB_SUFFIX): europa.o ../dllinit.o
 	$(SHLIB_LD) europa.o ../dllinit.o $(SHLIB_CFLAGS) -o europa$(SHLIB_SUFFIX) $(MYSQL_LIBS)

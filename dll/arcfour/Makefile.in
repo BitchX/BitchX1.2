@@ -165,10 +165,10 @@ Makefile: Makefile.in
 	  && ./config.status
 
 arcfour.o: $(srcdir)/arcfour.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/arcfour.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/arcfour.c
 
 md5.o: $(srcdir)/md5.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/md5.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/md5.c
 
 arcfour$(SHLIB_SUFFIX): arcfour.o md5.o ../dllinit.o
 	$(SHLIB_LD) arcfour.o md5.o ../dllinit.o $(SHLIB_CFLAGS) -o arcfour$(SHLIB_SUFFIX)

@@ -160,7 +160,7 @@ AIMDEFS = $(DEFS) -I$(srcdir)/toc
 
 PLUGIN_NAME = aim
 
-OBJS = toc.o util.o cmd.o aim.o $(topdir)/source/compat.o
+OBJS = toc.o util.o cmd.o aim.o compat.o
 
 all: Makefile toc aim$(SHLIB_SUFFIX)
 
@@ -168,21 +168,21 @@ Makefile: Makefile.in
 	cd $(topdir) \
 	  && ./config.status
 
-$(topdir)/source/compat.o: $(top_srcdir)/source/compat.c
-	$(CC) $(AIMDEFS) $(CFLAGS) \
-		-c $(top_srcdir)/source/compat.c -o $(topdir)/source/compat.o
+compat.o: $(top_srcdir)/source/compat.c
+	$(CC) $(AIMDEFS) $(SHLIB_CFLAGS) $(CFLAGS) \
+		-c $(top_srcdir)/source/compat.c -o $(srcdir)/compat.o
 
 toc.o: $(srcdir)/toc.c
-	$(CC) $(AIMDEFS) $(CFLAGS) -c $(srcdir)/toc.c
+	$(CC) $(AIMDEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/toc.c
 
 util.o: $(srcdir)/util.c
-	$(CC) $(AIMDEFS) $(CFLAGS) -c $(srcdir)/util.c
+	$(CC) $(AIMDEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/util.c
 
 cmd.o: $(srcdir)/cmd.c
-	$(CC) $(AIMDEFS) $(CFLAGS) -c $(srcdir)/cmd.c
+	$(CC) $(AIMDEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/cmd.c
 
 aim.o: $(srcdir)/aim.c
-	$(CC) $(AIMDEFS) $(CFLAGS) -c $(srcdir)/aim.c
+	$(CC) $(AIMDEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/aim.c
 
 aim$(SHLIB_SUFFIX): $(OBJS) 
 	$(SHLIB_LD) $(OBJS) $(SHLIB_CFLAGS) -o aim$(SHLIB_SUFFIX) -Ltoc -ltoc

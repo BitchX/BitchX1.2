@@ -164,7 +164,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 qbx.o: $(srcdir)/qbx.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/qbx.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/qbx.c
 
 qbx$(SHLIB_SUFFIX): qbx.o ../dllinit.o
 	$(SHLIB_LD) qbx.o ../dllinit.o $(SHLIB_CFLAGS) -o qbx$(SHLIB_SUFFIX)

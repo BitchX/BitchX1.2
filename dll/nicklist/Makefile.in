@@ -168,7 +168,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 nicklist.o: $(srcdir)/nicklist.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/nicklist.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/nicklist.c
 
 nicklist$(SHLIB_SUFFIX): nicklist.o ../dllinit.o
 	$(SHLIB_LD) nicklist.o ../dllinit.o $(SHLIB_CFLAGS) -o nicklist$(SHLIB_SUFFIX)

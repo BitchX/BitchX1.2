@@ -166,7 +166,7 @@ ALL_PLUGINS = abot acro aim amp arcfour autocycle blowfish cavlink cdrom encrypt
 PLUGINS = @PLUGINS@
 
 .c.o:
-	$(CC) $(DEFS) $(CFLAGS) -c $<
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $<
 
 $(SHLIB_SUFFIX).o:
 	$(SHLIB_LD) $(SHLIB_CFLAGS) $< -o $@$(SHLIB_SUFFIX)
@@ -191,7 +191,7 @@ dummy:
 dllinit.o:
 	@( \
 		if test x"$(PLUGINS)" != x""; then \
-			$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/dllinit.c; \
+			$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/dllinit.c; \
 		fi; \
 	)
 

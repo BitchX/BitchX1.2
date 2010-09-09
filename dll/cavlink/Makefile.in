@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 cavlink.o: $(srcdir)/cavlink.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/cavlink.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/cavlink.c
 
 cavlink$(SHLIB_SUFFIX): cavlink.o ../dllinit.o
 	$(SHLIB_LD) cavlink.o ../dllinit.o ${SHLIB_CFLAGS} -o cavlink$(SHLIB_SUFFIX)

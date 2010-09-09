@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 encrypt.o: $(srcdir)/encrypt.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/encrypt.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/encrypt.c
 
 encrypt$(SHLIB_SUFFIX): encrypt.o ../dllinit.o
 	$(SHLIB_LD) encrypt.o ../dllinit.o ${SHLIB_CFLAGS} -o encrypt$(SHLIB_SUFFIX)

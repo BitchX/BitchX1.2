@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 cdrom.o: $(srcdir)/cdrom.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/cdrom.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/cdrom.c
 
 cdrom$(SHLIB_SUFFIX): cdrom.o ../dllinit.o
 	$(SHLIB_LD) cdrom.o ../dllinit.o ${SHLIB_CFLAGS} -o cdrom$(SHLIB_SUFFIX)

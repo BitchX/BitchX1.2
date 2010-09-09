@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 blowfish.o: $(srcdir)/blowfish.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/blowfish.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/blowfish.c
 
 blowfish$(SHLIB_SUFFIX): blowfish.o ../dllinit.o
 	$(SHLIB_LD) blowfish.o ../dllinit.o $(SHLIB_CFLAGS) -o blowfish$(SHLIB_SUFFIX) $(TCL_LIBS)

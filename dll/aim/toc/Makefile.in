@@ -159,7 +159,7 @@ MFLAGS = \
 #DEBUG_CFLAGS = -g -DDEBUG_LIB_TOC
 
 .c.o:
-	$(CC) $(DEFS) $(CFLAGS) $(DEBUG_CFLAGS)  -c $<
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) $(DEBUG_CFLAGS)  -c $<
 
 LOBJS = toc.o network.o util.o server.o interface.o buddy.o ll.o misc.o
 

@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 wavplay.o: $(srcdir)/wavplay.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/wavplay.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/wavplay.c
 
 wavplay$(SHLIB_SUFFIX): wavplay.o ../dllinit.o
 	$(SHLIB_LD) wavplay.o ../dllinit.o $(SHLIB_CFLAGS) -o wavplay$(SHLIB_SUFFIX)

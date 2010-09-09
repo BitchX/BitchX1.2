@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 autobot.o: $(srcdir)/autobot.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/autobot.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/autobot.c
 
 autobot$(SHLIB_SUFFIX): autobot.o ../dllinit.o
 	$(SHLIB_LD) autobot.o ../dllinit.o $(SHLIB_CFLAGS) -o autobot$(SHLIB_SUFFIX)

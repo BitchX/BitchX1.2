@@ -168,7 +168,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 autocycle.o: $(srcdir)/autocycle.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/autocycle.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/autocycle.c
 
 autocycle$(SHLIB_SUFFIX): autocycle.o ../dllinit.o
 	$(SHLIB_LD) autocycle.o ../dllinit.o $(SHLIB_CFLAGS) -o autocycle$(SHLIB_SUFFIX)

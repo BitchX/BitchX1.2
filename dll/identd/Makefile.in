@@ -165,7 +165,7 @@ Makefile: Makefile.in
 	  && ./config.status
 
 identd.o: $(srcdir)/identd.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/identd.c
+	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/identd.c
 
 identd$(SHLIB_SUFFIX): identd.o ../dllinit.o
 	$(SHLIB_LD) identd.o ../dllinit.o $(SHLIB_CFLAGS) -o identd$(SHLIB_SUFFIX)
