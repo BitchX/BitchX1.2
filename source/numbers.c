@@ -916,7 +916,8 @@ void numbered_command(char *from, int comm, char **ArgList)
 		break;
 	}
 
-	case 338:		/* #define RPL_WHOISACTUALLY    338 */
+	case 338:		/* #define RPL_WHOISACTUALLY    338 (hybrid, ratbox, bahamut) */
+	case 378:		/* #define RPL_WHOISHOST        378 (unreal, freenode) */
 	{
 		if (ArgList[2])
 		{

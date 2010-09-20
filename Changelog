@@ -36,8 +36,8 @@
 * Change the display of server stats so that the averages (eg. users per
   channel) are correctly rounded. (caf)
 
-* Reinstate RPL_WHOISACTUALLY numeric - things seem to have stabilised in
-  the ircd world on this. (caf)
+* Reinstate RPL_WHOISACTUALLY / RPL_WHOISHOST numerics - things seem to have
+  stabilised in the ircd world on this. (caf)
 
 * Fixed two cases where the client was incorrectly deciding that a numeric
   originated from a remote server rather than the local server - this caused
