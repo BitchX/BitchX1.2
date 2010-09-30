@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Add /FSET WHOIS_CALLERID for +g mode notification on hybrid & ratbox. (caf)
+
 * Build script fix to allow plugins to build on x86-64. (caf)
 
 * Correct count in /CLONES (reported by t3gah), and format output nicely

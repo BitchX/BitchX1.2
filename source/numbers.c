@@ -1301,6 +1301,13 @@ void numbered_command(char *from, int comm, char **ArgList)
 				display_msg(from, ArgList);
 		}
 		break;
+	case 716:		/* #define RPL_TARGUMODEG       716 */
+	{
+		/* hybrid / ratbox: <nick> :is in +g mode (server side ignore) */
+		if (do_hook(current_numeric, "%s %s %s", from, ArgList[0], ArgList[1]))
+			put_it("%s", convert_output_format(fget_string_var(FORMAT_WHOIS_CALLERID_FSET),"%s %s", ArgList[0], ArgList[1]));
+		break;
+	}
 	case 365:		/* #define RPL_ENDOFLINKS       365 */
 	{
 		if (get_int_var(LLOOK_VAR) && (get_server_linklook(from_server) == 1)) 
