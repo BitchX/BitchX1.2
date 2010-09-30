@@ -12,6 +12,7 @@
 
 extern 	int 	dgets_errno;
 
+	const char *dgets_strerror(int);
 	int 	BX_dgets 			(char *, int, int, int, void *);
 	int 	new_select 		(fd_set *, fd_set *, struct timeval *);
 	int	BX_new_open		(int);

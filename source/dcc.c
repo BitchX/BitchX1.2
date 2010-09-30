@@ -818,7 +818,7 @@ SocketList 	*sl;
 	{
 		case -1:
 		{
-			char *real_tmp = ((dgets_errno == -1) ? "Remote End Closed Connection" : strerror(dgets_errno));
+			const char *real_tmp = dgets_strerror(dgets_errno);
 	                if (do_hook(DCC_LOST_LIST, "%s %s %s", nick, dcc_types[type]->name, real_tmp))
 				put_it("%s", convert_output_format(fget_string_var(FORMAT_DCC_ERROR_FSET), 
 					"%s %s %s %s", update_clock(GET_TIME), 
@@ -952,8 +952,8 @@ SocketList *sl;
 	{
 		case -1:
 		{
-			char *real_tmp = ((dgets_errno == -1) ? "Remote End Closed Connection" : strerror(dgets_errno));
-	                if (do_hook(DCC_LOST_LIST, "%s %s %s", nick, dcc_types[type]->name, real_tmp))
+			const char *real_tmp = dgets_strerror(dgets_errno);
+			if (do_hook(DCC_LOST_LIST, "%s %s %s", nick, dcc_types[type]->name, real_tmp))
 				put_it("%s", convert_output_format(fget_string_var(FORMAT_DCC_ERROR_FSET), 
 					"%s %s %s %s", update_clock(GET_TIME), 
 					dcc_types[type]->name, nick, real_tmp));

@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Show correct message when a socket connection is closed cleanly. (caf)
+
 * Add /FSET WHOIS_CALLERID for +g mode notification on hybrid & ratbox. (caf)
 
 * Build script fix to allow plugins to build on x86-64. (caf)

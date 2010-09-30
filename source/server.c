@@ -535,7 +535,7 @@ static	time_t	last_timeout = 0;
 						/* Try to make sure output goes to the correct window */
 						if(server_list[i].server_change_refnum > -1)
 							set_display_target_by_winref(server_list[i].server_change_refnum);
-						say("Connection closed from %s: %s", server_list[i].name, (dgets_errno == -1) ? "Remote end closed connection" : strerror(dgets_errno));
+						say("Connection closed from %s: %s", server_list[i].name, dgets_strerror(dgets_errno));
 
 						server_list[i].reconnecting = 1;
 						close_server(i, empty_string);

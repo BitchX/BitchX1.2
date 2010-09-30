@@ -100,6 +100,20 @@ void SSL_show_errors(void)
 }
 #endif
 
+/* Wrapper around strerror() for dgets_errno.
+ */
+const char *dgets_strerror(int dgets_errno)
+{
+	switch (dgets_errno)
+	{
+		case -1:
+		return "Remote end closed connection";
+
+		default:
+		return strerror(dgets_errno);
+	}
+}
+
 /*
  * All new dgets -- no more trap doors!
  *
@@ -204,7 +218,7 @@ int BX_dgets (char *str, int des, int buffer, int buffersize, void *ssl_fd)
 		else if (!nbytes && ioe->write_pos == 0)
 		{
 			*str = 0;
-			dgets_errno = errno;
+			dgets_errno = -1;
 			return -1;
 		}
 
