@@ -456,7 +456,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 #endif
 		struct sockaddr_foobar name;
 #ifdef IPV6
-		struct in6_addr any = { IN6ADDR_ANY_INIT };
+		struct in6_addr any = IN6ADDR_ANY_INIT;
 
 		memset(&name, 0, sizeof(struct sockaddr_foobar));
 		name.sf_family = AF_INET6;
