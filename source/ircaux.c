@@ -44,11 +44,21 @@ CVS_REVISION(ircaux_c)
 #include <dmalloc.h>
 #endif
 
-#define alloc_start(ptr) ((ptr) - sizeof(void *))
-#define alloc_size(ptr) (*(int *)( alloc_start((ptr)) ))
+/* This union is used to ensure that the resulting address
+ * will be aligned correctly for all types we use. */
+union alloc_info {
+	size_t size;
+
+	void *dummy1;
+	long dummy2;
+	double dummy3;
+};
+
+#define alloc_start(ptr) ((void *)((char *)(ptr) - sizeof(union alloc_info)))
+#define alloc_size(ptr) (((union alloc_info *)alloc_start(ptr))->size)
 
 #define FREE_DEBUG 1
-#define FREED_VAL -3
+#define FREED_VAL (size_t)-3
 #define ALLOC_MAGIC 0xafbdce70
 
 char compress_buffer[10000];
@@ -71,13 +81,22 @@ void start_memdebug(void)
  */
 void * n_malloc (size_t size, const char *module, const char *file, const int line)
 {
-	char	*ptr;
+	char *ptr;
 
+	if (size < FREED_VAL - sizeof(union alloc_info))
+	{
 #ifdef MEM_DEBUG
-	if (!(ptr = (char *)_calloc_leap(file, line, 1, size+sizeof(void *))))
+		ptr = _calloc_leap(file, line, 1, size + sizeof(union alloc_info));
 #else
-	if (!(ptr = (char *)calloc(1, size+sizeof(void *)+sizeof(void *))))
+		ptr = calloc(1, size + sizeof(union alloc_info));
 #endif
+	}
+	else
+	{
+		ptr = NULL;
+	}
+
+	if (!ptr)
 	{
 		yell("Malloc() failed, giving up!");
 		putlog(LOG_ALL, "*", "*** failed calloc %s %s (%d)", module?module:empty_string, file, line);
@@ -85,7 +104,7 @@ void * n_malloc (size_t size, const char *module, const char *file, const int li
 		exit(1);
 	}
 	/* Store the size of the allocation in the buffer. */
-	ptr += sizeof(void *);
+	ptr += sizeof(union alloc_info);
 	alloc_size(ptr) = size;
 	return ptr;
 }
@@ -110,9 +129,9 @@ void *	n_free(void *ptr, const char *module, const char *file, const int line)
 		alloc_size(ptr) = FREED_VAL;
 
 #ifdef MEM_DEBUG
-		_free_leap(file, line, (void *)alloc_start(ptr));
+		_free_leap(file, line, alloc_start(ptr));
 #else
-		free((void *)alloc_start(ptr));
+		free(alloc_start(ptr));
 #endif
 		ptr = NULL;
 	}
