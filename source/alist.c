@@ -342,7 +342,7 @@ Array_item *BX_find_array_item (Array *set, char *name, int *cnt, int *loc)
 	return ARRAY_ITEM(set, min);
 }
 
- #define FIXED_ITEM(list, pos, size) (*(Array_item *) (list + ( pos * size )))
+#define FIXED_ITEM(list, pos, size) (*(Array_item *)((char *)list + ( pos * size )))
 
  /*
  * This is useful for finding items in a fixed array (eg, those lists that
