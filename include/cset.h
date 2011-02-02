@@ -414,7 +414,7 @@ void		cset_variable(char *, char *, char *, char *);
 int		BX_get_cset_int_var(CSetList *, int);
 void		BX_set_cset_int_var(CSetList *, int, int);
 char		*BX_get_cset_str_var(CSetList *, int);
-void		BX_set_cset_str_var(CSetList *, int, char *);
+void		BX_set_cset_str_var(CSetList *, int, const char *);
 
 CSetList	*create_csets_for_channel(char *channel);
 void		remove_csets_for_channel(CSetList *);

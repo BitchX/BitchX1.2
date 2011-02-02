@@ -466,7 +466,7 @@ extern Function_ptr *global;
 #define get_cset_int_var (*(int (*)(CSetList *, int))global[GET_CSET_INT_VAR])
 #define set_cset_int_var (*(void (*)(CSetList *, int, int))global[SET_CSET_INT_VAR])
 #define get_cset_str_var (*(char *(*)(CSetList *, int))global[GET_CSET_STR_VAR])
-#define set_cset_str_var (*(void (*)(CSetList *, int, char *))global[SET_CSET_STR_VAR])
+#define set_cset_str_var (*(void (*)(CSetList *, int, const char *))global[SET_CSET_STR_VAR])
 
 #define get_dllint_var (*(int (*)(char *))global[GET_DLLINT_VAR])
 #define set_dllint_var (*(void (*)(char *, unsigned int ))global[SET_DLLINT_VAR])

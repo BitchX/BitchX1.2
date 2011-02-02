@@ -174,52 +174,29 @@ static WSetArray wset_array[] = {
 CSetList *cset_queue = NULL;
 
 /*
+ * Returns the address of the requested field within the given CSetList.
+ */
+static void *get_cset_var_address(CSetList *tmp, int var)
+{
+	void *ptr = ((char *)tmp + cset_array[var].offset);
+	return ptr;
+}
+
+/*
  * returns the requested int from the cset struct
  * Will work fine with either BOOL or INT type of csets.
  */
 int BX_get_cset_int_var(CSetList *tmp, int var)
 {
-	int val = *(int *)((void *)tmp + cset_array[var].offset);
-	return val;
+	int *ptr = get_cset_var_address(tmp, var);
+	return *ptr;
 }
 
 char *BX_get_cset_str_var(CSetList *tmp, int var)
 {
-	char *s = *(char **) ((void *)tmp + cset_array[var].offset);
-	return s;
+	char **ptr = get_cset_var_address(tmp, var);
+	return *ptr;
 }
-
-/*
- * returns the requested int from the cset struct
- * Will work fine with either BOOL or INT type of csets.
- */
-int cset_getflag(CSetList *tmp, int var)
-{
-	int val = *(int *)((void *)tmp + cset_array[var].flag);
-	return val;
-}
-
-/*
- * sets the requested int from the cset struct
- * Will work fine with either BOOL or INT type of csets.
- */
-void cset_setflag(CSetList *tmp, int var, int value)
-{
-	int *ptr = (int *) ((void *)tmp + cset_array[var].flag);
-	*ptr = value;
-}
-
-/*
- * returns the requested int ADDRESS from the cset struct
- * Will work fine with either BOOL or INT type of csets.
- */
-static void * get_cset_int_var_address(CSetList *tmp, int var)
-{
-	void *ptr = ((void *)tmp + cset_array[var].offset);
-	return ptr;
-}
-
-
 
 /*
  * sets the requested int from the cset struct
@@ -227,14 +204,13 @@ static void * get_cset_int_var_address(CSetList *tmp, int var)
  */
 void BX_set_cset_int_var(CSetList *tmp, int var, int value)
 {
-	int *ptr = (int *) ((void *)tmp + cset_array[var].offset);
+	int *ptr = get_cset_var_address(tmp, var);
 	*ptr = value;
 }
 
-
-void BX_set_cset_str_var(CSetList *tmp, int var, char *value)
+void BX_set_cset_str_var(CSetList *tmp, int var, const char *value)
 {
-	char **ptr = (char **) ((void *)tmp + cset_array[var].offset);
+	char **ptr = get_cset_var_address(tmp, var);
 	if (value)
 		malloc_strcpy(ptr, value);
 	else
@@ -299,7 +275,7 @@ static void set_cset_var_value(CSetList *tmp, int var_index, char *value)
 	{
 	case BOOL_TYPE_VAR:
         	if (value && *value && (value = next_arg(value, &rest))) {
-			if (do_boolean(value, (int *)get_cset_int_var_address(tmp, var_index)))
+			if (do_boolean(value, (int *)get_cset_var_address(tmp, var_index)))
 			{
 				say("Value must be either ON, OFF, or TOGGLE");
 				break;
