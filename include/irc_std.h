@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <stddef.h>
 
 /*
  * Everybody needs these POSIX headers...

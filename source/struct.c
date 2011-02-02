@@ -15,10 +15,6 @@ CVS_REVISION(struct_c)
 #define MAIN_SOURCE
 #include "modval.h"
 
-#ifndef offsetof
-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
-#endif
-
 extern char *after_expando(char *, int, int *);
 
 /* the types of IrcVariables (repeated in vars.h) */
@@ -422,40 +418,40 @@ int setup_structure(char *name, char *which, Window **win, DCC_int **dcc, Channe
 
 static inline int get_offset_int(void *tmp, int offset)
 {
-	int val = *(int *)((void *)tmp + offset);
+	int val = *(int *)((char *)tmp + offset);
 	return val;
 }
 
 static inline char *get_offset_str(void *tmp, int offset)
 {
-	char *s = *(char **) ((void *)tmp + offset);
+	char *s = *(char **)((char *)tmp + offset);
 	return s;
 }
 
 static inline char *get_offset_char(void *tmp, int offset)
 {
-	char *s = (char *) ((void *)tmp + offset);
+	char *s = (char *)((char *)tmp + offset);
 	return s;
 }
 
 static inline void set_offset_int(void *tmp, int offset, int val)
 {
-	int *ptr = (int *)((void *)tmp + offset);
+	int *ptr = (int *)((char *)tmp + offset);
 	*ptr = val;
 }
 
-static inline void set_offset_str(void *tmp, int offset, char *val)
+static inline void set_offset_str(void *tmp, int offset, const char *val)
 {
-	char **ptr = (char **) ((void *)tmp + offset);
+	char **ptr = (char **)((char *)tmp + offset);
 	if (val && *val)
 		malloc_strcpy(ptr, val);
 	else
 		new_free(ptr);
 }
 
-static inline void set_offset_char(void *tmp, int offset, char *val)
+static inline void set_offset_char(void *tmp, int offset, const char *val)
 {
-	char *ptr = (char *) ((void *)tmp + offset);
+	char *ptr = (char *)((char *)tmp + offset);
 	if (val && *val)
 		strcpy(ptr, val);
 	else
@@ -576,11 +572,12 @@ int code = -1;
 			break;
 		case SERVER_LOOKUP:
 			tmp = server_struct;
-			if (serv != -1 && serv < server_list_size())
+			if (serv >= 0 && serv < server_list_size())
 			{
-				user = (void *)(get_server_list());
-				user += (sizeof(Server) * serv);
-				ch = ((Server *)user)->chan_list;
+				Server *slist = get_server_list();
+
+				user = &slist[serv];
+				ch = slist[serv].chan_list;
 			}
 		default:
 			break;
