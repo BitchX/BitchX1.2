@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Apply fixes from darkfires removing non-standard use of arithmetic on
+  void * values, to allow building on Irix. (caf)
+
 * Apply fix from darkfires to allow building with ICC. (caf)
 
 * Show correct message when a socket connection is closed cleanly. (caf)
