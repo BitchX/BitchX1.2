@@ -16,7 +16,7 @@ ${a} for president.
 ${a}: anything else would be uncivilized
 ${a}: better than a penis enlargement!
 ${a}: born to raise hell
-${a}: causing all sorts of havok!
+${a}: causing all sorts of havoc!
 ${a}: cleaner, drier, protects even better
 ${a}: coming soon to a theatre near you!
 ${a}: do not expose to open flame or fire
@@ -32,7 +32,7 @@ ${a} for president.
 ${a}: it does a body good
 ${a}: it isn't only my script, it's also my client
 ${a}: it keeps going and going and going and going and...
-${a}: it makes bathtime lots of fun!
+${a}: it makes bath-time lots of fun!
 ${a}: it tastes like poo
 ${a}: it won't get you laid
 ${a}: it'll get you in, out and on with life.
@@ -40,7 +40,7 @@ ${a} for president.
 ${a}: it's everywhere you want to be
 ${a}: it's how steak is done
 ${a}: it's magically delicious!
-${a}: it's not for the tabkey impaired!
+${a}: it's not for the tab-key impaired!
 ${a}: it's not your ordinary stick of gum
 ${a}: it's shagadellic, baby!
 ${a}: it's wax ecstatic
@@ -82,7 +82,7 @@ ${a} for president.
 ${a}: the fizzle goes straight to your brain!
 ${a}: the fresh-maker!
 ${a}: the headache medicine
-${a}: the IRC client with hair on it's balls
+${a}: the IRC client with hair on its balls
 ${a}: the NEW form of birth control!
 ${a}: the new hardcore, psycho, nitro client -- in a can
 ${a}: the official IRC client of the 2004 Olympic Games
@@ -96,7 +96,7 @@ ${a} for president.
 ${a}: the un-Cola
 ${a}: to the rescue!
 ${a}: treats external genital warts!
-${a}: try our lowfat flavor too!
+${a}: try our low-fat flavor too!
 ${a}: try our Windows Me and Windows XP flavors too!
 ${a}: Tune In, Turn On, Drop Out.
 ${a}: use it, it makes hair grow in funny places!
@@ -104,15 +104,18 @@ ${a} for president.
 ${a}: use only under adult supervision
 ${a}: you'll have to speak up, I'm wearing a towel
 ${a}: your way, right away
+${a}: not a flotation device
+${a}: for external use only
+${a}: may contain traces of peanuts
+${a}: contains phenylalanine
 
 ${J} by panasync
-${J} © 1996-2003 Colten Edwards
+${J} © 1996-2011 Colten Edwards et al
 
 ${J}: just when you thought it couldn't get any better
 
 ${a} by any other name is still ${a}
 ${a} has bite! (Just ask Mike Tyson!)
-${a} is a flavored condom, all the women love it's taste
 ${a} Lite I said!
 
 ${b} "got $tolower(${a})?"
@@ -155,7 +158,7 @@ ${b} Get your free warez from ftp://127.0.0.1!
 ${b} Grandmaster Flash uses ${a}, 'coz it's all about money, ain't a damn thing funny
 ${b} Hanson uses ${a}. Mommy, can we dress like boys again?
 ${b} Harry Potter uses ${a}. Shouldn't you?
-${b} Have you huggled your ${a} today?
+${b} Have you hugged your ${a} today?
 ${b} Have YOU raped a lawn gnome today?
 ${b} He-Man uses ${a}. *HE HAS THE POOWWEEEEEEEEEERRRRRRRR!!!!!*
 ${b} Hey, where's the cream filling?!
@@ -254,6 +257,7 @@ ${b} Wouldn't it be great if the dog could walk itself?
 ${b} Yo quiero ${a}
 ${b} You can breathe without ${a}, but I wouldn't recommend it
 ${b} You can /quit any time you like, but you can never leave
+${b} THE BEATINGS WILL CONTINUE UNTIL MORALE IMPROVES
 
 All the ${a} that's fit to print!
 Bad ${a}, bad ${a}, whatcha gonna do? Whatcha gonna do when they come for you?
