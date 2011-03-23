@@ -4902,14 +4902,13 @@ void check_server_connect(int server)
 #endif
 }
 
-char *country(char *hostname)
+const char *country(char *hostname)
 {
 #ifndef BITCHX_LITE
-typedef struct _domain {
-char *code;
-char *country;
-} Domain;
-Domain domain[] = {
+static const struct {
+	const char *code;
+	const char *country;
+} domain[] = {
 	{"AC", "Ascension Island" },
 	{"AD", "Andorra" },
 	{"AE", "United Arab Emirates" },
@@ -5166,6 +5165,7 @@ Domain domain[] = {
 	{"INFO", "Informational" },
 	{"INT", "International" },
 	{"MIL", "United States Military" },
+	{"MOBI", "Mobile Device" },
 	{"MUSEUM", "Museum" },
 	{"NET", "Network" },
 	{"NAME", "Individuals" },

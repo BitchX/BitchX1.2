@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Improve country() and add .mobi TLD. (caf)
+
 * Apply fixes from darkfires removing non-standard use of arithmetic on
   void * values, to allow building on Irix. (caf)
 

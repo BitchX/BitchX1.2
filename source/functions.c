@@ -5487,7 +5487,6 @@ BUILT_IN_FUNCTION(function_irclib, input)
 
 BUILT_IN_FUNCTION(function_country, input)
 {
-extern char *country(char *);
 	RETURN_STR(country(input));
 }
 
