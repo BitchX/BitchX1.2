@@ -1419,39 +1419,40 @@ time_t right_now;
 
 static	void p_mode(char *from, char **ArgList)
 {
-	char	*channel;
-	char	*line;
+	char *target;
+	char *line;
 	int	flag;
 	
 	ChannelList *chan = NULL;
 	ChannelList *chan2 = get_server_channels(from_server);
 	char buffer[BIG_BUFFER_SIZE+1];		
 	char *smode;
+	char *display_uh = FromUserHost[0] ? FromUserHost : "*";
 #ifdef COMPRESS_MODES
 	char *tmpbuf = NULL;
 #endif
 	
 	PasteArgs(ArgList, 1);
-	channel = ArgList[0];
+	target = ArgList[0];
 	line = ArgList[1];
 	smode = strchr(from, '.');
 
-	flag = check_ignore(from, FromUserHost, channel, (smode?IGNORE_SMODES : IGNORE_MODES) | IGNORE_CRAP, NULL);
+	flag = check_ignore(from, FromUserHost, target, (smode?IGNORE_SMODES : IGNORE_MODES) | IGNORE_CRAP, NULL);
 
-	set_display_target(channel, LOG_CRAP);
-	if (channel && line)
+	set_display_target(target, LOG_CRAP);
+	if (target && line)
 	{
 		strcpy(buffer, line);
 		if (get_int_var(MODE_STRIPPER_VAR))
-			strip_modes(from,channel,line);
-		if (is_channel(channel))
+			strip_modes(from, target, line);
+		if (is_channel(target))
 		{
 #ifdef COMPRESS_MODES
 			if (chan2)
-				chan = (ChannelList *)find_in_list((List **)&chan2, channel, 0);
+				chan = (ChannelList *)find_in_list((List **)&chan2, target, 0);
 			if (chan && get_cset_int_var(chan->csets, COMPRESS_MODES_CSET))
 			{
-				tmpbuf = do_compress_modes(chan, from_server, channel, line);
+				tmpbuf = do_compress_modes(chan, from_server, target, line);
 				if (tmpbuf)
 					strcpy(line, tmpbuf);
 				else
@@ -1459,45 +1460,41 @@ static	void p_mode(char *from, char **ArgList)
 			}
 #endif
 			/* CDE handle mode protection here instead of later */
-			update_channel_mode(from, channel, from_server, buffer, chan);
+			update_channel_mode(from, target, from_server, buffer, chan);
 #ifdef WANT_TCL
-			check_tcl_mode(from, FromUserHost, from, channel, line);
+			check_tcl_mode(from, FromUserHost, from, target, line);
 #endif			
 			if (my_stricmp(from, get_server_nickname(from_server))) 
 			{
-				check_mode_lock(channel, line, from_server);
-				check_bitch_mode(from, FromUserHost, channel, line, chan);
+				check_mode_lock(target, line, from_server);
+				check_bitch_mode(from, FromUserHost, target, line, chan);
 			}
 
-
-			if (flag != IGNORED && do_hook(MODE_LIST, "%s %s %s", from, channel, line))
-				put_it("%s",convert_output_format(fget_string_var(smode?FORMAT_SMODE_FSET:FORMAT_MODE_FSET), "%s %s %s %s %s",update_clock(GET_TIME), from, smode?"*":FromUserHost, channel, line));
-			logmsg(LOG_MODE_CHAN, from, 0, "%s %s", channel, line);
-			do_logchannel(LOG_MODE_CHAN, chan, "%s %s, %s", from, channel, line);
+			if (flag != IGNORED && do_hook(MODE_LIST, "%s %s %s", from, target, line))
+			{
+				enum FSET_TYPES fset = smode ? FORMAT_SMODE_FSET : FORMAT_MODE_FSET;
+				put_it("%s", convert_output_format(fget_string_var(fset), "%s %s %s %s %s", update_clock(GET_TIME), from, display_uh, target, line));
+			}
+			logmsg(LOG_MODE_CHAN, from, 0, "%s %s", target, line);
+			do_logchannel(LOG_MODE_CHAN, chan, "%s %s, %s", from, target, line);
 		}
 		else
 		{
-			chan = (ChannelList *)find_in_list((List **)&chan2, channel, 0);
-			if (flag != IGNORED && do_hook(MODE_LIST, "%s %s %s", from, channel, line))
+			if (flag != IGNORED && do_hook(MODE_LIST, "%s %s %s", from, target, line))
 			{
-				if (!my_stricmp(from, channel))
-				{
-					if (!my_stricmp(from, get_server_nickname(from_server)))
-						put_it("%s",convert_output_format(fget_string_var(FORMAT_USERMODE_FSET), "%s %s %s %s %s",update_clock(GET_TIME), from, "*",  channel, line));
-					else
-						put_it("%s",convert_output_format(fget_string_var(FORMAT_USERMODE_FSET), "%s %s %s %s %s",update_clock(GET_TIME), from, smode?"*":FromUserHost, channel, line));
-				}
-				else
-					put_it("%s",convert_output_format(fget_string_var(FORMAT_MODE_FSET), "%s %s %s %s %s",update_clock(GET_TIME), from, smode?"*":FromUserHost, channel, line));
+				/* User mode changes where from != target don't occur on 
+				 * standard servers, but are used by services on some networks. */
+				enum FSET_TYPES fset = my_stricmp(from, target) ? FORMAT_USERMODE_OTHER_FSET : FORMAT_USERMODE_FSET;
+				put_it("%s", convert_output_format(fget_string_var(fset), "%s %s %s %s %s", update_clock(GET_TIME), from, display_uh, target, line));
 			}
-			update_user_mode(line);
-			logmsg(LOG_MODE_USER, from, 0, "%s %s", channel, line);
-			do_logchannel(LOG_MODE_USER, chan, "%s %s %s", from, channel, line);
+			if (!my_stricmp(target, get_server_nickname(from_server)))
+				update_user_mode(line);
+			logmsg(LOG_MODE_USER, from, 0, "%s %s", target, line);
 		}
 		update_all_status(current_window, NULL, 0);
 	}
 #ifdef GUI
-	gui_update_nicklist(channel);
+	gui_update_nicklist(target);
 #endif
 	reset_display_target();
 }

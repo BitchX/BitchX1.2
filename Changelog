@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Add /FSET USERMODE_OTHER to correctly format user mode changes where the
+  source isn't the same as the target, reported by gauze. (caf)
+
 * Improve country() and add several new TLDs, suggested by gauze. (caf)
 
 * Apply fixes from darkfires removing non-standard use of arithmetic on

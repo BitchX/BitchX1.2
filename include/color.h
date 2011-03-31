@@ -271,6 +271,7 @@
 
 #define DEFAULT_FORMAT_USAGE_FSET "$G Usage: /$0  $1-"
 #define DEFAULT_FORMAT_USERMODE_FSET "$G %nMode change %K[%W$4-%K]%n for user %c$3"
+#define DEFAULT_FORMAT_USERMODE_OTHER_FSET "$G %nMode change %K[%W$4-%K]%n for user %c$3%n by %W$1"
 
 #define DEFAULT_FORMAT_USERLIST_FSET "$[16]0 $[10]1 $[-10]2   $[-25]3 $[10]4"
 
@@ -695,6 +696,7 @@
 	
 #define DEFAULT_FORMAT_USAGE_FSET "$G Usage: /$0  $1-"
 #define DEFAULT_FORMAT_USERMODE_FSET "$G %nMode change %K[%W$4-%K]%n for user %c$3"
+#define DEFAULT_FORMAT_USERMODE_OTHER_FSET "$G %nMode change %K[%W$4-%K]%n for user %c$3%n by %W$1"
 
 #define DEFAULT_FORMAT_USERLIST_FSET "$[16]0 $[10]1 $[-10]2   $[-25]3 $[10]4"
 
