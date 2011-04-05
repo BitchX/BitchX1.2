@@ -248,7 +248,7 @@ IrcCommand irc_command[] =
 	{ "BANWORDS",	NULL,		add_ban_word,		0,	"%Y<%nchannel|*%Y>%n word(s)\n- Adds word or words to the banned words list for %Y<%nchannel%Y>" },
 	{ "BEEP",	NULL,		beepcmd,		0,	"- Creates a beep noise" },
 #ifdef WANT_CHELP
-	{ "BHELP",	"BHELP",	chelp,			0,	"%Y<%nhelp%W|%nindex%W|%nother%Y>%n\n - Externel help command for use with ~/.BitchX/BitchX.help" },
+	{ "BHELP",	"BHELP",	chelp,			0,	"%Y<%nhelp%W|%nindex%W|%nother%Y>%n\n - BitchX help command" },
 #endif
 	{ "BIND",	NULL,		bindcmd,		0,	"- Command to bind a key to a function" },
 	{ "BK",		NULL,		kickban,		SERVERREQ,	"%Y<%Cnick%Y>%n %R[%nreason%R]%n\n- Deops, bans and kicks %Y<%Cnick%Y>%n for %R[%nreason%R]%n" },
