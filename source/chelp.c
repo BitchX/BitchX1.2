@@ -153,22 +153,22 @@ static int first_time = 1;
 
 int read_file(FILE *help_file, int helpfunc)
 {
-char line[BIG_BUFFER_SIZE + 1];
-char *topic = NULL;
-char *subject = NULL;
-int item_number = 0;
-int topics = 0;
-	fgets(line, sizeof(line)-1, help_file);
-	if (line)
-		line[strlen(line)-1] = '\0';
-	while (!feof(help_file))
+	char line[BIG_BUFFER_SIZE + 1];
+	char *topic = NULL;
+	char *subject = NULL;
+	int item_number = 0;
+	int topics = 0;
+
+	while (fgets(line, sizeof line, help_file))
 	{
-		if (!line || !*line || *line == '#')
-		{
-			fgets(line, sizeof(line)-1, help_file);
+		size_t len = strlen(line);
+		if (line[len - 1] == '\n')
+			line[len - 1] = '\0';
+
+		if (!*line || *line == '#')
 			continue;
-		}
-		else if (*line && (*line != ' ')) /* we got a topic copy to topic */
+
+		if (*line != ' ') /* we got a topic copy to topic */
 		{
 			topics++;
 			item_number = 0;
@@ -199,29 +199,19 @@ int topics = 0;
 					help_index[topics-1]->title = m_strdup(line);
 				}
 			}
-			fgets(line, sizeof(line)-1, help_file);
-			if (line)
-				line[strlen(line)-1] = '\0';
 		}
 		else if (topic && *topic)
 		{ /* we found the subject material */
-			do {
-				if (!line || (line && *line != ' '))
-					break;
-				if (helpfunc)
-				{
-					RESIZE(script_help[topics-1]->contents, char **, ++item_number);
-					script_help[topics-1]->contents[item_number-1] = m_strdup(line);
-				}
-				else
-				{
-					RESIZE(help_index[topics-1]->contents, char **, ++item_number);
-					help_index[topics-1]->contents[item_number-1] = m_strdup(line);
-				}
-				fgets(line, sizeof(line)-1, help_file);
-				if (line)
-					line[strlen(line)-1] = '\0';
-			} while (!feof(help_file));
+			if (helpfunc)
+			{
+				RESIZE(script_help[topics-1]->contents, char **, ++item_number);
+				script_help[topics-1]->contents[item_number-1] = m_strdup(line);
+			}
+			else
+			{
+				RESIZE(help_index[topics-1]->contents, char **, ++item_number);
+				help_index[topics-1]->contents[item_number-1] = m_strdup(line);
+			}
 		}
 	}
 
