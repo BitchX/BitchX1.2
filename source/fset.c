@@ -525,19 +525,15 @@ void create_fsets(Window *win, int ansi)
 #ifdef VAR_DEBUG
  	int i;
 	
-	for (i = 1; i < NUMBER_OF_CSETS - 1; i++)
+	for (i = 1; i < NUMBER_OF_FSET - 1; i++)
 		if (strcmp(fset_array[i-1].name, fset_array[i].name) >= 0)
 			ircpanic("Variable [%d] (%s) is out of order.", i, fset_array[i].name);
 #endif
-#if 0
-	fset_string_var(FORMAT_381_FSET, DEFAULT_FORMAT_381_FSET);
-	fset_string_var(FORMAT_391_FSET, DEFAULT_FORMAT_391_FSET);
-	fset_string_var(FORMAT_471_FSET, DEFAULT_FORMAT_471_FSET);
-	fset_string_var(FORMAT_473_FSET, DEFAULT_FORMAT_473_FSET);
-	fset_string_var(FORMAT_474_FSET, DEFAULT_FORMAT_474_FSET);
-	fset_string_var(FORMAT_475_FSET, DEFAULT_FORMAT_475_FSET);
-	fset_string_var(FORMAT_476_FSET, DEFAULT_FORMAT_476_FSET);
-#else
+
+	if (sizeof fset_array / sizeof fset_array[0] != NUMBER_OF_FSET + 1)
+		ircpanic("Inconsistent fset_array - %d != %d", 
+			sizeof fset_array / sizeof fset_array[0], NUMBER_OF_FSET + 1);
+	
 	add_numeric_fset("381", 0, DEFAULT_FORMAT_381_FSET, 0);
 	add_numeric_fset("391", 0, DEFAULT_FORMAT_391_FSET, 0);
 	add_numeric_fset("471", 0, DEFAULT_FORMAT_471_FSET, 0);
@@ -545,7 +541,7 @@ void create_fsets(Window *win, int ansi)
 	add_numeric_fset("474", 0, DEFAULT_FORMAT_474_FSET, 0);
 	add_numeric_fset("475", 0, DEFAULT_FORMAT_475_FSET, 0);
 	add_numeric_fset("476", 0, DEFAULT_FORMAT_476_FSET, 0);
-#endif
+
 	fset_string_var(FORMAT_ACTION_FSET, DEFAULT_FORMAT_ACTION_FSET);
 	fset_string_var(FORMAT_ACTION_AR_FSET, DEFAULT_FORMAT_ACTION_AR_FSET);
 	fset_string_var(FORMAT_ACTION_CHANNEL_FSET, DEFAULT_FORMAT_ACTION_CHANNEL_FSET);
