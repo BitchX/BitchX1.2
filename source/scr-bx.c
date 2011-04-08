@@ -234,7 +234,7 @@ int doit = 0;
 			fprintf(stderr, "%30s %s\r\n", dir->d_name, ((st.st_mode & 0700) == 0600) ? "detached":"Attached or dead");
 	}
 	if (!count)
-		fprintf(stderr, "No sockets to attach too\r\n");
+		fprintf(stderr, "No sockets to attach to.\r\n");
 	closedir(dptr);
 	exit(1);
 }
@@ -412,7 +412,7 @@ struct winsize window;
 
 	if (!(name = find_detach_socket(socket_path, tty)))
 	{
-		fprintf(stderr, "No detached process to attach too\r\n");
+		fprintf(stderr, "No detached process to attach to.\r\n");
 		_exit(1);
 	}
 
