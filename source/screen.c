@@ -88,7 +88,7 @@ static	int	display_color		(long color1, long color2);
 static	void	display_normal		(void);
 static	char	display_altcharset	(int flag);
 
-static	char	*replace_color		(int, int);
+static	void	put_color		(int, int);
 
 const	u_char	*BX_skip_ctl_c_seq		(const u_char *start, int *lhs, int *rhs, int proper);
 
@@ -904,7 +904,7 @@ static	int	altc = OFF;
 		display_blink(blink);
 		display_underline(undl);
 		display_altcharset(altc);
-		tputs_x(replace_color(-2, -2));		/* Reinstate color */
+		put_color(-2, -2);		/* Reinstate color */
 
 		output_line(str);
 
@@ -914,7 +914,7 @@ static	int	altc = OFF;
 		blink = display_blink(OFF);
 		altc = display_altcharset(OFF);
 #else
-		tputs_x(replace_color(-2,-2));
+		put_color(-2,-2);
 		output_line(str);
 #endif
 		term_newline();
@@ -1348,7 +1348,7 @@ static int	display_color (long color1, long color2)
 	else
 		doing_color = 1;
 
-	tputs_x(replace_color(color1, color2));
+	put_color(color1, color2);
 	return doing_color;
 }
 
@@ -2922,16 +2922,28 @@ unsigned char *BX_strip_ansi (const unsigned char *str)
 }
 
 /*
- * Meant as an argument to strip_ansi(). This version will replace ANSI
- * color changes with terminal specific color changes.
+ * put_color()
+ *
+ * Converts ^C color code pairs into terminal specific color changes,
+ * and sends them to the terminal.
+ *
+ * Code         foreground              background
+ * -----------------------------------------------------------
+ * 0 to 15      MIRC-style color codes  MIRC-style color codes
+ * 30 to 37     term colors 0 to 7      (invalid)
+ * 40 to 37     (invalid)               term colors 0 to 7
+ * 50 to 57     term colors 8 to 15     term colors 8 to 15
+ * 58           (invalid)               blinking on
+ *
+ * Setting both foreground and background to -1 sets the terminal
+ * to "normal", and setting both to -2 re-applies the last set colors.
  */
-char *replace_color(int fore, int back)
+void put_color(int fore, int back)
 {
-static 	char 	retbuf[512];
-	char 	*ptr = retbuf;
-	static	int	last_fore = -2, last_back = -2;
+	char retbuf[512];
+	static int last_fore = -2, last_back = -2;
 
-	static int fore_conv[] = {
+	const static int fore_conv[] = {
 		15,  0,  4,  2,  1,  3,  5,  9,		/*  0-7  */
 		11, 10,  6, 14, 12, 13,  8,  7,		/*  8-15 */
 		15,  0,  0,  0,  0,  0,  0,  0, 	/* 16-23 */
@@ -2941,7 +2953,7 @@ static 	char 	retbuf[512];
 		 0,  0,  8,  9, 10, 11, 12, 13, 	/* 48-55 */
 		14, 15 					/* 56-57 */
 	};
-	static int back_conv[] = {
+	const static int back_conv[] = {
 		 7,  0,  4,  2,  1,  3,  5,  1,
 		 3,  2,  6,  6,  4,  5,  0,  0,
 		 7,  0,  0,  0,  0,  0,  0,  0,
@@ -2952,10 +2964,8 @@ static 	char 	retbuf[512];
 		14, 15 
 	};
 
-	*ptr = '\0';
-
 	if (!get_int_var(COLOR_VAR))
-		return retbuf;
+		return;
 
 	if (fore == -2 && back == -2)
 	{
@@ -2964,7 +2974,8 @@ static 	char 	retbuf[512];
 	else if (fore == -1 && back == -1)
 	{
 		last_fore = last_back = -2;
-		return (current_term->TI_sgrstrs[TERM_SGR_NORMAL-1]);
+		tputs_x(current_term->TI_sgrstrs[TERM_SGR_NORMAL-1]);
+		return;
 	}
 
 	if (fore == -1)
@@ -2972,9 +2983,10 @@ static 	char 	retbuf[512];
 	if (back == -1)
 		back = last_back;
 
+	retbuf[0] = '\0';
 	if (back == 58)
 		strcat(retbuf, current_term->TI_sgrstrs[TERM_SGR_BLINK_ON - 1]);
-	if (fore > -1)
+	if (fore > -1 && fore < 58)
 		strcat(retbuf, current_term->TI_forecolors[fore_conv[fore]]);
 	if (back > -1 && back < 58)
 		strcat(retbuf, current_term->TI_backcolors[back_conv[back]]);
@@ -2982,5 +2994,5 @@ static 	char 	retbuf[512];
 	last_fore = fore;
 	last_back = back;
 
-	return retbuf;
+	tputs_x(retbuf);
 }
