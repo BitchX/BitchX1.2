@@ -4902,7 +4902,7 @@ void check_server_connect(int server)
 #endif
 }
 
-const char *country(char *hostname)
+const char *country(const char *hostname)
 {
 #ifndef BITCHX_LITE
 static const struct {
@@ -5181,10 +5181,12 @@ static const struct {
 	{"PRO", "Professional" },
 	{"TEL", "Contact Information" },
 	{"TRAVEL", "Travel Industry" },
+	{"XXX", "Porn" },
 	{NULL, NULL}
 };
-char *p;
-int i = 0;
+	const char *p;
+	int i = 0;
+
 	if (!hostname || !*hostname || isdigit((unsigned char)hostname[strlen(hostname)-1]))
 		return "unknown";
 	if ((p = strrchr(hostname, '.')))
