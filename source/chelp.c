@@ -154,10 +154,9 @@ static int first_time = 1;
 int read_file(FILE *help_file, int helpfunc)
 {
 	char line[BIG_BUFFER_SIZE + 1];
-	char *topic = NULL;
-	char *subject = NULL;
 	int item_number = 0;
-	int topics = 0;
+	int topic = -1;
+	Chelp **index = new_malloc(sizeof index[0]);
 
 	while (fgets(line, sizeof line, help_file))
 	{
@@ -170,50 +169,40 @@ int read_file(FILE *help_file, int helpfunc)
 
 		if (*line != ' ') /* we got a topic copy to topic */
 		{
-			topics++;
-			item_number = 0;
 			if (!my_strnicmp(line, "-RELATED", 7))
 			{
-				if (topic)
+				if (topic > -1)
 				{
-					if (helpfunc)
-						script_help[topics-1]->relates = m_strdup(line+8);
-					else
-						help_index[topics-1]->relates = m_strdup(line+8);
+					index[topic]->relates = m_strdup(line+8);
 				}
 			}
 			else
 			{	
-				new_free(&topic); new_free(&subject);
-				malloc_strcpy(&topic, line);
-				if (helpfunc)
-				{
-					RESIZE(script_help, Chelp, topics+1);
-					script_help[topics-1] = new_malloc(sizeof(Chelp));
-					script_help[topics-1]->title = m_strdup(line);
-				}
-				else
-				{
-					RESIZE(help_index, Chelp, topics+1);
-					help_index[topics-1] = new_malloc(sizeof(Chelp));
-					help_index[topics-1]->title = m_strdup(line);
-				}
+				topic++;
+				item_number = 0;
+				RESIZE(index, Chelp *, topic + 2);
+
+				index[topic] = new_malloc(sizeof(Chelp));
+				index[topic]->title = m_strdup(line);
+				index[topic]->contents = new_malloc(sizeof(char *));
+				index[topic]->contents[0] = NULL;
+				index[topic]->relates = NULL;
 			}
 		}
-		else if (topic && *topic)
+		else if (topic > -1)
 		{ /* we found the subject material */
-			if (helpfunc)
-			{
-				RESIZE(script_help[topics-1]->contents, char **, ++item_number);
-				script_help[topics-1]->contents[item_number-1] = m_strdup(line);
-			}
-			else
-			{
-				RESIZE(help_index[topics-1]->contents, char **, ++item_number);
-				help_index[topics-1]->contents[item_number-1] = m_strdup(line);
-			}
+			item_number++;
+			RESIZE(index[topic]->contents, char *, item_number + 1);
+
+			index[topic]->contents[item_number-1] = m_strdup(line);
+			index[topic]->contents[item_number] = NULL;
 		}
 	}
+
+	if (helpfunc)
+		script_help = index;
+	else
+		help_index = index;
 
 	return 0;
 }
