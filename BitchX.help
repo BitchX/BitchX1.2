@@ -1,42 +1,42 @@
 INDEX
-   4OP           ABORT     ADDIDLE   ADDSHIT   ADDUSER   ADDLAME   ADDFORWARD
-   ADDWORD       ADMIN     AJOIN     AJOINLIST AWAY      BACK      BAN
-   BANS          BANSTA    BANTYPE   BANWORD   BEEP      BHELP     BK        
-   BOTLIST       BYE       C         CD        CDCC      CHANNEL   CHANST    
-   CHAT          CHGAOP    CHGCHAN   CHGHOST   CHANNEL   CHANST    CHGAOP    
-   CHGCHAN       CHGHOST   CHGLEVEL  CHGPROT   %MCHOPS%n     CLEARAUTO CLEARLOCK 
-   CLEARTAB      %RCLONES%n    CONNECT   CMSG      CREDIT    CSAY      CSET
-   CTCP          CWHO      CWHOM     CYCLE     DATE      DBAN      DC        
-   DCA           DCC       DCG       DCS       DCX       DEOP      DEOPER    
-   DESCRIBE      %RDETACH%n    DEVOICE   DF        DIE       DME       DISCONNECT
-   DUMP          ECHO      EVAL      EXEC      EXIT      FINGER    FK
-   FLUSH         FORWARD   FPORTS    FPROT     FSET      FTP       FUCK
-   FUCKEM        HELP      HISTORY   HOST      HOSTNAME  IG        IGH
-   IGNORE        IGT       INFO      INV       IRCHOST   IRCNAME   JNW
-   KB            KILL      LASTLOG   LEAVE     LINKS     LIST      LK
-   LKW           LLOOK     LOAD      LOADDLL   LOADTCL   LS        LUSERS    
-   MAP           MSAY      MB        MDOP      ME        MESG      MK        
-   MKB           MKNU      MODELOCK  MOP       MOTD      MSG       MUB       
-   MULT          MVOICE    NAMES     NEWNICK   NEWUSER   NICK      NOCHAT 
-   %MNOPS%n          NOTICE    NOTIFY    NSLOOKUP  NWHOIS    NWHOWAS   OFFERS
-   OOPS          OP        OPER      ORIGNICK  OSTAT     PARTALL   %RPASTE%n     
-   PING          PS        PURGE     QME       QUERY     QUEUE     QUIT      
-   QUOTE         READLOG   REDIRECT  REHASH    REL       RELC      RELCR
-   RELCRT        RELCT     RELD      RELDT     RELI      RELIT     RELM      
-   RELMT         RELN      RELNT     RELOAD    RELS      RELSM     RELSMT    
-   RELSN         RELSNT    RELST     RELSTT    RELSW     RELSWT    RELT     
-   RELW          RELWT     REMLOG    REPEAT    REQUEST   RESET     RANDOMNICK
-   SAVE          SAVELIST  SHOWIDLE  SCAN      SCANF     SCANI     SCANN     
-   SCANO         SCANS     SCANV     SERVER    SET       SHITLIST  SAY       
-   SHOWLOCK      SLEEP     SPING     SQUIT     SV        STAT      TBAN      
-   TIG           SHOWSPLIT TIME      TIMER     TLOCK     TOPIC     TRACE     
-   TOGG          TRACEKILL TRACESERV URL       USER      UB        UMODE     
-   UNAJOIN       UNBAN     UNBOT     UNIDLE    UNIG      UNIGH     UNKEY     
-   UNSCREW       UNSHIT    UNTOPIC   UNUSER    UNWORD    UPING     UNFORWARD 
-   UNLOAD        UPTIME    USAGE     %MUSER%n      USERIP    USERLIST  VER
-   VERSION       VOICE     WALL      WALLOP    WHICH     WHO       WHOIS     
-   WW            WHOKILL   WHOWAS    WILM      WILN      WINDOW    WORDLIST  
-   USERINFO      USERSHOW 
+   4OP        ABORT       ADDIDLE     ADDSHIT     ADDUSER    ADDLAME     ADDFORWARD
+   ADDWORD    ADMIN       AJOIN       AJOINLIST   AWAY       BACK        BAN
+   BANS       BANSTA      BANTYPE     BANWORD     BEEP       BHELP       BK
+   BOTLIST    BYE         C           CD          CDCC       CHANNEL     CHANST
+   CHAT       CHGAOP      CHGCHAN     CHGHOST     CHANNEL    CHANST      CHGAOP
+   CHGCHAN    CHGHOST     CHGLEVEL    CHGPROT     CHOPS      CLEARAUTO   CLEARLOCK
+   CLEARTAB   CLONES      CONNECT     CMSG        CREDIT     CSAY        CSET
+   CTCP       CWHO        CWHOM       CYCLE       DATE       DBAN        DC
+   DCA        DCC         DCG         DCS         DCX        DEOP        DEOPER
+   DESCRIBE   DETACH      DEVOICE     DF          DIE        DME         DISCONNECT
+   DUMP       ECHO        EVAL        EXEC        EXIT       FINGER      FK
+   FLUSH      FORWARD     FPORTS      FPROT       FSET       FTP         FUCK
+   FUCKEM     HELP        HISTORY     HOST        HOSTNAME   IG          IGH
+   IGNORE     IGT         INFO        INV         IRCHOST    IRCNAME     JNW
+   KB         KILL        LASTLOG     LEAVE       LINKS      LIST        LK
+   LKW        LLOOK       LOAD        LOADDLL     LOADTCL    LS          LUSERS
+   MAP        MSAY        MB          MDOP        ME         MESG        MK
+   MKB        MKNU        MODELOCK    MOP         MOTD       MSG         MUB
+   MULT       MVOICE      NAMES       NEWNICK     NEWUSER    NICK        NOCHAT
+   NOPS       NOTICE      NOTIFY      NSLOOKUP    NWHOIS     NWHOWAS     OFFERS
+   OOPS       OP          OPER        ORIGNICK    OSTAT      PARTALL     PASTE
+   PING       PS          PURGE       QME         QUERY      QUEUE       QUIT
+   QUOTE      READLOG     REDIRECT    REHASH      REL        RELC        RELCR
+   RELCRT     RELCT       RELD        RELDT       RELI       RELIT       RELM
+   RELMT      RELN        RELNT       RELOAD      RELS       RELSM       RELSMT
+   RELSN      RELSNT      RELST       RELSTT      RELSW      RELSWT      RELT
+   RELW       RELWT       REMLOG      REPEAT      REQUEST    RESET       RANDOMNICK
+   SAVE       SAVELIST    SHOWIDLE    SCAN        SCANF      SCANI       SCANN
+   SCANO      SCANS       SCANV       SERVER      SET        SHITLIST    SAY
+   SHOWLOCK   SLEEP       SPING       SQUIT       SV         STAT        TBAN
+   TIG        SHOWSPLIT   TIME        TIMER       TLOCK      TOPIC       TRACE
+   TOGG       TRACEKILL   TRACESERV   URL         USER       UB          UMODE
+   UNAJOIN    UNBAN       UNBOT       UNIDLE      UNIG       UNIGH       UNKEY
+   UNSCREW    UNSHIT      UNTOPIC     UNUSER      UNWORD     UPING       UNFORWARD
+   UNLOAD     UPTIME      USAGE       USER        USERIP     USERLIST    VER
+   VERSION    VOICE       WALL        WALLOP      WHICH      WHO         WHOIS
+   WW         WHOKILL     WHOWAS      WILM        WILN       WINDOW      WORDLIST
+   USERINFO   USERSHOW
    *** Items in %Rred%n denote a newly added function.
    *** Items in %Mmagenta%n denote a change/addition in the function.
 CREDIT
@@ -48,7 +48,7 @@ CREDIT
    Updated by %WPower%n %Y(%npower%C@%npower.zepa.net%Y)%n
    Updated by %WPyroSmurf%n %Y(%nkerensky%C@%nhotmail.com%Y)%n
 HELP
-   %WUsage%n: %W/%nBHelp %Y<%nTopic%G|%nIndex%Y>%n
+   %gUsage%n: %W/%nBHelp %Y<%nTopic%G|%nIndex%Y>%n
      %YTopic%n - This gives help on %Y<%nTopic%Y>%n
      %YIndex%n - This shows the list of commands supplied in BitchX
 4OP
@@ -59,7 +59,7 @@ ABORT
    - Saves IRCII settings then exits IRC
 ABOUT
    %gUsage%n: %W/%nabout
-   - Shows yet another ansi screen with greets to people who have contributed 
+   - Shows yet another ansi screen with greets to people who have contributed
      to the %PBitchX%n project
 WI
    %gUsage%n: %W/%nwi %Y<%Cnick%Y>%n
@@ -116,7 +116,7 @@ BANSTAT
    - Show bans on current channel or %R[%Bchannel%R]%n
 BANTYPE
    %gUsage%n: %W/%nbantype %Y<%nNormal%G|%nBetter%G|%nHost%G|%nDomain%G|%nScrew%Y>%n
-   - When a ban is done on a nick, it uses %Y<%nbantype%Y>%n 
+   - When a ban is done on a nick, it uses %Y<%nbantype%Y>%n
 BEEP
    %gUsage%n: %W/%nbeep
    - Creates a beep noise
@@ -124,9 +124,6 @@ BEEP
 BK
    %gUsage%n: %W/%nbk %Y<%Cnick%Y>%n %R[%nreason%R]%n
    - Deops, bans and kicks %Y<%Cnick%Y>%n for %R[%nreason%R]%n
-BOMB
-   %gUsage%n: %W/%nbomb %Y<%Cnick%Y>%n %R[%nrequest%R]%n
-   - This CTCPs %R[%nrequest%R]%n to %Y<%Cnick%Y>%n
 BOTLIST
    %gUsage%n: %W/%nbotlist
    - Show internal botlist
@@ -225,7 +222,7 @@ CHGAOP
 CHGCHAN
    %gUsage%n: %W/%nchgchan %Y<%Cnick%Y>%n %Y<%Bchannel%Y>%n
    - Changes %Y<%Bchannel%Y>%n of %Y<%Cnick%Y>%n in userlist
-   Hint: /ChgChan whoever #BitchX,#iRC can add multiple channels
+   %gHint%n: /ChgChan whoever #BitchX,#iRC can add multiple channels
 CHGHOST
    %gUsage%n: %W/%nchghost %Y<%Cnick%Y>%n %Y<%Bhostname%Y>%n
    - Changes %Y<%Bhostname%Y>%n of %Y<%Cnick%Y>%n in userlist
@@ -265,7 +262,7 @@ CSAY
      will be sent out to all users on the Chat network
 CSET
    %gUsage%n: %W/%ncset %Y<%Pcommand%Y>%n %R[%narguments%R]%n
-   - Shows sets for current channel. These values are taken from the 
+   - Shows sets for current channel. These values are taken from the
      corresponding /set of the same name to make a default channel. Changing
      a set doesn't necessarily change the corresponding /cset
    %gHint%n: %W/%nBHelp CSet %Y<%Pcommand%Y>%n for more information
@@ -317,7 +314,7 @@ CSET HACKING
 CSET KICK_IF_BANNED
    %gUsage%n: %W/%ncset kick_if_banned %Y<%non%G|%noff%Y>%n
    - Set this to %Y<%non%G|%noff%Y>%n to kick the person who bans you
-   = Not implemented yet
+   = Not implemented yet
 CSET KICK_ON_DEOPFLOOD
    %gUsage%n: %W/%ncset kick_on_deopflood %Y<%nnumber%Y>%n
    - Set the %Y<%nnumber%Y>%n of deops needed before we kick the offender
@@ -342,7 +339,7 @@ CSET KICKFLOOD_TIME
 CSET LAMELIST
    %gUsage%n: %W/%ncset lamelist %Y<%non%G|%noff%Y>%n
    - Turn %Y<%non%G|%noff%Y>%n lame nicklist checking
-   = Not implemented yet
+   = Not implemented yet
 CSET NICKFLOOD
    %gUsage%n: %W/%ncset nickflood %Y<%non%G|%noff%Y>%n
    - Turn %Y<%non%G|%noff%Y>%n nick flood checking
@@ -396,7 +393,7 @@ CTCP
        %Y*%n INVITE   %M-%n Ask for an invite to %Y<%Bchannel%Y>%n
        %Y*%n OPS      %M-%n A legitimate way to gain ops
        %Y*%n WHOAMI   %M-%n Request %Y<%Cnick%Y> to display current attributes of me
-       %Y*%n  %M-%n 
+       %Y*%n  %M-%n
      other%G:%n
        %Y*%n XLINK    %M-%n ?
 CWHO
@@ -428,7 +425,7 @@ DCC
 DCC BOT
    %gUsage%n: %W/%ndcc bot %Y<%Cnick%Y>%n
    - Starts a Direct-Client-to-Client bot chat to %Y<%Cnick%Y>%n
-   - This is a special mode for clients to act as hubs for other dcc chat 
+   - This is a special mode for clients to act as hubs for other dcc chat
      connections
 DCC CHAT
    %gUsage%n: %W/%ndcc chat %Y<%Cnick%Y>%n
@@ -448,7 +445,7 @@ DCC HELP
 DCC RAW
    %gUsage%n: %W/%ndcc raw %Y<%Cnick%Y>%n %Y<%nhost%Y>%n
    - This is used in conjunction with $connect() and $listen() for sending data
-     over a raw irc connection
+     over a raw socket connection
 DCC REGET
    %gUsage%n: %W/%ndcc reget %Y<%Cnick%Y>%n %R[%nfile%r(%ns%r)%R]%n
    - Will reget %R[%nfile%r(%ns%r)%R]%n and restore a broken connection from %Y<%Cnick%Y>%n
@@ -467,15 +464,15 @@ DCG
 DCX
    %gUsage%n: %W/%ndcx %Y<%Cnick%Y>%n
    - Close a DCC CHAT with %Y<%Cnick%Y>%n
-DEBUGMSG 
+DEBUGMSG
    - Displays server msg's via hashtable
 DEOP
    %gUsage%n: %W/%ndeop %Y<%Cnick%y(%Cs%y)%Y>%n
-   - Deops %Y<%Cnick%y(%Cs%y)%Y>%n 
+   - Deops %Y<%Cnick%y(%Cs%y)%Y>%n
 DEOPER
    %gUsage%n: %W/%ndeoper
-   %Y*%n Requires irc operator status
-   - Removes irc operator status
+   %Y*%n Requires IRC operator status
+   - Removes IRC operator status
 DESCRIBE
    %gUsage%n: %W/%ndescribe %Y<%Cnick%G|%Bchannel%Y>%n %Y<%naction%Y>%n
    - Describes to %Y<%Cnick%G|%Bchannel%Y>%n with %Y<%naction%Y>%n
@@ -493,7 +490,7 @@ DISCONNECT
    %gUsage%n: %W/%ndisconnect
    - Disconnects you from the current server
 DOP
-   See DEOP
+   See %YDEOP%n
 DUMP
    %gUsage%n: %W/%ndump %Y<%ntype%Y>%n
    - Dumps %Y<%ntype%Y>%n to screen
@@ -575,7 +572,7 @@ INV
    See %YINVITE%n
 INVITE
    %gUsage%n: %W/%ninvite %Y<%Cnick%Y>%n %R[%Bchannel%R]%n
-   - Invites %Y<%Cnick%Y>%n to current channel or %R[%Bchannel%R]%n   
+   - Invites %Y<%Cnick%Y>%n to current channel or %R[%Bchannel%R]%n
 JNW
    %gUsage%n: %W/%njnw %Y<%Bchannel%Y>%n
    - Simultaneously joins %Y<%Bchannel%Y>%n and creates a new window
@@ -649,8 +646,8 @@ ME
    %gUsage%n: %W/%nme <action>
    - Sends an action to current channel
 MESG
-   %gUsage%n: %W/%nmesg <Yes|No||On|Off>
-   - Turns mesg <Yes|No||On|Off>
+   %gUsage%n: %W/%nmesg %Y<%nYes%g|%nNo%g||%nOn%g|%nOff%Y>%n
+   - Turns mesg %Y<%nYes%g|%nNo%g||%nOn%g|%nOff%Y>%n
 MKB
    %gUsage%n: %W/%nmkb
    - Sorry, no help is available for this command yet
@@ -751,7 +748,7 @@ QUERY
    - Starts a query to %Y<%Cnick%Y>%n
    %GUsage%n: %W/%nquery
    - Whilst in a query, conclude the query if no arguments are present
-   - Use -cmd to specify what type of output you want. default is a msg. 
+   - Use -cmd to specify what type of output you want. default is a msg.
    - cmsg wall csay are all possible to use here.
 QUEUE
    %gUsage%n: %W/%nqueue
@@ -774,12 +771,12 @@ REDIRECT
    - Redirects <command> to %Y<%Cnick%G|%Bchannel%Y>
 REHASH
    %gUsage%n: %W/%nrehash
-   %Y*%n Requires irc operator status
+   %Y*%n Requires IRC operator status
    - Rehashs ircd.conf for new configuration
 REL
    %gUsage%n: %W/%nrel? -command # nick
-   - command is one of the following:   -kick, -wall, -notice, -msg, 
-                                        -wallop, -topic, -kill, -kboot, 
+   - command is one of the following:   -kick, -wall, -notice, -msg,
+                                        -wallop, -topic, -kill, -kboot,
                                         -ansi and -list
    - If the list supports more than one saved message then # can be from 0-9
    - nick can be a nick or a channel. If left off, then current channel is
@@ -832,15 +829,9 @@ RELS
    - Redirects last received server notice to %Y<%Cnick%G|%Bchannel%Y>%n
      If invoked with -l, the last 10 messages received are listed
      -l # will display message number #
-RELSM
-   %gUsage%n: %W/%nrelsm
-   - Displays the last message issued by you
 RELSMT
    %gUsage%n: %W/%nrelsmt
    - Changes the topic to the last message issued by you
-RELSN
-   %gUsage%n: %W/%nrelsn
-   - Displays the last notice issued by you
 RELSNT
    %gUsage%n: %W/%nrelsnt
    - Changes the topic to the last notice issued by you
@@ -935,8 +926,8 @@ SET
      _CDCC_CLOSE_IDLE_SEND_TIME		_CDCC_MINSPEED_TIME
      %RIGNORE_TIME        CPU_SAVER_AFTER CPU_SAVER_EVERY AUTO_COMP_CHAR
      AUTO_UNBAN         APPEND_LOG      DCC_FAST
-   See CSET for commands which can be set through SET and have a 
-   global channel effect instead of one channel effect via CSET
+   See %YCSET%n for commands which can be set through %YSET%n and have a
+   global channel effect instead of one channel effect via %YCSET%n
 SET ANNOY_KICK
    %gUsage%n: %W/%nset annoy_kick
    - Sorry, no help is available for this command yet
@@ -1176,7 +1167,7 @@ SHOWWORDKICK
    %gUsage%n: %W/%nshowwordkick
    - Shows list of banned words
 SAY
-   %gUsage%n: %W/%nsay -%Y<%ntype%Y>%n [-c for cool -a for annoy -e for elite] 
+   %gUsage%n: %W/%nsay -%Y<%ntype%Y>%n [-c for cool -a for annoy -e for elite]
    - Says whatever you write in either cool, annoy or elite format
 SK
    %gUsage%n: %W/%nsk %Y<%nserver%Y>%n
@@ -1202,7 +1193,7 @@ TLOCK
    - [Un]Locks %Y<%Bchannel%Y>%n with the current topic
 TOPIC
    %gUsage%n: %W/%ntopic %Y<%Btext%Y>%n
-   - Changes topic to %Y<%Btext%Y>%n in the current channel 
+   - Changes topic to %Y<%Btext%Y>%n in the current channel
 TOGG
    %gUsage%n: %W/%ntogg
    - Allow's toggling of userlist, autorejoin, cloak, etc. self explanitory.
@@ -1218,7 +1209,7 @@ U
 UB
    %gUsage%n: %W/%nub %R[%Cnick%R]%n
    - Removes ban on %R[%Cnick%R]%n
-   Hint: %W/%nub with no arguments removes all bans placed on current channel
+   Hint: %W/%nub with no arguments removes all bans placed on current channel
 UMODE
    %gUsage%n: %W/%numode %Y<%nmode%Y>%n
    - Sets %Y<%nmode%Y>%n on yourself
@@ -1253,7 +1244,7 @@ UNTOPIC
    %gUsage%n: %W/%nuntopic %R[%Bchannel%R]%n
    - Removes the topic from %R[%Bchannel%R]%n or current channel
 UNUSER
-   %gUsage%n: %W/%nunuser %Y<%Cnick%G|%Cnick%G!%nuser%Y@%nhostname%Y>%n %Y<%Bchannel%G|%Y*>%n   
+   %gUsage%n: %W/%nunuser %Y<%Cnick%G|%Cnick%G!%nuser%Y@%nhostname%Y>%n %Y<%Bchannel%G|%Y*>%n
    - Removes %Y<%Cnick%G|%Cnick%G!%nuser%Y@%nhostname%Y>%n in %Y<%Bchannel%G|%Y*>%n from your userlist
 UNVOICE
    %gUsage%n: %W/%nunvoice %R[%Bchannel%R]%n %Y<%Cnick%Y>%n
@@ -1275,7 +1266,7 @@ USER
    - Displays information about a user
    - Performs action on a user, or class of users
    - Valid %Y[%ntypes%Y]%n:%W -ops -nonops -msg -notice -nkill -kill -kick -stats -ips%n
-   - Valid %Y[%n-sort types%Y]%n:%W time host ip nick none%n 
+   - Valid %Y[%n-sort types%Y]%n:%W time host ip nick none%n
    - %Y[%nnick!user@host%Y]%n can be a wildcarded nick!user@host. %W*!*@*%n is the default.
    - %Y[%ntypes%Y]%n descriptions:
         %W-ops%n performs the operations on the ops
@@ -1293,7 +1284,7 @@ USER
 USERINFO
    %gUsage%n: %W/%nuserinfo %Y<%nnick%Y>%n comment
    - Sets the userinfo for a given nick. If comment is not on command line
-     then comment for that nick is deleted. 
+     then comment for that nick is deleted.
 USERSHOW
    %gUsage%n: %W/%nusershow
    - Shows the userinfo for your userlist.
@@ -1379,7 +1370,7 @@ WHOWAS
    - Display whowas information on %Y<%Cnick%Y>%n
 WINDOW
    %R[%nwindow shortcuts%R]%n:
-     %Y^W-%n %P-%n Shrinks current window 1 line 
+     %Y^W-%n %P-%n Shrinks current window 1 line
      %Y^W+%n %P-%n Grows current window 1 line
      %Y^Wm%n %P-%n Moves current window down 1 line
      %Y^Wl%n %P-%n Lists current windows
@@ -1426,9 +1417,6 @@ VER
 
 # After this line, addidition by PyroSmurf
 
-WI
-    %gUsage%n: %W/%nwi %Y[%Cnick%Y]
-    - Gets /whois information about <nick>
 IRCNAME
     %gUsage%n: %W/%nircname %Y<%Ctext%Y>
     - Changes your IRCNAME upon next connect
@@ -1489,7 +1477,7 @@ DME
    - Sends an action to a dcc
 PASTE
    - %gUsage%n: %W/%npaste %Y<%nnum%W|%nrange%Y> [%n-win #%Y] [%nnick%W|%n#chan%Y]%n
-   - Pastes %Y<%nnum%W|%nrange%Y>%n of scrollback buffer 
+   - Pastes %Y<%nnum%W|%nrange%Y>%n of scrollback buffer
      from %Y[%n-win #%Y]%n to %Y[%nnick%W|%n#chan%Y]%n in ansi
    - /paste 5 will paste line 5 of your scrollback
    - /paste 1-8 will paste lines 1 through 8 of your scrollback
@@ -1527,7 +1515,7 @@ WILM
 ALIAS
     %gUsage%n: %W/%nalias %Y<%Ccommand%y(%Cs%y)%Y>%n
     - Adds new alias with %Y<%Ccommand%y(%Cs%y)%Y>%n
-    - Hint: If no argument is given, all aliases will be displayed
+    - Hint: If no argument is given, all aliases will be displayed
 BHELP
     %gUsage%n: %W/%nbhelp %Y<%Ccommand%Y>%n
     - Displays help for %Y<%Ccommand%Y>%n %W(%nhopefully %W;)%n
@@ -1543,7 +1531,7 @@ DCA
 DCS
     %gUsage%n: %W/%ndca %Y<%Cnick%Y>%n
     - Closes all DCC SEND connections to %Y<%Cnick%Y>%n
-DETACH 
+DETACH
     %gUsage%n: %W/%ndetach
     - Detaches BitchX (use scr-bx to reattach)
 DEVOICE
