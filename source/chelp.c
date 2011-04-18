@@ -25,56 +25,53 @@ CVS_REVISION(chelp_c)
 
 #ifdef WANT_CHELP
 int read_file (FILE *help_file, int helpfunc);
-extern int in_cparse;
 int in_chelp = 0;
 
-typedef struct _chelp_struct {
+struct chelp_entry {
 	char *title;
 	char **contents;
 	char *relates;
-} Chelp;
+};
 
-Chelp **help_index = NULL;
-Chelp **script_help = NULL;
+struct chelp_index {
+	int size;
+	struct chelp_entry *entries;
+};
+
+struct chelp_index bitchx_help;
+struct chelp_index script_help;
 
 char *get_help_topic(char *args, int helpfunc)
 {
 char *new_comm = NULL;
 int found = 0, i;
 char *others = NULL;
-
+	struct chelp_index *index = helpfunc ? &script_help : &bitchx_help;
 	new_comm = LOCAL_COPY(args);
 
-	for (i = 0; helpfunc ? script_help[i] : help_index[i]; i++)
+	for (i = 0; i < index->size; i++)
 	{
-		if (!my_strnicmp(helpfunc?script_help[i]->title:help_index[i]->title, new_comm, strlen(new_comm)))
+		if (!my_strnicmp(index->entries[i].title, new_comm, strlen(new_comm)))
 		{
 			int j;
 			char *text = NULL;
 			if (found++)
 			{
-				m_s3cat(&others, " , ", helpfunc?script_help[i]->title:help_index[i]->title);
+				m_s3cat(&others, " , ", index->entries[i].title);
 				continue;
 			}
 			if (args && *args && do_hook(HELPTOPIC_LIST, "%s", args))
-				put_it("%s",convert_output_format("$G \002$0\002: Help on Topic: \002$1\002", version, args));
-			for (j = 0; ; j++)
+				put_it("%s",convert_output_format("$G \002$0\002: Help on Topic: \002$1\002", "%s %s", version, args));
+			for (j = 0; (text = index->entries[i].contents[j]) != NULL; j++)
 			{
-				if (helpfunc && (script_help[i] && script_help[i]->contents[j]))
-					text = script_help[i]->contents[j];
-				else if (!helpfunc && (help_index[i] && help_index[i]->contents[j]))
-					text = help_index[i]->contents[j];
-				else 
-					break;
-
-				if (text && do_hook(HELPSUBJECT_LIST, "%s %s", new_comm, text))
+				if (do_hook(HELPSUBJECT_LIST, "%s %s", new_comm, text))
 				{
 					in_chelp++;
 					put_it("%s", convert_output_format(text, NULL));
 					in_chelp--;
 				}
 			}		
-			text = helpfunc ?script_help[i]->relates:help_index[i]->relates;
+			text = index->entries[i].relates;
 			if (text && do_hook(HELPTOPIC_LIST, "%s", text))
 				put_it("%s", convert_output_format(text, NULL));
 		}
@@ -107,21 +104,21 @@ static int first_time = 1;
 		int i, j;
 		next_arg(args, &args);
 		first_time = 1;
-		if (help_index)
+		if (bitchx_help.entries)
 		{
-			for (i = 0; help_index[i]; i++)
+			for (i = 0; i < bitchx_help.size; i++)
 			{
-				if (help_index[i]->contents)
+				if (bitchx_help.entries[i].contents)
 				{
-					for (j =0; help_index[i]->contents[j]; j++)
-						new_free(&help_index[i]->contents[j]);
+					for (j =0; bitchx_help.entries[i].contents[j]; j++)
+						new_free(&bitchx_help.entries[i].contents[j]);
 				}
-				new_free(&help_index[i]->contents);
-				new_free(&help_index[i]->title);
-				new_free(&help_index[i]->relates);
-				new_free(&help_index[i]);
+				new_free(&bitchx_help.entries[i].contents);
+				new_free(&bitchx_help.entries[i].title);
+				new_free(&bitchx_help.entries[i].relates);
 			}
-			new_free(&help_index);
+			new_free(&bitchx_help.entries);
+			bitchx_help.size = 0;
 		}
 	}
 	if (first_time)
@@ -156,7 +153,7 @@ int read_file(FILE *help_file, int helpfunc)
 	char line[BIG_BUFFER_SIZE + 1];
 	int item_number = 0;
 	int topic = -1;
-	Chelp **index = new_malloc(sizeof index[0]);
+	struct chelp_index *index = helpfunc ? &script_help : &bitchx_help;
 
 	while (fgets(line, sizeof line, help_file))
 	{
@@ -173,36 +170,32 @@ int read_file(FILE *help_file, int helpfunc)
 			{
 				if (topic > -1)
 				{
-					index[topic]->relates = m_strdup(line+8);
+					index->entries[topic].relates = m_strdup(line+8);
 				}
 			}
 			else
 			{	
 				topic++;
 				item_number = 0;
-				RESIZE(index, Chelp *, topic + 2);
+				RESIZE(index->entries, index->entries[0], topic + 1);
 
-				index[topic] = new_malloc(sizeof(Chelp));
-				index[topic]->title = m_strdup(line);
-				index[topic]->contents = new_malloc(sizeof(char *));
-				index[topic]->contents[0] = NULL;
-				index[topic]->relates = NULL;
+				index->entries[topic].title = m_strdup(line);
+				index->entries[topic].contents = new_malloc(sizeof(char *));
+				index->entries[topic].contents[0] = NULL;
+				index->entries[topic].relates = NULL;
 			}
 		}
 		else if (topic > -1)
 		{ /* we found the subject material */
 			item_number++;
-			RESIZE(index[topic]->contents, char *, item_number + 1);
+			RESIZE(index->entries[topic].contents, char *, item_number + 1);
 
-			index[topic]->contents[item_number-1] = m_strdup(line);
-			index[topic]->contents[item_number] = NULL;
+			index->entries[topic].contents[item_number-1] = m_strdup(line);
+			index->entries[topic].contents[item_number] = NULL;
 		}
 	}
 
-	if (helpfunc)
-		script_help = index;
-	else
-		help_index = index;
+	index->size = topic + 1;
 
 	return 0;
 }
