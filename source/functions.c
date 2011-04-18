@@ -4771,7 +4771,7 @@ BUILT_IN_FUNCTION(function_umask, words)
 }
 
 
-extern char *get_help_topic (char *, int);
+extern char *get_help_topic (const char *, int);
 extern int  read_file (FILE *, int);
 
 BUILT_IN_FUNCTION(function_help, words)

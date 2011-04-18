@@ -41,17 +41,16 @@ struct chelp_index {
 struct chelp_index bitchx_help;
 struct chelp_index script_help;
 
-char *get_help_topic(char *args, int helpfunc)
+char *get_help_topic(const char *args, int helpfunc)
 {
-char *new_comm = NULL;
-int found = 0, i;
-char *others = NULL;
+	int found = 0, i;
+	char *others = NULL;
 	struct chelp_index *index = helpfunc ? &script_help : &bitchx_help;
-	new_comm = LOCAL_COPY(args);
+	size_t arglen = strlen(args);
 
 	for (i = 0; i < index->size; i++)
 	{
-		if (!my_strnicmp(index->entries[i].title, new_comm, strlen(new_comm)))
+		if (!my_strnicmp(index->entries[i].title, args, arglen))
 		{
 			int j;
 			char *text = NULL;
@@ -60,11 +59,12 @@ char *others = NULL;
 				m_s3cat(&others, " , ", index->entries[i].title);
 				continue;
 			}
-			if (args && *args && do_hook(HELPTOPIC_LIST, "%s", args))
-				put_it("%s",convert_output_format("$G \002$0\002: Help on Topic: \002$1\002", "%s %s", version, args));
+			if (do_hook(HELPTOPIC_LIST, "%s", index->entries[i].title))
+				put_it("%s", convert_output_format("$G \002$0\002: Help on Topic: \002$1-\002",
+					"%s %s", version, index->entries[i].title));
 			for (j = 0; (text = index->entries[i].contents[j]) != NULL; j++)
 			{
-				if (do_hook(HELPSUBJECT_LIST, "%s %s", new_comm, text))
+				if (do_hook(HELPSUBJECT_LIST, "%s , %s", index->entries[i].title, text))
 				{
 					in_chelp++;
 					put_it("%s", convert_output_format(text, NULL));
