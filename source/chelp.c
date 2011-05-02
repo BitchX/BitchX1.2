@@ -41,7 +41,7 @@ struct chelp_index {
 struct chelp_index bitchx_help;
 struct chelp_index script_help;
 
-char *get_help_topic(const char *args, int helpfunc)
+void get_help_topic(const char *args, int helpfunc)
 {
 	int found = 0, i;
 	char *others = NULL;
@@ -90,62 +90,64 @@ char *get_help_topic(const char *args, int helpfunc)
 			put_it("Other %d subjects: %s", found - 1, others);
 	}
 	new_free(&others);
-	if (helpfunc)
-		return m_strdup(empty_string);
-	return NULL;
 }
 
 BUILT_IN_COMMAND(chelp)
 {
-static int first_time = 1;
+	int reload = 0;
+
 	reset_display_target();
-	if (args && *args == '-' && !my_strnicmp(args, "-dump", 4))
+
+	if (args && !my_strnicmp(args, "-dump", 4))
 	{
-		int i, j;
 		next_arg(args, &args);
-		first_time = 1;
-		if (bitchx_help.entries)
-		{
-			for (i = 0; i < bitchx_help.size; i++)
-			{
-				if (bitchx_help.entries[i].contents)
-				{
-					for (j =0; bitchx_help.entries[i].contents[j]; j++)
-						new_free(&bitchx_help.entries[i].contents[j]);
-				}
-				new_free(&bitchx_help.entries[i].contents);
-				new_free(&bitchx_help.entries[i].title);
-				new_free(&bitchx_help.entries[i].relates);
-			}
-			new_free(&bitchx_help.entries);
-			bitchx_help.size = 0;
-		}
+		reload = 1;
 	}
-	if (first_time)
+
+	if (reload || !bitchx_help.size)
 	{
 		char *help_dir = NULL;
 		FILE *help_file;
-#ifdef PUBLIC_SYSTEM
-		malloc_sprintf(&help_dir, "%s", DEFAULT_BITCHX_HELP_FILE);
+#ifdef PUBLIC_ACCESS
+		malloc_strcpy(&help_dir, DEFAULT_BITCHX_HELP_FILE);
 #else
-		malloc_sprintf(&help_dir, "%s", get_string_var(BITCHX_HELP_VAR));
+		malloc_strcpy(&help_dir, get_string_var(BITCHX_HELP_VAR));
 #endif
-		if (!(help_file = uzfopen(&help_dir, get_string_var(LOAD_PATH_VAR), 1)))
-		{
-			new_free(&help_dir);
-			return;
-		}
+		help_file = uzfopen(&help_dir, get_string_var(LOAD_PATH_VAR), 1);
 		new_free(&help_dir);
-		first_time = 0;
+		if (!help_file)
+			return;
+
 		read_file(help_file, 0);
 		fclose(help_file);
 	}	
+
 	if (!args || !*args)
-	{
 		userage(command, helparg);
-		return;
+	else
+		get_help_topic(args, 0);
+}
+
+static void free_index(struct chelp_index *index)
+{
+	int i, j;
+
+	for (i = 0; i < index->size; i++)
+	{
+		for (j = 0; index->entries[i].contents[j]; j++)
+			new_free(&index->entries[i].contents[j]);
+		new_free(&index->entries[i].contents);
+		new_free(&index->entries[i].title);
+		new_free(&index->entries[i].relates);
 	}
-	get_help_topic(args, 0);
+	new_free(&index->entries);
+	index->size = 0;
+}
+
+static int compare_chelp(const void *va, const void *vb)
+{
+    const struct chelp_entry *a = va, *b = vb;
+    return my_stricmp(a->title, b->title);
 }
 
 int read_file(FILE *help_file, int helpfunc)
@@ -154,6 +156,8 @@ int read_file(FILE *help_file, int helpfunc)
 	int item_number = 0;
 	int topic = -1;
 	struct chelp_index *index = helpfunc ? &script_help : &bitchx_help;
+
+	free_index(index);
 
 	while (fgets(line, sizeof line, help_file))
 	{
@@ -196,6 +200,8 @@ int read_file(FILE *help_file, int helpfunc)
 	}
 
 	index->size = topic + 1;
+
+	qsort(index->entries, index->size, sizeof index->entries[0], compare_chelp);
 
 	return 0;
 }

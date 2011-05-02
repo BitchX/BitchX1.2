@@ -4770,19 +4770,16 @@ BUILT_IN_FUNCTION(function_umask, words)
 	RETURN_INT(umask(new_umask));
 }
 
-
-extern char *get_help_topic (const char *, int);
-extern int  read_file (FILE *, int);
-
 BUILT_IN_FUNCTION(function_help, words)
 {
-#ifdef PUBLIC_ACCESS
-	RETURN_INT(0);
-#else
-#ifdef WANT_CHELP
-char *filename = NULL, *subject = NULL;
-static int first_time = 1;
-FILE *help_file;
+#if defined(WANT_CHELP) && !defined(PUBLIC_ACCESS)
+	extern void get_help_topic(const char *, int);
+	extern int read_file(FILE *, int);
+
+	char *filename = NULL, *subject = NULL;
+	static int first_time = 1;
+	FILE *help_file;
+
 	GET_STR_ARG(subject, words);
 	if (words && *words)
 		words = next_arg(filename, &words);
@@ -4802,11 +4799,9 @@ FILE *help_file;
 		read_file(help_file, 1);
 		fclose(help_file);
 	} else if (first_time) RETURN_EMPTY;
-	return get_help_topic(subject, (filename) ? 1 : 0);
-#else
+	get_help_topic(subject, (filename) ? 1 : 0);
+#endif
 	RETURN_EMPTY;
-#endif
-#endif
 }
 
 BUILT_IN_FUNCTION(function_isuser, words)
