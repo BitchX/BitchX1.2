@@ -4776,30 +4776,27 @@ BUILT_IN_FUNCTION(function_help, words)
 	extern void get_help_topic(const char *, int);
 	extern int read_file(FILE *, int);
 
-	char *filename = NULL, *subject = NULL;
 	static int first_time = 1;
-	FILE *help_file;
 
-	GET_STR_ARG(subject, words);
-	if (words && *words)
-		words = next_arg(filename, &words);
-	else
-		malloc_strcpy(&filename, get_string_var(SCRIPT_HELP_VAR));
-	if (first_time && filename)
+	if (first_time)
 	{
+		FILE *help_file;
 		char *new_file = NULL;
-		malloc_strcpy(&new_file, filename);
-	        if (!(help_file = uzfopen(&new_file, ".", 0)))
-        	{
-			new_free(&new_file);
-			RETURN_EMPTY;
-		}
-		first_time = 0;
+
+		malloc_strcpy(&new_file, get_string_var(SCRIPT_HELP_VAR));
+		help_file = uzfopen(&new_file, get_string_var(LOAD_PATH_VAR), 0);
 		new_free(&new_file);
+
+		if (!help_file)
+			RETURN_EMPTY;
+
+		first_time = 0;
 		read_file(help_file, 1);
 		fclose(help_file);
-	} else if (first_time) RETURN_EMPTY;
-	get_help_topic(subject, (filename) ? 1 : 0);
+	}
+
+	if (words && *words)
+		get_help_topic(words, 1);
 #endif
 	RETURN_EMPTY;
 }
