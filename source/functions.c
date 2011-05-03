@@ -4777,6 +4777,9 @@ BUILT_IN_FUNCTION(function_help, words)
 	extern int read_file(FILE *, int);
 
 	static int first_time = 1;
+	char *subject;
+
+	GET_STR_ARG(subject, words);
 
 	if (first_time)
 	{
@@ -4795,8 +4798,7 @@ BUILT_IN_FUNCTION(function_help, words)
 		fclose(help_file);
 	}
 
-	if (words && *words)
-		get_help_topic(words, 1);
+	get_help_topic(subject, 1);
 #endif
 	RETURN_EMPTY;
 }
