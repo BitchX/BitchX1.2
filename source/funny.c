@@ -398,28 +398,18 @@ void funny_mode(char *from, char **ArgList)
 	mode = ArgList[1];
 	PasteArgs(ArgList, 1);
 
-	if((channel && in_join_list(channel, from_server)) || get_chan_from_join_list(from_server))
+	if (in_join_list(channel, from_server))
 	{
-		if (!channel)
-			channel = get_chan_from_join_list(from_server);
 		update_channel_mode(from, channel, from_server, mode, chan);
 		update_all_status(current_window, NULL, 0);
 		got_info(channel, from_server, GOTMODE);
 	}
 	else
 	{
-		if (channel)
-		{
-			set_display_target(channel, LOG_CRAP);
-			if (do_hook(current_numeric, "%s %s %s", from, channel, mode))
-				put_it("%s", convert_output_format(fget_string_var(FORMAT_MODE_CHANNEL_FSET), "%s %s %s %s %s", update_clock(GET_TIME), from, *FromUserHost ? FromUserHost:"ÿ", channel, mode));
-			reset_display_target();
-		}
-		else
-		{
-			if (do_hook(current_numeric, "%s %s", from, mode))
-				put_it("%s", convert_output_format(fget_string_var(FORMAT_MODE_CHANNEL_FSET), "%s %s %s %s", update_clock(GET_TIME), from, *FromUserHost ? FromUserHost:"ÿ", mode));
-		}
+		set_display_target(channel, LOG_CRAP);
+		if (do_hook(current_numeric, "%s %s %s", from, channel, mode))
+			put_it("%s", convert_output_format(fget_string_var(FORMAT_MODE_CHANNEL_FSET), "%s %s %s %s %s", update_clock(GET_TIME), from, *FromUserHost ? FromUserHost:"ÿ", channel, mode));
+		reset_display_target();
 	}
 }
 
