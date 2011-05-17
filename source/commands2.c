@@ -1493,26 +1493,20 @@ int add = 0;
 	new_free(&buffer);
 }
 
-/*
- * Rewritten by David Walluck (DavidW2) Fri Mar 26 08:13:36 EST 1999 to use
- * linked lists and add /set MAX_URLS.
- */
-
-UrlList *url_list = NULL, 
-	*cur_url = NULL, 
-	*prev_url = NULL, 
-	*new_url = NULL;
+static UrlList *url_list = NULL;
 
 int grab_http(char *from, char *to, char *text) 
 {
 #ifdef PUBLIC_ACCESS
 	return 0;
 #else
-	static int count = 0;
-	int url_count = 0;
-	char *q = NULL;
 	if ((get_int_var(HTTP_GRAB_VAR) && stristr(text, "HTTP:")) || (get_int_var(FTP_GRAB_VAR) && (stristr(text, "FTP:") || stristr(text, "FTP."))))
 	{
+		static int count = 0;
+		int url_count = 0;
+		char *q = NULL;
+		UrlList *cur_url, *prev_url, *new_url;
+
 		malloc_sprintf(&q, "%s %s -- %s", from, to, text);
 
 		/* Look for end of the list, counting as we go */
@@ -1562,11 +1556,14 @@ BUILT_IN_COMMAND(url_grabber)
 	bitchsay("This command has been disabled on a public access system");
 	return 0;
 #else
-int do_display = 1;
+	int do_display = 1;
+
 	if (args && *args)
 	{
 		int i, q;
 		char *p;
+		UrlList *cur_url, *prev_url;
+
 		while ((p = next_arg(args, &args)))
 		{
 			if (!my_stricmp(p, "SAVE"))
