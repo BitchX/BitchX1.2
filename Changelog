@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Tidy up the URL grabber, fixing a memory leak. (caf)
+
 * Cleanup the /BHELP code, fixing a potential crash. Apply updates to 
   BitchX.help from t3gah. (caf)
 

@@ -1503,20 +1503,23 @@ UrlList *url_list = NULL,
 	*prev_url = NULL, 
 	*new_url = NULL;
 
-static int url_count = 0;
-
 int grab_http(char *from, char *to, char *text) 
 {
 #ifdef PUBLIC_ACCESS
 	return 0;
 #else
-static int count = 0;
-char *q = NULL;
+	static int count = 0;
+	int url_count = 0;
+	char *q = NULL;
 	if ((get_int_var(HTTP_GRAB_VAR) && stristr(text, "HTTP:")) || (get_int_var(FTP_GRAB_VAR) && (stristr(text, "FTP:") || stristr(text, "FTP."))))
 	{
 		malloc_sprintf(&q, "%s %s -- %s", from, to, text);
+
+		/* Look for end of the list, counting as we go */
 		for (cur_url = url_list, prev_url = NULL; cur_url; prev_url = cur_url, cur_url = cur_url->next)
 		{
+			url_count++;
+			/* If we find that the URL is already in the list, bail out. */
 			if (cur_url->name && !my_stricmp(cur_url->name, q))
 			{
 				new_free(&q);
@@ -1524,23 +1527,26 @@ char *q = NULL;
 			}
 		}
 
-		while (url_count >= get_int_var(MAX_URLS_VAR))
-		{
-			if (!prev_url)
-				url_list = NULL;
-			else
-				url_list = url_list->next;
-			url_count--;	
-		}
-		url_count++;
-		count++;
+		/* Add the new URL at the end of the list */
 		new_url = (UrlList *) new_malloc(sizeof(UrlList));
 		new_url->name = q;
-		new_url->next = cur_url;
+		new_url->next = NULL;
 		if (!prev_url)
 			url_list = new_url;
 		else
 			prev_url->next = new_url;
+		url_count++;
+		count++;
+
+		/* Prune off any excess entries */
+		while (url_count > get_int_var(MAX_URLS_VAR) && url_list)
+		{
+			UrlList *tmp = url_list;
+			url_list = url_list->next;
+			new_free(&tmp->name);
+			new_free(&tmp);
+			url_count--;	
+		}
 
 		if (do_hook(URLGRAB_LIST, "%d %d %s %s %s %s", url_count, count, from, FromUserHost, to, text))
 			bitchsay("Added HTTP/FTP grab [%d/%d]", url_count, count);
@@ -1583,8 +1589,7 @@ int do_display = 1;
 				}
 				new_free(&filename);
 				fclose(file);
-				url_count = 0;
-                                prev_url = url_list;
+				prev_url = url_list;
 				while (prev_url)
 				{
 					cur_url = prev_url;
@@ -1617,9 +1622,8 @@ int do_display = 1;
 			}
 			else if (*p == '-')
   			{
-                        	if (!*++p)
-                        	{
-                        		url_count = 0;
+				if (!*++p)
+				{
 					prev_url = url_list;
 					while (prev_url)
 					{
@@ -1642,7 +1646,6 @@ int do_display = 1;
 							prev_url->next = cur_url->next;
         					new_free(&cur_url);
 						bitchsay("Cleared Url [%d]", q);
-						url_count--;
 					}
 					else
 						bitchsay("Url [%d] not found", q);
