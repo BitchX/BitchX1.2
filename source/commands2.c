@@ -1575,8 +1575,16 @@ BUILT_IN_COMMAND(url_grabber)
 
 				snprintf(buffer, BIG_BUFFER_SIZE, "%s/BitchX.url", get_string_var(CTOOLZ_DIR_VAR));
 				filename = expand_twiddle(buffer);
-				if (!filename || !(file = fopen(filename, "a")))
+				if (!filename)
 					return;
+
+				file = fopen(filename, "a");
+				if (!file)
+				{
+					new_free(&filename);
+					return;
+				}
+
 				if (args && *args && (isdigit((unsigned char)*args) || *args == '-'))
 					number = next_arg(args, &args);
 				for (i = 0, cur_url = url_list; cur_url; cur_url = cur_url->next, i++)
@@ -1586,14 +1594,16 @@ BUILT_IN_COMMAND(url_grabber)
 				}
 				new_free(&filename);
 				fclose(file);
-				prev_url = url_list;
-				while (prev_url)
+
+				/* Clear URL list */
+				while (url_list)
 				{
-					cur_url = prev_url;
-					prev_url = cur_url->next;
-					new_free(&cur_url);
+					UrlList *tmp = url_list;
+					url_list = url_list->next;
+					new_free(&tmp->name);
+					new_free(&tmp);
 				}
-				url_list = NULL;
+
 				bitchsay("Url list saved");
 				do_display = 0;
 			}
@@ -1621,14 +1631,13 @@ BUILT_IN_COMMAND(url_grabber)
   			{
 				if (!*++p)
 				{
-					prev_url = url_list;
-					while (prev_url)
+					while (url_list)
 					{
-						cur_url = prev_url;
-						prev_url = cur_url->next;
-						new_free(&cur_url);
+						UrlList *tmp = url_list;
+						url_list = url_list->next;
+						new_free(&tmp->name);
+						new_free(&tmp);
 					}
-					url_list = NULL;	
 					bitchsay("Url list cleared");
 				}
 				else
@@ -1641,7 +1650,8 @@ BUILT_IN_COMMAND(url_grabber)
 							url_list = url_list->next;
 						else
 							prev_url->next = cur_url->next;
-        					new_free(&cur_url);
+						new_free(&cur_url->name);
+						new_free(&cur_url);
 						bitchsay("Cleared Url [%d]", q);
 					}
 					else
