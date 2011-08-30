@@ -100,8 +100,6 @@ extern char attach_ttyname[];
 char *org_nick = NULL;
 
 static int delay_gain_nick (void *, char *);
-extern int	MODE_TOPIC, MODE_MODERATED, MODE_ANONYMOUS, MODE_INVITE, 
-		MODE_MSGS, MODE_SECRET, MODE_PRIVATE, MODE_KEY, MODE_LIMIT;
 
 BUILT_IN_COMMAND(nwhois)
 {

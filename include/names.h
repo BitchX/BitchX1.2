@@ -26,6 +26,21 @@
 #define GOTWHO		0x08
 #define	GOTEXEMPT	0x10
 
+/* Channel mode flags */
+#define MODE_ANONYMOUS	(1U << 0)	/* av2.9 */
+#define MODE_C			(1U << 1)	/* erf/TS4 */
+#define MODE_INVITE 	(1U << 2)	/* RFC */
+#define MODE_KEY    	(1U << 3)	/* RFC */
+#define MODE_LIMIT		(1U << 4)	/* RFC */
+#define MODE_MODERATED	(1U << 5)	/* RFC */
+#define MODE_MSGS		(1U << 6)	/* RFC */
+#define MODE_PRIVATE	(1U << 7)	/* RFC */
+#define MODE_REGISTERED (1U << 8)	/* Dalnet */
+#define MODE_SECRET		(1U << 9)	/* RFC */
+#define MODE_TOPIC		(1U << 10)	/* RFC */
+#define MODE_Z          (1U << 11)  /* erf/TS4 */
+#define MODE_RESTRICTED (1U << 12)  /* Dalnet */
+
 void		add_to_join_list (char *, int, int);
 void		remove_from_join_list (char *, int);
 char		*get_chan_from_join_list (int);

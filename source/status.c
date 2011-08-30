@@ -1178,7 +1178,6 @@ static	char	my_buffer[IRCD_BUFFER_SIZE + 1];
 
 	if (window->current_channel/* && chan_is_connected(s, window->server)*/)
 	{
-extern const int MODE_PRIVATE, MODE_SECRET;
 		int num;
 		if (get_int_var(HIDE_PRIVATE_CHANNELS_VAR) &&
 		    is_channel_mode(window->current_channel,

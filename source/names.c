@@ -59,23 +59,6 @@ static	void	apply_channel_modes (char *, char *, ChannelList *);
 static	char	mode_str[] = "aciklmnprstzR";
 	char	new_channel_format[BIG_BUFFER_SIZE];
 	
-  
-const int	MODE_ANONYMOUS	= 1 << 0;	/* av2.9 */
-const int	MODE_C		= 1 << 1;	/* erf/TS4 */
-const int 	MODE_INVITE 	= 1 << 2;	/* RFC */
-const int 	MODE_KEY    	= 1 << 3;	/* RFC */
-const int	MODE_LIMIT	= 1 << 4;	/* RFC */
-const int 	MODE_MODERATED	= 1 << 5;	/* RFC */
-const int	MODE_MSGS	= 1 << 6;	/* RFC */
-const int	MODE_PRIVATE	= 1 << 7;	/* RFC */
-const int	MODE_REGISTERED = 1 << 8;	/* Dalnet */
-const int	MODE_SECRET	= 1 << 9;	/* RFC */
-const int	MODE_TOPIC	= 1 << 10;	/* RFC */
-const int       MODE_Z          = 1 << 11;      /* erf/TS4 */
-const int       MODE_RESTRICTED = 1 << 12;      /* Dalnet */
-
-
-
 static struct modelist
 {
 	char	*chan;

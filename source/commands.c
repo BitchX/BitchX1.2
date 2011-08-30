@@ -3534,7 +3534,6 @@ char *str = NULL;
 
 BUILT_IN_COMMAND(e_topic)
 {
-extern int MODE_TOPIC;
 	char	*arg = NULL;
 	char	*arg2;
 	ChannelList *chan;
