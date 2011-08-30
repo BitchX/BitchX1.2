@@ -100,7 +100,7 @@ ChannelList *	BX_prepare_command (int *, char *, int);
 	void    do_reconnect (char *);
 
 	int	are_you_opped (char *);
-	void	error_not_opped (char *);
+	void	error_not_opped (const char *);
 
 	char	*get_reason (char *, char *);
 	char	*get_realname(char *);

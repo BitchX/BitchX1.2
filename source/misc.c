@@ -1727,9 +1727,11 @@ int are_you_opped(char *channel)
 	return is_chanop(channel, get_server_nickname(from_server));
 }
 
-void error_not_opped(char *channel)
+void error_not_opped(const char *channel)
 {
+	set_display_target(channel, LOG_CRAP);
 	say("You're not opped on %s", channel);
+	reset_display_target();
 }
 
 int freadln(FILE *stream, char *lin)
@@ -4861,9 +4863,7 @@ ChannelList *chan = NULL;
 	}
 	if (need_op == NEED_OP && chan && !chan->have_op && !chan->hop)
 	{
-		set_display_target(chan->channel, LOG_CRAP);
 		error_not_opped(chan->channel);
-		reset_display_target();
 		return NULL;
 	}
 	return chan;
