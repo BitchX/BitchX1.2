@@ -4831,16 +4831,17 @@ int matchmcommand(char *origline,int count)
 	return(0);
 }
 
-ChannelList *BX_prepare_command(int *active_server, char *channel, int need_op)
+ChannelList *BX_prepare_command(int *active_server, char *channel, int flags)
 {
 int server = 0;
 ChannelList *chan = NULL;
+	int need_op;
 
 	if (!channel) {
 		channel = get_current_channel_by_refnum(0);
 		
 		if (!channel) {		
-			if (need_op != 3) {
+			if (flags != 3) {
 				if (current_window)
 					message_to(current_window->refnum);
 				bitchsay("You're not on a channel!");
@@ -4853,7 +4854,7 @@ ChannelList *chan = NULL;
 	*active_server = server;
 	if (!(chan = lookup_channel(channel, server, 0)))
 	{
-		if (need_op != 3) {
+		if (flags != 3) {
 			if (current_window)
 				message_to(current_window->refnum);
 			bitchsay("You're not on the channel: %s", channel);
@@ -4861,7 +4862,9 @@ ChannelList *chan = NULL;
 		}
 		return NULL;
 	}
-	if (need_op == NEED_OP && chan && !chan->have_op && !chan->hop)
+	
+	need_op = flags == NEED_OP || (flags == PC_TOPIC && (chan->mode & MODE_TOPIC));
+	if (need_op && !chan->have_op && !chan->hop)
 	{
 		error_not_opped(chan->channel);
 		return NULL;

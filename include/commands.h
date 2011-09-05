@@ -60,6 +60,7 @@ extern	void	cd			(char *, char *, char *, char *);
 extern	void	e_wall			(char *, char *, char *, char *);
 extern	void	send_2comm		(char *, char *, char *, char *);
 extern	void	send_comm		(char *, char *, char *, char *);
+extern	void	untopic			(char *, char *, char *, char *);
 extern	void	e_topic			(char *, char *, char *, char *);
 extern	void	send_kick		(char *, char *, char *, char *);
 extern	void	send_channel_com	(char *, char *, char *, char *);

@@ -690,7 +690,7 @@ IrcCommand irc_command[] =
 	{ "UNSHIT",	"UnShit",	add_shit,		0,	"%Y<%nnick%Y> <%nchannel%Y>%n" },
 #endif
 	{ "UNTIL",	"UNTIL",	whilecmd,		0,	scripting_command },
-	{ "UNTOPIC",	"UNTOPIC",	e_topic,		0,	"- Unsets a channel topic" },
+	{ "UNTOPIC",	"UNTOPIC",	untopic,		0,	"- Unsets a channel topic" },
 #ifdef WANT_USERLIST
 	{ "UNUSER",	"UnUser",	add_user,		0,	"%Y<%nnick%W|%nnick!user@hostname%Y> <%n#channel%W|%n*%Y>%n" },
 #endif
@@ -3532,46 +3532,47 @@ char *str = NULL;
 	send_to_server("%s %s %s", command, new_flag, serv);
 }
 
-BUILT_IN_COMMAND(e_topic)
+BUILT_IN_COMMAND(untopic)
 {
-	char	*arg = NULL;
-	char	*arg2;
+	char *channel = NULL;
 	ChannelList *chan;
 	int server;
-	int unset = 0;	
 	
-	
-	arg = next_arg(args, &args);
-	if (!my_stricmp(command, "UNTOPIC"))
-		unset = 1;
-	if (!(chan = prepare_command(&server, arg?(is_channel(arg)?arg:NULL):NULL, NO_OP)))
+	args = sindex(args, "^ ");
+
+	if (is_channel(args))
+		channel = next_arg(args, &args);
+
+	if (!(chan = prepare_command(&server, channel, PC_TOPIC)))
 		return;
-	if (unset)
+
+	my_send_to_server(server, "TOPIC %s :", chan->channel);
+}
+
+BUILT_IN_COMMAND(e_topic)
+{
+	char *channel = NULL;
+	ChannelList *chan;
+	int server;
+
+	args = sindex(args, "^ ");
+
+	if (is_channel(args))
 	{
-		my_send_to_server(server, "TOPIC %s :", chan->channel);
-		return;
+		channel = next_arg(args, &args);
+		args = sindex(args, "^ ");
 	}
-	if (arg && (!(chan->mode & MODE_TOPIC) || chan->have_op))
+
+	if (!(chan = prepare_command(&server, channel, args ? PC_TOPIC : NO_OP)))
+		return;
+
+	if (args)
 	{
-		if (is_channel(arg))
-		{
-			add_last_type(&last_sent_topic[0], 1, NULL, NULL, chan->channel, args);
-			if ((arg2 = next_arg(args, &args)))
-				my_send_to_server(server, "%s %s :%s %s", command, chan->channel, arg2, args);
-			else
-				my_send_to_server(server, "%s %s", command, chan->channel);
-		} 
-		else
-		{
-			char *p = NULL;
-			p = m_sprintf("%s%s%s", arg, arg?space:empty_string, args?args:empty_string);
-			my_send_to_server(server, "%s %s :%s%s%s", command, chan->channel, arg, args?space:empty_string, args?args:empty_string);
-			add_last_type(&last_sent_topic[0], 1, NULL, NULL, chan->channel, p);
-			new_free(&p);
-		}
+		add_last_type(&last_sent_topic[0], 1, NULL, NULL, chan->channel, args);
+		my_send_to_server(server, "TOPIC %s :%s", chan->channel, args);
 	}
 	else
-		my_send_to_server(server, "%s %s", command, chan->channel);
+		my_send_to_server(server, "TOPIC %s", chan->channel);
 }
 
 /* MTOPIC by singe_ stolen from an idea by MHacker 
@@ -3593,7 +3594,7 @@ BUILT_IN_COMMAND(do_mtopic)
 			count++;
 		}
 		if (!count)
-			bitchsay("Your not an op on any channels");
+			bitchsay("You're not an op on any channels");
 	} else
 		bitchsay("No server for this window");
 }

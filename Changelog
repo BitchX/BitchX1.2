@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Add half-op support to /topic and /untopic. (caf)
+
 * Tidy up the URL grabber, fixing a memory leak. (caf)
 
 * Cleanup the /BHELP code, fixing a potential crash. Apply updates to 

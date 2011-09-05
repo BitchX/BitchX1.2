@@ -36,6 +36,7 @@ enum color_attributes {
 };
 
 #define DONT_CARE 3	
+#define PC_TOPIC 2
 #define NEED_OP 1
 #define NO_OP 0
 	
