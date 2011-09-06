@@ -4841,7 +4841,7 @@ ChannelList *chan = NULL;
 		channel = get_current_channel_by_refnum(0);
 		
 		if (!channel) {		
-			if (flags != 3) {
+			if (flags != PC_SILENT) {
 				if (current_window)
 					message_to(current_window->refnum);
 				bitchsay("You're not on a channel!");
@@ -4854,7 +4854,7 @@ ChannelList *chan = NULL;
 	*active_server = server;
 	if (!(chan = lookup_channel(channel, server, 0)))
 	{
-		if (flags != 3) {
+		if (flags != PC_SILENT) {
 			if (current_window)
 				message_to(current_window->refnum);
 			bitchsay("You're not on the channel: %s", channel);
