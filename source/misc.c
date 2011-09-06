@@ -527,7 +527,7 @@ BanList *b;
 		{
 			if (!(channel = make_channel(channel)))
 				return;
-			if (!(new = prepare_command(&server, channel, 3)))
+			if (!(new = prepare_command(&server, channel, PC_SILENT)))
 				if ((channel && !(new1 = check_whowas_chan_buffer(channel, -1, 0))))
 					return;
 		}
@@ -631,7 +631,7 @@ put_it("%s", convert_output_format("IRCops     %K[%W$[3]0%K]%w$1-", "%d %s", num
 	}
 	else 
 	{
-		if (!(new = prepare_command(&server, channel, 3)))
+		if (!(new = prepare_command(&server, channel, PC_SILENT)))
 			if ((channel && !(new1 = check_whowas_chan_buffer(channel, -1, 0))))
 				return;
 	}

@@ -1017,7 +1017,7 @@ char *p = (char *) arg; /* original args unmodified  so we can free them */
 		channel = next_arg(args, &args);
 		if ((serv_num = next_arg(args, &args)))
 			this_server = my_atol(serv_num);
-		if ((chan = prepare_command(&server, channel, 3)))
+		if ((chan = prepare_command(&server, channel, PC_SILENT)))
 			my_send_to_server(this_server, "KICK %s %s :\002%s\002 Kick/ban me will ya", channel, from, _VERSION_);
 		new_free(&protected);
 	}

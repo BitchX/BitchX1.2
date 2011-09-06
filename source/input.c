@@ -2050,7 +2050,7 @@ static NickTab sucks = { NULL };
 		}
 	}
 
-	if ((chan = prepare_command(&server, NULL, 3)))
+	if ((chan = prepare_command(&server, NULL, PC_SILENT)))
 	{
 		cnick = next_nicklist(chan, NULL);
 		/* 
@@ -2286,7 +2286,7 @@ int globtype = GLOB_MARK;
 			NickList *cnick = NULL;
 			ChannelList *chan = NULL;
 			int server = from_server;
-			chan = prepare_command(&server, NULL, 3);
+			chan = prepare_command(&server, NULL, PC_SILENT);
 			if (possible && (*possible == '#' || *possible == '&'))
 			{
 				int len = strlen(possible);

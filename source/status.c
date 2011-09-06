@@ -1481,7 +1481,7 @@ NickList *nick;
 int serv = window->server;
 	if (window->server != -1 && window->wset->status_users_format)
 	{
-		if ((chan = prepare_command(&serv, NULL, 3)))
+		if ((chan = prepare_command(&serv, NULL, PC_SILENT)))
 		{
 			int ops = 0, nonops = 0, voice = 0, ircop = 0, friends = 0;
 			char buff[40], buff1[40], buff2[40], buff3[40], buff4[40];
@@ -1540,7 +1540,7 @@ int serv = window->server;
 static char my_buffer[3] = "\0";
 	if (window->server != -1)
 	{
-		if ((chan = prepare_command(&serv, NULL, 3)))
+		if ((chan = prepare_command(&serv, NULL, PC_SILENT)))
 		{
 			my_buffer[0] = chan->csets->set_userlist ? 'U':'u';
 			return my_buffer;
@@ -1556,7 +1556,7 @@ int serv = window->server;
 static char my_buffer[3] = "\0";
 	if (window->server != -1)
 	{
-		if ((chan = prepare_command(&serv, NULL, 3)))
+		if ((chan = prepare_command(&serv, NULL, PC_SILENT)))
 		{
 			my_buffer[0] = chan->csets->set_shitlist ? 'S':'s';
 			return my_buffer;
@@ -1572,7 +1572,7 @@ int serv = window->server;
 static char my_buffer[3] = "\0";
 	if (window->server != -1)
 	{
-		if ((chan = prepare_command(&serv, NULL, 3)))
+		if ((chan = prepare_command(&serv, NULL, PC_SILENT)))
 		{
 			my_buffer[0] = chan->csets->set_hacking ? 'H':'h';
 			return my_buffer;
@@ -1588,7 +1588,7 @@ int serv = window->server;
 static char my_buffer[3] = "\0";
 	if (window->server != -1)
 	{
-		if ((chan = prepare_command(&serv, NULL, 3)))
+		if ((chan = prepare_command(&serv, NULL, PC_SILENT)))
 		{
 			my_buffer[0] = chan->csets->set_aop ? 'A':'a';
 			return my_buffer;
@@ -1604,7 +1604,7 @@ int serv = window->server;
 static char my_buffer[3] = "\0";
 	if (window->server != -1)
 	{
-		if ((chan = prepare_command(&serv, NULL, 3)))
+		if ((chan = prepare_command(&serv, NULL, PC_SILENT)))
 		{
 			my_buffer[0] = chan->csets->bitch_mode ? 'B':'b';
 			return my_buffer;

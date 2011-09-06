@@ -35,7 +35,8 @@ enum color_attributes {
 	REVERSE_COLOR, BOLD_COLOR, BLINK_COLOR, UNDERLINE_COLOR
 };
 
-#define DONT_CARE 3	
+/* prepare_command() flags */
+#define PC_SILENT 3	
 #define PC_TOPIC 2
 #define NEED_OP 1
 #define NO_OP 0

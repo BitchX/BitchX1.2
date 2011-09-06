@@ -406,7 +406,7 @@ int serv = from_server;
 		return NULL;
 
 	tmp = lookup_userlevelc("*", FromUserHost, channel, password);
-	chan = prepare_command(&serv, channel, 3);
+	chan = prepare_command(&serv, channel, PC_SILENT);
 	if (chan && tmp && (tmp->flags & ADD_INVITE) && (check_channel_match(tmp->channels, channel)))
 	{
 		if (tmp->password && !password)
@@ -512,7 +512,7 @@ int serv = from_server;
 	if (cmd && *cmd)
 		password = next_arg(cmd, &cmd);
 	Nick = lookup_userlevelc("*", FromUserHost, channel, password);
-	chan = prepare_command(&serv, channel, 3);
+	chan = prepare_command(&serv, channel, PC_SILENT);
 	if (chan && get_cset_int_var(chan->csets, USERLIST_CSET) && Nick)
 	{
 		if (Nick->flags & ADD_OPS)
@@ -587,7 +587,7 @@ int server;
 		password = next_arg(cmd, &cmd);
 
 	Nick = lookup_userlevelc("*", FromUserHost, channel, password);
-	chan = prepare_command(&server, channel, 3);
+	chan = prepare_command(&server, channel, PC_SILENT);
 
 	if (chan && get_cset_int_var(chan->csets, USERLIST_CSET) && Nick && (Nick->flags & ADD_UNBAN))
 	{

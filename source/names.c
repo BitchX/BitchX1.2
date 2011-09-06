@@ -1883,7 +1883,7 @@ int got_info(char *chan, int server, int type)
 
 			if ((tmp->gotinfo |= type) == what_info)
 			{
-				if (prepare_command(&tmp->server, chan, 3))
+				if (prepare_command(&tmp->server, chan, PC_SILENT))
 					show_channel_sync(tmp, chan);
 				remove_from_join_list(chan, tmp->server);
 				return 1;
