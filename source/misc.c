@@ -998,7 +998,7 @@ struct {
 			if (code > 15 || code <= 0) code = code % 16;
 			strcpy(dptr, codes[code].fg);
 			while (*dptr) dptr++;
-			if (*sptr == ',') 
+			if (*sptr == ',' && isdigit(sptr[1])) 
 			{
 				sptr++;
              			code = *sptr - '0';
