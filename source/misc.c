@@ -866,7 +866,7 @@ register char *uh = userhost;
 
 #ifndef BITCHX_LITE
 
-static unsigned char newline1[BIG_BUFFER_SIZE+1];
+static char newline1[BIG_BUFFER_SIZE+1];
 /*  
  * (max server send) and max mirc color change is 256
  * so 256 * 8 should give us a safety margin for hackers.
@@ -948,7 +948,7 @@ struct {
 	return (char *)newline1;
 }
 #else
-char *mircansi(unsigned char *line)
+char *mircansi(const char *line)
 {
 /* mconv v1.00 (c) copyright 1996 Ananda, all rights reserved.	*/
 /* -----------------------------------------------------------	*/
@@ -956,72 +956,87 @@ char *mircansi(unsigned char *line)
 /* map of mIRC color values to ansi color codes			*/
 /* format: ansi fg color	ansi bg color			*/
 /* modified Colten Edwards 					*/
-struct {
-	char *fg, *bg;
-} codes[16] = {
+	static const struct {
+		const char *fg, *bg;
+	} codes[16] = {
+		{ "\x1b[1;37m", "\x1b[47m" },      /* white                */
+		{ "\x1b[0;30m", "\x1b[40m" },      /* black (grey for us)  */
+		{ "\x1b[0;34m", "\x1b[44m" },      /* blue                 */
+		{ "\x1b[0;32m", "\x1b[42m" },      /* green                */
+		{ "\x1b[0;31m", "\x1b[41m" },      /* red                  */
+		{ "\x1b[0;33m", "\x1b[43m" },      /* brown                */
+		{ "\x1b[0;35m", "\x1b[45m" },      /* magenta              */
+		{ "\x1b[1;31m", "\x1b[41m" },      /* bright red           */
+		{ "\x1b[1;33m", "\x1b[43m" },      /* yellow               */
+		{ "\x1b[1;32m", "\x1b[42m" },      /* bright green         */
+		{ "\x1b[0;36m", "\x1b[46m" },      /* cyan                 */
+		{ "\x1b[1;36m", "\x1b[46m" },      /* bright cyan          */
+		{ "\x1b[1;34m", "\x1b[44m" },      /* bright blue          */
+		{ "\x1b[1;35m", "\x1b[45m" },      /* bright magenta       */
+		{ "\x1b[1;30m", "\x1b[40m" },      /* dark grey            */
+		{ "\x1b[0;37m", "\x1b[47m" }       /* grey                 */
+	};
 
-	{ "[1;37m",   "[47m"        },      /* white                */
-	{ "[0;30m",   "[40m"        },      /* black (grey for us)  */
-	{ "[0;34m",   "[44m"        },      /* blue                 */
-	{ "[0;32m",   "[42m"        },      /* green                */
-	{ "[0;31m",   "[41m"        },      /* red                  */
-	{ "[0;33m",   "[43m"        },      /* brown                */
-
-	{ "[0;35m",   "[45m"        },      /* magenta              */
-	{ "[1;31m",   "[41m"        },      /* bright red           */
-	{ "[1;33m",   "[43m"        },      /* yellow               */
-
-	{ "[1;32m",   "[42m"            },      /* bright green         */
-	{ "[0;36m",   "[46m"            },      /* cyan                 */
-	{ "[1;36m",   "[46m"            },      /* bright cyan          */
-	{ "[1;34m",   "[44m"            },      /* bright blue          */
-	{ "[1;35m",   "[45m"            },      /* bright magenta       */
-	{ "[1;30m",   "[40m"            },      /* dark grey            */
-	{ "[0;37m",   "[47m"            }       /* grey                 */
-};
-	register unsigned char *sptr = line, *dptr = newline1;
-	short code;
+	const char *sptr = line;
+	char *dptr = newline1;
+	unsigned code;
 	
 	if (!*line)
 		return empty_string;
-	*newline1 = 0;
-	while (*sptr) {
-		if (*sptr == '' && isdigit(sptr[1])) 
+
+	while (*sptr)
+	{
+		if (*sptr == '\x03')
 		{
 			sptr++;
-			code = *sptr - '0';
-			sptr++;
-			if (isdigit (*sptr)) {
-			  code = code * 10 + *sptr - '0';
-			  sptr++;
-			}
-			if (code > 15 || code <= 0) code = code % 16;
-			strcpy(dptr, codes[code].fg);
-			while (*dptr) dptr++;
-			if (*sptr == ',' && isdigit(sptr[1])) 
+
+			if (isdigit((unsigned char)*sptr)) 
 			{
+				/* ^C followed by digit*/
+				code = *sptr - '0';
 				sptr++;
-             			code = *sptr - '0';
-				sptr++;
-	        		if (isdigit (*sptr)) {
-		          	  code = code * 10 + *sptr - '0';
-				  sptr++;
-         			}
-	           		if (code > 15 || code <= 0) code = code % 16;
-				strcpy(dptr, codes[code].bg);
-				while (*dptr) dptr++;
+
+				if (isdigit((unsigned char)*sptr)) {
+					code = code * 10 + *sptr - '0';
+					sptr++;
+				}
+
+				code = code % 16;
+				strcpy(dptr, codes[code].fg);
+				while (*dptr)
+					dptr++;
+
+				/* Do not consume , if not followed by digit */
+				if (sptr[0] == ',' && isdigit((unsigned char)sptr[1])) 
+				{
+					code = sptr[1] - '0';
+					sptr += 2;
+
+					if (isdigit ((unsigned char)*sptr)) {
+						code = code * 10 + *sptr - '0';
+						sptr++;
+					}
+
+					code = code % 16;
+					strcpy(dptr, codes[code].bg);
+					while (*dptr)
+						dptr++;
+				}
+			} 
+			else
+			{
+				/* ^C not followed by digit - assume end of color */
+				strcpy(dptr, "\x1b[0m");
+				while (*dptr)
+					dptr++;
 			}
-		} 
-		else if (*sptr == '')
-		{
-			strcpy(dptr, "[0m");
-			while(*dptr) dptr++;
-			sptr++;
 		}
-		else *dptr++ = *sptr++;
+		else
+			*dptr++ = *sptr++;
 	}
 	*dptr = 0;
-	return (char *)newline1;
+
+	return newline1;
 }
 #endif
 
@@ -1029,7 +1044,7 @@ struct {
 char *stripansicodes(const char *line)
 {
 	const char *tstr = line;
-	char *nstr = (char *)newline1;
+	char *nstr = newline1;
 	int gotansi = 0;
 
 	while (*tstr) 
@@ -1050,7 +1065,7 @@ char *stripansicodes(const char *line)
 		tstr++;
 	}
 	*nstr = 0;
-	return (char *)newline1;
+	return newline1;
 }
 #else
 char *stripansicodes(const char *line)
