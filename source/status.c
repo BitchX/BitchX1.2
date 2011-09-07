@@ -935,7 +935,7 @@ void make_status(Window *win)
 			strcmp(buffer, win->wset->status_line[status_line]))
 
 		{
-			unsigned char *st = NULL;
+			char *st = NULL;
 			malloc_strcpy(&win->wset->status_line[status_line], buffer);
 			output_screen = win->screen;
 			st = cparse((line==3)?FORMAT_STATUS3_FSET:(line==2)?FORMAT_STATUS2_FSET:(line==1)?FORMAT_STATUS1_FSET:FORMAT_STATUS_FSET, buffer);

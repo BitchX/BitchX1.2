@@ -1026,19 +1026,21 @@ struct {
 #endif
 
 /* Borrowed with permission from FLiER */
-char *stripansicodes(const unsigned char *line)
+char *stripansicodes(const char *line)
 {
-register unsigned char *tstr;
-register unsigned char *nstr;
-int  gotansi=0;
+	const char *tstr = line;
+	char *nstr = (char *)newline1;
+	int gotansi = 0;
 
-	tstr=(char *)line;
-	nstr=newline1;
 	while (*tstr) 
 	{
-		if (*tstr==0x1B || *tstr == 0x9b) 
-			gotansi=1;
-		if (gotansi && isalpha(*tstr)) 
+		/* Note that we use '\x9b' here, rather than 0x9b, because the 
+		 * former will have the correct value whether or not char is
+		 * signed.
+		 */
+		if (*tstr == '\x1b' || *tstr == '\x9b') 
+			gotansi = 1;
+		if (gotansi && isalpha((unsigned char)*tstr)) 
 			gotansi = 0;
 		else if (!gotansi) 
 		{
@@ -1051,7 +1053,7 @@ int  gotansi=0;
 	return (char *)newline1;
 }
 #else
-char *stripansicodes(const unsigned char *line)
+char *stripansicodes(const char *line)
 {
 	return line;
 }

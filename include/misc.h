@@ -74,7 +74,7 @@ extern LastMsg last_sent_ctcp[2];
 	int	check_split	(char *, char *);
 	void	BX_userage		(char *, char *);
 	void	stats_k_grep_end (void);
-	char	*stripansicodes (const unsigned char *);
+	char	*stripansicodes (const char *);
 	char	*stripansi	(unsigned char *);
 	NickTab	*BX_gettabkey (int, int, char *);
 	void	BX_addtabkey (char *, char *, int);
