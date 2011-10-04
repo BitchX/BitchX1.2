@@ -1509,6 +1509,17 @@ void numbered_command(char *from, int comm, char **ArgList)
 			put_it("%s Your user mode is [%s]", numeric_banner(), ArgList?ArgList[0]:space);
 			break;
 
+		case 328:		/* #define RPL_CHANNELURL       328 (atheme, bahamut, freenode) */
+		{
+			const char *channel = ArgList[0];
+			const char *url = ArgList[1] ? ArgList[1] : empty_string;
+
+			set_display_target(channel, LOG_CRAP);
+			put_it("%s", convert_output_format(fget_string_var(FORMAT_CHANNEL_URL_FSET), "%s %s %s", update_clock(GET_TIME), channel, url));
+			reset_display_target();
+			break;
+		}
+
 		case 329:		/* #define CREATION_TIME	329 */
 		{
 			unsigned long ts;

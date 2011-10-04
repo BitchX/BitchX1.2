@@ -67,6 +67,7 @@
 #define DEFAULT_FORMAT_BWALL_FSET "%K[%cWallOp%K/%c$2%K] %n$4-"
 
 #define DEFAULT_FORMAT_CHANNEL_SIGNOFF_FSET "$G %nSignOff%K: %W$1 %K(%n$4-%K)"
+#define DEFAULT_FORMAT_CHANNEL_URL_FSET "$G URL for %c$1%K:%n $2-"
 #define DEFAULT_FORMAT_CONNECT_FSET "$G Connecting to server $1/%c$2%n"
 
 /* Done CTCP */
@@ -499,6 +500,7 @@
 #define DEFAULT_FORMAT_BWALL_FSET "[%GBX-Wall%n/%W$1:$2%n] $4-"
 
 #define DEFAULT_FORMAT_CHANNEL_SIGNOFF_FSET "$G %nSignOff %W$1%n: $3 %K(%n$4-%K)"
+#define DEFAULT_FORMAT_CHANNEL_URL_FSET "$G URL %K(%c$1%K):%n $2-"
 #define DEFAULT_FORMAT_CONNECT_FSET "$G Connecting to server $1/%c$2%n"
 
 #define DEFAULT_FORMAT_COMPLETE_FSET "%K[%n$[15]0%K] [%n$[15]1%K] [%n$[15]2%K] [%n$[15]3%K]"	
