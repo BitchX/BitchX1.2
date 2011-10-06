@@ -922,7 +922,7 @@ void numbered_command(char *from, int comm, char **ArgList)
 		if (ArgList[2])
 		{
 			/* hybrid / ratbox: <nick> <ip> :actually using host */
-			if (do_hook(current_numeric, "%s %s %s %s", from, ArgList[0], ArgList[2], ArgList[1]))
+			if (do_hook(current_numeric, "%s %s %s %s", from, ArgList[0], ArgList[1], ArgList[2]))
 				put_it("%s", convert_output_format(fget_string_var(FORMAT_WHOIS_ACTUALLY_FSET),"%s %s %s", ArgList[0], ArgList[2], ArgList[1]));
 		}
 		else
