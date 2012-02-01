@@ -2577,37 +2577,38 @@ int i, j;
 	}
 }
 
-int create_ipc_socket(void)
+static int create_ipc_socket(void)
 {
-int	s = -1,
-	u = -1;
-unsigned short port = 0;
+	int	s = -1, u = -1;
+	unsigned short port = 0;
+	char buf[BIG_BUFFER_SIZE+1];
 
 	init_socketpath();
 
-	if ((s = connect_by_number(NULL, &port, SERVICE_SERVER, PROTOCOL_TCP, 0)) != -1)
+	if ((s = connect_by_number(NULL, &port, SERVICE_SERVER, PROTOCOL_TCP, 0)) < 0)
 	{
-		char buf[BIG_BUFFER_SIZE+1];
-		sprintf(buf, socket_path, port);
-		if ((u = open(buf, O_CREAT|O_WRONLY, 0600)) != -1)
-		{
-			chmod(buf, SOCKMODE);
-			chown(buf, getuid(), getgid());
-			make_cookie();
-			write(u, connect_cookie, strlen(connect_cookie));
-			write(u, "\n", 1);
-			close(u);
-		}
-#ifdef F_SETOWN
-		fcntl(s, F_SETOWN, getpid());
-#endif /* F_SETOWN */
-		set_non_blocking(s);
-		add_socketread(s, port, 0, socket_path, handle_reconnect, NULL);
-		save_ipc = s;
-		return 0;
+		fprintf(stderr, "error creating socket (%d: %s)\r\n", s, strerror(errno));
+		return 1;
 	}
-	fprintf(stderr, "error creating socket\r\n");
-	return 1;
+
+	sprintf(buf, socket_path, port);
+	if ((u = open(buf, O_CREAT|O_WRONLY, 0600)) != -1)
+	{
+		chmod(buf, SOCKMODE);
+		chown(buf, getuid(), getgid());
+		make_cookie();
+		write(u, connect_cookie, strlen(connect_cookie));
+		write(u, "\n", 1);
+		close(u);
+	}
+#ifdef F_SETOWN
+	fcntl(s, F_SETOWN, getpid());
+#endif /* F_SETOWN */
+	set_non_blocking(s);
+	add_socketread(s, port, 0, socket_path, handle_reconnect, NULL);
+	save_ipc = s;
+
+	return 0;
 }
 
 
