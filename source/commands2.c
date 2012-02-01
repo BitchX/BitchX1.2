@@ -2601,9 +2601,7 @@ static int create_ipc_socket(void)
 		write(u, "\n", 1);
 		close(u);
 	}
-#ifdef F_SETOWN
-	fcntl(s, F_SETOWN, getpid());
-#endif /* F_SETOWN */
+
 	set_non_blocking(s);
 	add_socketread(s, port, 0, socket_path, handle_reconnect, NULL);
 	save_ipc = s;
@@ -2700,7 +2698,6 @@ pid_t sid;
 		return;
 	already_detached = 1;
 	use_input = 0;
-	ioctl(0, F_SETOWN, pid);
 
 	if (create_ipc_socket())
 	{
