@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Fix /nslookup command. (caf)
+
 * Improve /detach error handling and remove bogus F_SETOWN use, reported
   by madsage. (caf)
 

@@ -2094,47 +2094,51 @@ int	ar_init(int op)
  */
 int	ar_open(void)
 {
-	if (ar_resfd == -1)
+	if (ar_resfd > -1)
+		return ar_resfd;
+
+	if (_res.options & RES_USEVC)
 	{
-		if (_res.options & RES_USEVC)
-		{
-			struct	sockaddr_in *sip;
-			int	i = 0;
+		struct	sockaddr_in *sip;
+		int	i = 0;
 
-			sip = _res.nsaddr_list;
-			ar_vc = 1;
-			ar_resfd = socket(AF_INET, SOCK_STREAM, 0);
+		sip = _res.nsaddr_list;
+		ar_vc = 1;
+		ar_resfd = socket(AF_INET, SOCK_STREAM, 0);
 
-			/*
-			 * Try each name server listed in sequence until we
-			 * succeed or run out.
-			 */
-			while (connect(ar_resfd, (struct sockaddr *)sip++,
-					sizeof(struct sockaddr)))
-			{
-				(void)close(ar_resfd);
-				ar_resfd = -1;
-				if (i >= _res.nscount)
-					break;
-				ar_resfd = socket(AF_INET, SOCK_STREAM, 0);
-			}
-		}
-		else
-		{
-			int on = 0;
-			ar_resfd = socket(AF_INET, SOCK_DGRAM, 0);
-			(void) setsockopt(ar_resfd, SOL_SOCKET, SO_BROADCAST,(char *)&on, sizeof(on));
-		}
-	}
-	if (ar_resfd >= 0)
-	{	/* Need one of these two here - and it MUST work!! */
-		if (set_non_blocking(ar_resfd) < 0)
+		/*
+		 * Try each name server listed in sequence until we
+		 * succeed or run out.
+		 */
+		while (connect(ar_resfd, (struct sockaddr *)sip++,
+				sizeof(struct sockaddr)))
 		{
 			(void)close(ar_resfd);
 			ar_resfd = -1;
+			if (i >= _res.nscount)
+				break;
+			ar_resfd = socket(AF_INET, SOCK_STREAM, 0);
 		}
 	}
-	return ar_resfd;
+	else
+	{
+		int on = 0;
+		ar_resfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+		if (ar_resfd > -1)
+			(void) setsockopt(ar_resfd, SOL_SOCKET, SO_BROADCAST,(char *)&on, sizeof(on));
+	}
+
+	if (ar_resfd < 0)
+		return -1;
+
+	if (set_non_blocking(ar_resfd) < 0)
+	{
+		(void)close(ar_resfd);
+		ar_resfd = -1;
+	}
+
+	return new_open(ar_resfd);
 }
 
 /*
@@ -2144,7 +2148,7 @@ int	ar_open(void)
  */
 void	ar_close(void)
 {
-	(void)close(ar_resfd);
+	new_close(ar_resfd);
 	ar_resfd = -1;
 	return;
 }
@@ -2361,9 +2365,8 @@ static	int	ar_send_res_msg(char *msg, int len, int rcount)
 		if (write(ar_resfd, msg, len) == -1)
 		    {
 			int errtmp = errno;
-			(void)close(ar_resfd);
+			ar_close();
 			errno = errtmp;
-			ar_resfd = -1;
 		    }
 	    }
 	else
