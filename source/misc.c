@@ -2655,14 +2655,10 @@ static	int	ar_procanswer(struct reslist *rptr, HEADER *hptr, char *buf, char *eo
 		 * the pointer to the right spot.  Some of thse are actually
 		 * useful so its not a good idea to skip past in one big jump.
 		 */
-		type = (int)_getshort(cp);
-		cp += sizeof(short);
-		class = (int)_getshort(cp);
-		cp += sizeof(short);
-		ttl = (unsigned int)_getlong(cp);
-		cp += INT32SZ;
-		dlen =  (int)_getshort(cp);
-		cp += sizeof(short);
+		NS_GET16(type, cp);
+		NS_GET16(class, cp);
+		NS_GET32(ttl, cp);
+		NS_GET16(dlen, cp);
 		rptr->re_type = type;
 
 		switch(type)
