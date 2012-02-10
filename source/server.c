@@ -595,8 +595,6 @@ static	time_t	last_timeout = 0;
 			}
 			from_server = primary_server;
 		}
-		if (primary_server == -1 || !is_server_open(primary_server))
-			window_check_servers(-1);
 		if (server_list[i].read != -1 && (errno == ENETUNREACH || errno == EHOSTUNREACH))
 		{
 			if (last_timeout == 0)
@@ -609,6 +607,9 @@ static	time_t	last_timeout = 0;
 			}
 		}
 	}
+
+	if (primary_server == -1 || !is_server_open(primary_server))
+		window_check_servers(-1);
 }
 
 /*
