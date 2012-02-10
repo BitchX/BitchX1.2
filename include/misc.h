@@ -130,7 +130,6 @@ ChannelList *	BX_prepare_command (int *, char *, int);
 	char		*do_nslookup (char *, char *, char *, char *, int, void (*func)(), char *);
 	void		set_nslookupfd(fd_set *);
 	long		print_nslookup(fd_set *);
-	void		ns_init(void);
 	void		auto_nslookup();
 	int		freadln(FILE *, char *);
 

@@ -1529,7 +1529,6 @@ int main(int argc, char *argv[], char *envp[])
 #ifdef WANT_TCL
 	tcl_interp = Tcl_CreateInterp();
 #endif
-	ns_init();
 	
 	if (!dumb_mode && term_init(NULL))
 		_exit(1);

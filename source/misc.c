@@ -3001,15 +3001,6 @@ int s;
 	return -1;
 }
 
-void ns_init(void)
-{
-#ifndef WINNT
-#if defined(WANT_NSLOOKUP) && !defined(THREAD)
-	ar_init(ARES_INITLIST|ARES_CALLINIT|ARES_INITSOCK);
-#endif
-#endif
-}
-
 char *do_nslookup(char *host, char *nick, char *user, char *chan, int server, void (*func)(), char *command)
 {
 #ifdef WANT_NSLOOKUP
