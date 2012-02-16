@@ -1296,7 +1296,7 @@ AC_DEFUN(AC_CHECK_PLUGIN_SUPPORT,
             system="unknown"
         else
           if test -r "/etc/.relid" -a x"`uname -n`" = x"`uname -s`"; then
-            system="MP-RAS-`$AWK '{print $[3]}' /etc/.relid'`"
+            system="MP-RAS-`$AWK '{print $[3]}' /etc/.relid`"
           fi
         fi
       fi
