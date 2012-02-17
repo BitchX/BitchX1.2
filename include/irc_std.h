@@ -252,7 +252,7 @@ int ioctl (int, int, ...);
 # endif
 #endif
 
-#if defined(_SYS_SIGLIST_DECLARED) && !defined(SYS_SIGLIST_DECLARED)
+#if !HAVE_DECL_SYS_SIGLIST && HAVE_DECL__SYS_SIGLIST
 #define sys_siglist _sys_siglist
 #endif
 #endif /* __irc_std_h */

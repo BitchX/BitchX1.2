@@ -90,14 +90,14 @@ extern char  *next_expr (char **, char);
  * A nice array of the possible signals.  Used by the coredump trapping
  * routines and in the exec.c package.
  */
-#if !defined(SYS_SIGLIST_DECLARED) && !defined(_SYS_SIGLIST_DECLARED) && !defined(__QNX__)
+#if !HAVE_DECL_SYS_SIGLIST && !HAVE_DECL__SYS_SIGLIST && !defined(__QNX__)
 #if defined(WINNT) || defined(__EMX__)
 char *sys_siglist[] = { "ZERO", "SIGINT", "SIGKILL", "SIGPIPE", "SIGFPE", 
 			"SIGHUP", "SIGTERM", "SIGSEGV", "SIGTSTP", 
 			"SIGQUIT", "SIGTRAP", "SIGILL", "SIGEMT", "SIGALRM",
 			"SIGBUS", "SIGLOST", "SIGSTOP", "SIGABRT", "SIGUSR1",
 			"SIGUSR2", "SIGCHLD", "SIGTTOU", "SIGTTIN", "SIGCONT" };
-#elif defined(__GLIBC__)
+#elif HAVE_DECL_STRSIGNAL
 #define USING_STRSIGNAL
 /* use strsignal() from <string.h> */
 #include <string.h>

@@ -2,7 +2,7 @@ dnl configure.in for BitchX 1.0
 dnl Copyright (c) 1999-2001 David Walluck
 dnl All rights reserved.
 
-AC_PREREQ(2.49b)
+AC_PREREQ(2.59)
 AC_REVISION($Revision$)
 AC_INIT
 AC_CONFIG_SRCDIR([$srcdir/source/irc.c])
@@ -74,6 +74,10 @@ AC_CHECK_DECLARATION(struct linger, struct_linger, [struct( |	)*linger], sys/soc
 AC_CHECK_DECLARATION(sun_len, sun_len, sun_len, sys/un.h, HAVE_SUN_LEN)
 AC_CHECK_DECLARATION(bcopy, bcopy, bcopy, string.h, BCOPY_DECLARED)
 
+AC_CHECK_DECLS([strsignal, sys_siglist, _sys_siglist], , ,
+[AC_INCLUDES_DEFAULT
+#include <signal.h>])
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_PROG_CC_STDC
 AC_C_CONST
@@ -84,7 +88,6 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
-AC_DECL_SYS_SIGLIST
 AC_HEADER_TIME
 
 AC_CHECK_SIZEOF(unsigned int, 4)

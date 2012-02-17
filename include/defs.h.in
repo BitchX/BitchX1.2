@@ -72,9 +72,17 @@
 /* Define to 1 if you have the <curses.h> header file. */
 #undef HAVE_CURSES_H
 
+/* Define to 1 if you have the declaration of `strsignal', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRSIGNAL
+
 /* Define to 1 if you have the declaration of `sys_siglist', and to 0 if you
    don't. */
 #undef HAVE_DECL_SYS_SIGLIST
+
+/* Define to 1 if you have the declaration of `_sys_siglist', and to 0 if you
+   don't. */
+#undef HAVE_DECL__SYS_SIGLIST
 
 /* Define to 1 if you have the <dirent.h> header file. */
 #undef HAVE_DIRENT_H
