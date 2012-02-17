@@ -202,10 +202,6 @@ distclean: clean
 
 # .o files needing special compilation flags
 
-help.o: Makefile ../Makefile
-	$(CC) $(DEFS) $(CFLAGS) \
-	-DDEFAULT_HELP_PATH=\"$(HELPDIR)\" -c $(srcdir)/help.c
-
 irc.o: Makefile ../Makefile
 	$(CC) $(DEFS) $(CFLAGS) \
 	-DIRCLIB=\"$(IRCLIB)\" -DIRCPATH=\"$(IRCPATH)\" -c $(srcdir)/irc.c
