@@ -16,27 +16,29 @@
 #ifdef _cs_alist_hash_
 static __inline u_32int_t 	cs_alist_hash (const char *s, u_32int_t *mask)
 {
-	register u_32int_t	x = 0;
-#if 0
-	register char *p = (char *)s;
-	register int len = 4;
+	u_32int_t x;
 
-	for (; *p && len != -1; p++, len--)
-		x = (x >> 4) + *p << 24, *mask = *mask << 4 && 0xff;
-#else
-	if (s[0] != 0)
+	if (s[0] == 0)
 	{
-		if (s[1] == 0)
-			x = (s[0] << 24), 
-				*mask = 0xff000000;
-		else if (s[2] == 0)
-			x = (s[0] << 24) | (s[1] << 16), 
-				*mask = 0xffff0000;
-		else
-			x = (s[0] << 24) | (s[1] << 16) | (s[2] << 8) | s[3], 
-				(*mask = 0xffffff00 | (s[3] ? 0xff : 0x00));
+		x = 0;
+		*mask = 0;
 	}
-#endif
+	else if (s[1] == 0)
+	{
+		x = (s[0] << 24);
+		*mask = 0xff000000;
+	}
+	else if (s[2] == 0)
+	{
+		x = (s[0] << 24) | (s[1] << 16);
+		*mask = 0xffff0000;
+	}
+	else
+	{
+		x = (s[0] << 24) | (s[1] << 16) | (s[2] << 8) | s[3];
+		*mask = 0xffffff00 | (s[3] ? 0xff : 0x00);
+	}
+
 	return x;
 }
 #endif
@@ -44,27 +46,29 @@ static __inline u_32int_t 	cs_alist_hash (const char *s, u_32int_t *mask)
 #ifdef _ci_alist_hash_
 static __inline u_32int_t 	ci_alist_hash (const char *s, u_32int_t *mask)
 {
-	register u_32int_t	x = 0;
-#if 0
-	register char *p = (char *)s;
-	register int len = 4;
+	u_32int_t x;
 
-	for (; *p && len != -1; p++, len--)
-		x = (x << 4) + toupper(*p);
-#else
-	if (s[0] != 0)
+	if (s[0] == 0)
 	{
-		if (s[1] == 0)
-			x = (stricmp_table[(int)s[0]] << 24), 
-				*mask = 0xff000000;
-		else if (s[2] == 0)
-			x = (stricmp_table[(int)s[0]] << 24) | (stricmp_table[(int)s[1]] << 16), 
-				*mask = 0xffff0000;
-		else
-			x = (stricmp_table[(int)s[0]] << 24) | (stricmp_table[(int)s[1]] << 16) | (stricmp_table[(int)s[2]] << 8) | stricmp_table[(int)s[3]], 
-				(*mask = 0xffffff00 | (s[3] ? 0xff : 0x00));
+		x = 0;
+		*mask = 0;
 	}
-#endif
+	else if (s[1] == 0)
+	{
+		x = (stricmp_table[(int)s[0]] << 24);
+		*mask = 0xff000000;
+	}
+	else if (s[2] == 0)
+	{
+		x = (stricmp_table[(int)s[0]] << 24) | (stricmp_table[(int)s[1]] << 16);
+		*mask = 0xffff0000;
+	}
+	else
+	{
+		x = (stricmp_table[(int)s[0]] << 24) | (stricmp_table[(int)s[1]] << 16) | (stricmp_table[(int)s[2]] << 8) | stricmp_table[(int)s[3]];
+		*mask = 0xffffff00 | (s[3] ? 0xff : 0x00);
+	}
+
 	return x;
 }
 #endif
