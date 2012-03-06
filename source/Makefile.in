@@ -234,33 +234,17 @@ $(topdir)/source/compat.o: $(top_srcdir)/source/compat.c
 		-c $(top_srcdir)/source/compat.c
 
 # wserv
-bircsig.c: $(srcdir)/ircsig.c
-	$(RM) bircsig.c
-	$(LN) $(srcdir)/ircsig.c bircsig.c
+bircsig.o: $(srcdir)/ircsig.c
+	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c $(srcdir)/ircsig.c -o $@
 
-bircsig.o: bircsig.c
-	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c ./bircsig.c
+bcompat.o: $(srcdir)/compat.c
+	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c $(srcdir)/compat.c -o $@
 
-bcompat.c: $(srcdir)/compat.c
-	$(RM) bcompat.c
-	$(LN) $(srcdir)/compat.c bcompat.c
+wterm.o: $(srcdir)/term.c
+	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c $(srcdir)/term.c -o $@
 
-bcompat.o: bcompat.c
-	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c ./bcompat.c
-
-wterm.c: $(srcdir)/term.c
-	$(RM) wterm.c
-	$(LN) $(srcdir)/term.c wterm.c
-
-wterm.o: wterm.c
-	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c ./wterm.c
-
-wnetwork.c: $(srcdir)/network.c
-	$(RM) wnetwork.c
-	$(LN) $(srcdir)/network.c wnetwork.c
-
-wnetwork.o: wnetwork.c
-	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c ./wnetwork.c
+wnetwork.o: $(srcdir)/network.c
+	$(CC) $(DEFS) $(CFLAGS) -DWTERM_C -c $(srcdir)/network.c -o $@
 
 wserv: wserv.o wterm.o wnetwork.o bircsig.o bcompat.o
 	$(CC) $(LDFLAGS) -o wserv$(EXEEXT) wserv.o wterm.o bircsig.o wnetwork.o bcompat.o $(LIBS)
@@ -269,15 +253,8 @@ clean::
 	-$(RM) wserv wserv.o wterm.o wnetwork.o wterm.c wnetwork.c
 
 # scr-bx
-sterm.c: $(srcdir)/term.c
-	-$(RM) sterm.c
-	-$(LN) $(srcdir)/term.c sterm.c
-
-sterm.o: sterm.c
-	$(CC) $(DEFS) $(CFLAGS) -DSTERM_C -c ./sterm.c
-
-scr-bx.o: $(srcdir)/scr-bx.c
-	$(CC) $(DEFS) $(CFLAGS) -c $(srcdir)/scr-bx.c
+sterm.o: $(srcdir)/term.c
+	$(CC) $(DEFS) $(CFLAGS) -DSTERM_C -c $(srcdir)/term.c -o $@
 
 scr-bx: sterm.o bircsig.o bcompat.o scr-bx.o
 	$(CC) $(LDFLAGS) -o scr-bx$(EXEEXT) scr-bx.o sterm.o bircsig.o bcompat.o $(LIBS)
