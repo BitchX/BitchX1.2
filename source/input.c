@@ -1193,8 +1193,10 @@ BUILT_IN_KEYBINDING(send_line)
 		{
 			char auto_comp_char;
 			char *p;
+
+			/* this is for people with old BitchX.sav files that set it to '\0' */
 			if (!(auto_comp_char = (char)get_int_var(NICK_COMPLETION_CHAR_VAR)))
-				auto_comp_char = ':';
+				auto_comp_char = DEFAULT_NICK_COMPLETION_CHAR;
 								
 			/* possible nick completion */
 			if ((p = strchr(tmp, auto_comp_char)) && do_hook(NICK_COMP_LIST, "%s", line))
