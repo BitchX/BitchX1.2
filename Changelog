@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Fix /detach and wserv with IPv6 enabled. (caf, snadge, packet)
+
 * Make default for NICK_COMPLETION_CHAR explicit. (caf)
 
 * Reduce footprint when starting up disconnected. (caf)

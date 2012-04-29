@@ -454,22 +454,18 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 #ifdef IP_PORTRANGE
 		int ports;
 #endif
-		struct sockaddr_foobar name;
-#ifdef IPV6
-		struct in6_addr any = IN6ADDR_ANY_INIT;
+		/* Even on an IPv6 client this opens up a IPv4 socket... for now.
+		 * (Some OSes need two sockets to be able to accept both IPv4 and
+		 * IPv6 connections). */
+		struct sockaddr_in name;
 
-		memset(&name, 0, sizeof(struct sockaddr_foobar));
-		name.sf_family = AF_INET6;
-		memcpy(&name.sf_addr6, &any, sizeof(struct in6_addr));
-#else
-		memset(&name, 0, sizeof(struct sockaddr_foobar));
-		name.sf_family = AF_INET;
-		name.sf_addr.s_addr = htonl(INADDR_ANY);
-#endif
+		memset(&name, 0, sizeof name);
+		name.sin_family = AF_INET;
+		name.sin_addr.s_addr = htonl(INADDR_ANY);
 
-		name.sf_port = htons(*portnum);
+		name.sin_port = htons(*portnum);
 #ifdef PARANOID
-		name.sf_port += (unsigned short)(rand() & 255);
+		name.sin_port += (unsigned short)(rand() & 255);
 #endif
 		
 #ifdef IP_PORTRANGE
@@ -488,7 +484,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 		if (getsockname(fd, (struct sockaddr *)&name, &length))
 			return close(fd), -5;
 
-		*portnum = ntohs(name.sf_port);
+		*portnum = ntohs(name.sin_port);
 
 		if (protocol == PROTOCOL_TCP)
 			if (listen(fd, 4) < 0)
