@@ -2587,7 +2587,7 @@ static int create_ipc_socket(void)
 
 	if ((s = connect_by_number(NULL, &port, SERVICE_SERVER, PROTOCOL_TCP, 0)) < 0)
 	{
-		fprintf(stderr, "error creating socket (%d: %s)\r\n", s, strerror(errno));
+		bitchsay("Error creating IPC socket: [%d] %s", s, strerror(errno));
 		return 1;
 	}
 
@@ -2663,8 +2663,7 @@ BUILT_IN_COMMAND(detachcmd)
 {
 #if !defined(__EMX__) && !defined(WINNT) && !defined (GUI) && defined(WANT_DETACH)
 #ifndef PUBLIC_ACCESS
-pid_t pid = getpid();
-pid_t sid;
+pid_t pid;
 	/* 
 	 * this is written so that a running bx client will attempt to
 	 * detach and then later a screen type program can be used to re-attach 
@@ -2681,29 +2680,26 @@ pid_t sid;
 	/*
 	 * create a server socket with the above name.
 	 */
+	if (create_ipc_socket())
+		return;
+
 	switch(pid = fork())
 	{
 		case -1:
-			put_it("error in fork");
+			bitchsay("fork() failed: %s", strerror(errno));
 			return;
 		default:
-		{
 			do_detach(pid, args);
+			/* Not reached */
 			return;
-		}
 		case 0:
 			break;
 	}
-	if ((sid = setpgid(0, 0)) == -1)
-		return;
+
+	setpgid(0, 0);
 	already_detached = 1;
 	use_input = 0;
 
-	if (create_ipc_socket())
-	{
-		yell("Error creating IPC socket.");
-		_exit(0);
-	}
 	close_detach_fd();
 	kill_attached_if_needed(1);
 	disable_stop();
