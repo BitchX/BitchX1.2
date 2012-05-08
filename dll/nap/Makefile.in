@@ -168,7 +168,7 @@ Makefile: Makefile.in
 
 compat.o: $(top_srcdir)/source/compat.c
 	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) \
-		-c $(top_srcdir)/source/compat.c -o $(srcdir)/compat.o
+		-c $(top_srcdir)/source/compat.c
 
 nap.o: $(srcdir)/nap.c
 	$(CC) $(DEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/nap.c

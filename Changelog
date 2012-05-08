@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Fix plugin Makefiles for out-of-tree building, reported by nyet. (caf)
+
 * Add DESTDIR support to build system, to ease rpm and deb packaging.
   Reported separately by nyet and VICODAN. (caf)
 

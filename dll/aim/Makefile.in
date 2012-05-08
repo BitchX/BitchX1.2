@@ -170,7 +170,7 @@ Makefile: Makefile.in
 
 compat.o: $(top_srcdir)/source/compat.c
 	$(CC) $(AIMDEFS) $(SHLIB_CFLAGS) $(CFLAGS) \
-		-c $(top_srcdir)/source/compat.c -o $(srcdir)/compat.o
+		-c $(top_srcdir)/source/compat.c
 
 toc.o: $(srcdir)/toc.c
 	$(CC) $(AIMDEFS) $(SHLIB_CFLAGS) $(CFLAGS) -c $(srcdir)/toc.c
