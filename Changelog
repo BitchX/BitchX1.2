@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Add DESTDIR support to build system, to ease rpm and deb packaging.
+  Reported separately by nyet and VICODAN. (caf)
+
 * Fix /detach and wserv with IPv6 enabled. (caf, snadge, packet)
 
 * Make default for NICK_COMPLETION_CHAR explicit. (caf)

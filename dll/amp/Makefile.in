@@ -193,7 +193,7 @@ depend:
 	gcc -MM $(CPPFLAGS) $(DEFS) $(CFLAGS) *.c > .depend
 
 install:
-	$(INSTALL) $(PLUGIN_NAME)$(SHLIB_SUFFIX) $(PLUGINDIR)
+	$(INSTALL) $(PLUGIN_NAME)$(SHLIB_SUFFIX) $(DESTDIR)$(PLUGINDIR)
 
 audio.o: audio.c ../../include/irc.h ../../include/defs.h \
  ../../include/config.h ../../include/../.config.h \

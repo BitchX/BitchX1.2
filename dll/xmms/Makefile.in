@@ -179,4 +179,4 @@ distclean: clean
 	$(RM) Makefile
 
 install: all
-	$(INSTALL) $(PLUGIN_NAME)$(SHLIB_SUFFIX) $(PLUGINDIR)
+	$(INSTALL) $(PLUGIN_NAME)$(SHLIB_SUFFIX) $(DESTDIR)$(PLUGINDIR)

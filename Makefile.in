@@ -209,7 +209,7 @@ dll: .config.h $(srcdir)/Makefile dll/Makefile dll/dummy
 
 installdll: $(srcdir)/Makefile dll/Makefile installdirs dll
 	cd dll \
-	  && $(MAKE) install
+	  && $(MAKE) 'DESTDIR=$(DESTDIR)' install
 
 installdll_local: $(srcdir)/Makefile dll/Makefile
 	cd dll \
@@ -218,19 +218,19 @@ installdll_local: $(srcdir)/Makefile dll/Makefile
 installhelp: installdirs
 	cd $(top_srcdir) \
 	  && $(INSTALL_HELP_CMD)
-	(find $(HELPDIR) -type f ! -name '*.bz2' ! -name '*.gz' -name '*' | \
+	(find $(DESTDIR)$(HELPDIR) -type f ! -name '*.bz2' ! -name '*.gz' | \
 		(xargs bzip2 -9f || xargs gzip -9f) || :) 2>/dev/null
 
 installbin: installirc @INSTALL_EXTRAS@
 
 installirc: installdirs $(_VERSION_)
-	$(INSTALL) source/$(_VERSION_)$(EXEEXT) $(bindir)/$(VERSION)$(EXEEXT)
-	$(RM) $(INSTALL_IRC)
-	$(LN) $(bindir)/$(VERSION)$(EXEEXT) $(INSTALL_IRC)
-	$(INSTALL_DATA) $(top_srcdir)/BitchX.help $(IRCLIB)/$(DEFAULT_BITCHX_HELP_FILE)
-	$(INSTALL_DATA) $(top_srcdir)/BitchX.ircnames $(IRCLIB)/$(DEFAULT_BITCHX_IRCNAME_FILE)
-	$(INSTALL_DATA) $(top_srcdir)/BitchX.quit $(IRCLIB)/$(DEFAULT_BITCHX_QUIT_FILE)
-	$(INSTALL_DATA) $(top_srcdir)/BitchX.reasons $(IRCLIB)/$(DEFAULT_BITCHX_KICK_FILE)
+	$(INSTALL) source/$(_VERSION_)$(EXEEXT) $(DESTDIR)$(bindir)/$(VERSION)$(EXEEXT)
+	$(RM) $(DESTDIR)$(INSTALL_IRC)
+	$(LN) $(DESTDIR)$(bindir)/$(VERSION)$(EXEEXT) $(DESTDIR)$(INSTALL_IRC)
+	$(INSTALL_DATA) $(top_srcdir)/BitchX.help $(DESTDIR)$(IRCLIB)/$(DEFAULT_BITCHX_HELP_FILE)
+	$(INSTALL_DATA) $(top_srcdir)/BitchX.ircnames $(DESTDIR)$(IRCLIB)/$(DEFAULT_BITCHX_IRCNAME_FILE)
+	$(INSTALL_DATA) $(top_srcdir)/BitchX.quit $(DESTDIR)$(IRCLIB)/$(DEFAULT_BITCHX_QUIT_FILE)
+	$(INSTALL_DATA) $(top_srcdir)/BitchX.reasons $(DESTDIR)$(IRCLIB)/$(DEFAULT_BITCHX_KICK_FILE)
 	$(WINNT_INSTALL)
 
 install_local: all local_installdirs installdll_local
@@ -251,28 +251,28 @@ scr-bx: .config.h $(srcdir)/source/scr-bx.c $(srcdir)/source/term.c $(srcdir)/Ma
 	  && $(MAKE) scr-bx
 
 installwserv: installdirs wserv
-	$(INSTALL) source/wserv $(INSTALL_WSERV)
+	$(INSTALL) source/wserv $(DESTDIR)$(INSTALL_WSERV)
 
 installscr-bx: installdirs scr-bx
-	$(INSTALL) source/scr-bx $(INSTALL_SCRBX)
+	$(INSTALL) source/scr-bx $(DESTDIR)$(INSTALL_SCRBX)
 
 installscript: installdirs
 	-@( \
 		if test -d $(top_srcdir)/script; then \
 		cd $(top_srcdir)/script; \
 		for i in *; do \
-			if test "$$i" = "bxglobal" -a -f $(INSTALL_SCRIPT)/bxglobal; then \
+			if test "$$i" = "bxglobal" -a -f $(DESTDIR)$(INSTALL_SCRIPT)/bxglobal; then \
 				if test -f bxglobal; then \
-					$(INSTALL_DATA) $(INSTALL_SCRIPT)/bxglobal $(INSTALL_SCRIPT)/bxglobal.old; \
-					$(INSTALL_DATA) bxglobal $(INSTALL_SCRIPT); \
+					$(INSTALL_DATA) $(DESTDIR)$(INSTALL_SCRIPT)/bxglobal $(DESTDIR)$(INSTALL_SCRIPT)/bxglobal.old; \
+					$(INSTALL_DATA) bxglobal $(DESTDIR)$(INSTALL_SCRIPT); \
 				fi; \
 			else \
 				if test "$$i" != "CVS"; then \
-					$(INSTALL_DATA) $$i $(INSTALL_SCRIPT); \
+					$(INSTALL_DATA) $$i $(DESTDIR)$(INSTALL_SCRIPT); \
 				fi; \
 			fi; \
 		done; \
-		chmod -x $(INSTALL_SCRIPT)/*; \
+		chmod -x $(DESTDIR)$(INSTALL_SCRIPT)/*; \
 		fi; \
 	)
 
@@ -282,13 +282,13 @@ installtranslation: installdirs
 			cd $(top_srcdir)/translation; \
 			for i in *; do \
 				if test "$$i" != "CVS"; then \
-					$(INSTALL_DATA) $$i $(TRANSLATION_PATH); \
+					$(INSTALL_DATA) $$i $(DESTDIR)$(TRANSLATION_PATH); \
 				fi; \
 			done; \
-			chmod -x $(TRANSLATION_PATH)/*; \
+			chmod -x $(DESTDIR)$(TRANSLATION_PATH)/*; \
 		fi; \
 	)
-	(find $(TRANSLATION_PATH) -type f ! -name '*.bz2' ! -name '*.gz' -name '*' | \
+	(find $(DESTDIR)$(TRANSLATION_PATH) -type f ! -name '*.bz2' ! -name '*.gz' | \
 		(xargs bzip2 -9f || xargs gzip -9f) || :) 2>/dev/null
 
 installman: installdirs
@@ -297,16 +297,18 @@ installman: installdirs
 			cd $(top_srcdir)/doc; \
 			for i in BitchX.1; do \
 			if test -f $$i; then \
-				$(INSTALL_DATA) $$i $(mandir)/man1; \
+				$(INSTALL_DATA) $$i $(DESTDIR)$(mandir)/man1; \
 			fi; \
 			done; \
 		fi; \
 	)
-	(find $(mandir)/man1/BitchX.1 -type f ! -name '*.bz2' ! -name '*.gz' -name '*' | \
+	(find $(DESTDIR)$(mandir)/man1/BitchX.1 -type f ! -name '*.bz2' ! -name '*.gz' | \
 		(xargs bzip2 -9f || xargs gzip -9f) || :) 2>/dev/null
 
 installdirs:
-	umask 022; $(top_srcdir)/mkinstalldirs $(bindir) $(IRCLIB) $(mandir)/man1 $(TRANSLATION_PATH) $(INSTALL_SCRIPT) $(HELPDIR)
+	umask 022 && $(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir) $(DESTDIR)$(IRCLIB) \
+		$(DESTDIR)$(mandir)/man1 $(DESTDIR)$(TRANSLATION_PATH) $(DESTDIR)$(INSTALL_SCRIPT) \
+		$(DESTDIR)$(HELPDIR)
 
 local_installdirs:
 	umask 022; $(top_srcdir)/mkinstalldirs $(local_dir)/bin $(DEFAULT_CTOOLZ_DIR) $(DEFAULT_CTOOLZ_DIR)/plugins $(DEFAULT_CTOOLZ_DIR)/logs

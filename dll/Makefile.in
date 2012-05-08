@@ -196,19 +196,19 @@ dllinit.o:
 	)
 
 install: all
-	$(INSTALL) -d $(PLUGINDIR)
+	$(INSTALL) -d $(DESTDIR)$(PLUGINDIR)
 	@( \
 		makeflags=$$2; \
 		target="$@"; \
 		list="$(PLUGINS)"; \
 		for subdir in $$list; do \
-			(cd $$subdir && $(MAKE) $$target) \
+			(cd $$subdir && $(MAKE) 'DESTDIR=$(DESTDIR)' $$target) \
 			|| case "$$makeflags" in *=*) exit 1;; *k*) ;; *) exit 1;; esac; \
 		done; \
 	)
 	@( \
 		if test x"$(PLUGINS)" != x""; then \
-			strip --strip-unneeded $(PLUGINDIR)/*$(SHLIB_SUFFIX) || :; \
+			strip --strip-unneeded $(DESTDIR)$(PLUGINDIR)/*$(SHLIB_SUFFIX) || :; \
 			echo Your plugins [$(PLUGINS)] are now located in $(PLUGINDIR);\
 		fi; \
 	)

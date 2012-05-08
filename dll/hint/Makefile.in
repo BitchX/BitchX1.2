@@ -177,5 +177,5 @@ distclean: clean
 	$(RM) Makefile
 
 install:
-	$(INSTALL) $(PLUGIN_NAME)$(SHLIB_SUFFIX) $(PLUGINDIR)
-	$(INSTALL) $(srcdir)/BitchX.hints $(PLUGINDIR)/@HINT_FILE@
+	$(INSTALL) $(PLUGIN_NAME)$(SHLIB_SUFFIX) $(DESTDIR)$(PLUGINDIR)
+	$(INSTALL) $(srcdir)/BitchX.hints $(DESTDIR)$(PLUGINDIR)/@HINT_FILE@
