@@ -259,31 +259,18 @@ installscr-bx: installdirs scr-bx
 installscript: installdirs
 	-@( \
 		if test -d $(top_srcdir)/script; then \
-		cd $(top_srcdir)/script; \
-		for i in *; do \
-			if test "$$i" = "bxglobal" -a -f $(DESTDIR)$(INSTALL_SCRIPT)/bxglobal; then \
-				if test -f bxglobal; then \
-					$(INSTALL_DATA) $(DESTDIR)$(INSTALL_SCRIPT)/bxglobal $(DESTDIR)$(INSTALL_SCRIPT)/bxglobal.old; \
-					$(INSTALL_DATA) bxglobal $(DESTDIR)$(INSTALL_SCRIPT); \
-				fi; \
-			else \
-				if test "$$i" != "CVS"; then \
-					$(INSTALL_DATA) $$i $(DESTDIR)$(INSTALL_SCRIPT); \
-				fi; \
-			fi; \
-		done; \
-		chmod -x $(DESTDIR)$(INSTALL_SCRIPT)/*; \
+			for i in $(top_srcdir)/script/*; do \
+				$(INSTALL_DATA) "$$i" $(DESTDIR)$(INSTALL_SCRIPT); \
+			done; \
+			chmod -x $(DESTDIR)$(INSTALL_SCRIPT)/*; \
 		fi; \
 	)
 
 installtranslation: installdirs
 	-@( \
 		if test -d $(top_srcdir)/translation; then \
-			cd $(top_srcdir)/translation; \
-			for i in *; do \
-				if test "$$i" != "CVS"; then \
-					$(INSTALL_DATA) $$i $(DESTDIR)$(TRANSLATION_PATH); \
-				fi; \
+			for i in $(top_srcdir)/translation/*; do \
+				$(INSTALL_DATA) "$$i" $(DESTDIR)$(TRANSLATION_PATH); \
 			done; \
 			chmod -x $(DESTDIR)$(TRANSLATION_PATH)/*; \
 		fi; \
