@@ -152,10 +152,6 @@ extern	int	errno;
 #define howmany(x, y)   (((x) + ((y) - 1)) / (y))
 #endif
 
-#ifdef HAVE_SYS_SYSLIMITS_H
-# include <sys/syslimits.h>
-#endif
-   
 #include <limits.h>
    
 typedef RETSIGTYPE sigfunc (int);
