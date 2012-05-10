@@ -1,13 +1,11 @@
 # For use with BitchX-75+
-# Last updated: 20040326
+# Last updated: 20120510
 
-${a} Official Bug Reporting Site -- http://bugs.bitchx.org/
-${a} Official FAQ Site -- http://faq.bitchx.org/
-${a} Official FTP Site -- ftp://ftp.bitchx.org/
+${a} Official FAQ Site -- http://wiki.bitchx.org/faq:start
+${a} Official Wiki -- http://wiki.bitchx.org/
 ${a} Official IRC Channel -- #BitchX on EFNet
 ${a} Official WWW Site -- http://www.bitchx.org/
-${a} Official Scripts Site -- http://scripts.bitchx.org/
-${a} Official Forums Site -- http://forums.bitchx.org/
+${a} Official Sourceforge Project -- http://sf.net/projects/bitchx/
 
 ${a} for president.
 
@@ -108,9 +106,10 @@ ${a} for president.
 ${a}: for external use only
 ${a}: may contain traces of peanuts
 ${a}: contains phenylalanine
+${a}: antisocial networking
 
 ${J} by panasync
-${J} © 1996-2011 Colten Edwards et al
+${J} © 1996-20112Colten Edwards et al
 
 ${J}: just when you thought it couldn't get any better
 
@@ -258,6 +257,9 @@ ${b} Yo quiero ${a}
 ${b} You can breathe without ${a}, but I wouldn't recommend it
 ${b} You can /quit any time you like, but you can never leave
 ${b} THE BEATINGS WILL CONTINUE UNTIL MORALE IMPROVES
+${b} If you gaze into the abyss, the abyss gazes also into you
+${b} I hear banjos
+${b} A gentleman is one who knows how to play the bagpipes, but chooses not to.
 
 All the ${a} that's fit to print!
 Bad ${a}, bad ${a}, whatcha gonna do? Whatcha gonna do when they come for you?
