@@ -159,8 +159,8 @@
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
 
-/* Define to 1 if you have the <netinet/in_systm.h> header file. */
-#undef HAVE_NETINET_IN_SYSTM_H
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#undef HAVE_NETINET_IN_H
 
 /* Define to 1 if you have the <net/if.h> header file. */
 #undef HAVE_NET_IF_H
@@ -252,20 +252,17 @@
 /* Define to 1 if you have the <sys/filio.h> header file. */
 #undef HAVE_SYS_FILIO_H
 
-/* Define to 1 if you have the <sys/in_systm.h> header file. */
-#undef HAVE_SYS_IN_SYSTM_H
-
 /* Define to 1 if you have the <sys/ndir.h> header file. */
 #undef HAVE_SYS_NDIR_H
+
+/* Define to 1 if you have the <sys/socket.h> header file. */
+#undef HAVE_SYS_SOCKET_H
 
 /* Define to 1 if you have the <sys/soundcard.h> header file. */
 #undef HAVE_SYS_SOUNDCARD_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
-
-/* Define to 1 if you have the <sys/syslimits.h> header file. */
-#undef HAVE_SYS_SYSLIMITS_H
 
 /* Define to 1 if you have the <sys/time.h> header file. */
 #undef HAVE_SYS_TIME_H
