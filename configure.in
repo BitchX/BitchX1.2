@@ -1023,8 +1023,6 @@ AC_SUBST(WINNT_INSTALL)
 
 AC_CONFIG_FILES([
 Makefile
-BitchX.spec
-gtkBitchX.spec
 bx-conf/Makefile
 doc/BitchX.bat
 doc/Makefile

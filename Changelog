@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Remove obsolete .spec files. (caf)
+
 * configure - only create sig.inc if it's actually needed. (caf)
 
 * configure - use the right dependencies when checking for net/if.h, i
