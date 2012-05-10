@@ -226,7 +226,7 @@ installbin: installirc @INSTALL_EXTRAS@
 installirc: installdirs $(_VERSION_)
 	$(INSTALL) source/$(_VERSION_)$(EXEEXT) $(DESTDIR)$(bindir)/$(VERSION)$(EXEEXT)
 	$(RM) $(DESTDIR)$(INSTALL_IRC)
-	$(LN) $(DESTDIR)$(bindir)/$(VERSION)$(EXEEXT) $(DESTDIR)$(INSTALL_IRC)
+	$(LN) $(VERSION)$(EXEEXT) $(DESTDIR)$(INSTALL_IRC)
 	$(INSTALL_DATA) $(top_srcdir)/BitchX.help $(DESTDIR)$(IRCLIB)/$(DEFAULT_BITCHX_HELP_FILE)
 	$(INSTALL_DATA) $(top_srcdir)/BitchX.ircnames $(DESTDIR)$(IRCLIB)/$(DEFAULT_BITCHX_IRCNAME_FILE)
 	$(INSTALL_DATA) $(top_srcdir)/BitchX.quit $(DESTDIR)$(IRCLIB)/$(DEFAULT_BITCHX_QUIT_FILE)
