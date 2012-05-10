@@ -230,10 +230,12 @@ dnl Well, most of it. Couple of tweaks to make it work better.
 dnl This fails on cygwin, and probably emxos2, because the header files aren't
 dnl in the standard "/usr/include" location. There's got to be a better way.
 AC_CACHE_CHECK(for a list of signal names, ac_cv_signal_names,
-[ if test x"$ac_cv_decl_sys_siglist" != x"yes"; then
-    if test -f "$srcdir/include/sig.inc"; then
-      rm -f $srcdir/include/sig.inc
-    fi
+[ if test x"$ac_cv_have_decl_sys_siglist" != x"yes"; then
+    if test x"$ac_cv_have_decl__sys_siglist" != x"yes"; then
+      if test x"$ac_cv_have_decl_strsignal" != x"yes"; then
+        if test -f "$srcdir/include/sig.inc"; then
+          rm -f $srcdir/include/sig.inc
+        fi
   set X `cat $oldincludedir/signal.h $oldincludedir/sys/signal.h \
   $oldincludedir/linux/signal.h 2>&1 | sed 's/^#[ 	]*/#/' | \
   $AWK '$1 ~ /^#define$/ && $2 ~ /^SIG[A-Z0-9]*$/ && $3 ~ /^[1-9][0-9]*$/ {
@@ -279,13 +281,20 @@ AC_CACHE_CHECK(for a list of signal names, ac_cv_signal_names,
   sig_name="ZERO $*"
 
   [ echo "$sig_name" | sed -e 's/$/"};/' -e 's/ /", "/g' -e 's/^/char *sys_siglist[] = { "/' -e 's/};/, NULL};/' > $srcdir/include/sig.inc ]
-    if test -f "$srcdir/include/sig.inc"; then
-      ac_cv_signal_names="yes"
+
+        if test -f "$srcdir/include/sig.inc"; then
+          ac_cv_signal_names="sig.inc"
+        else
+          ac_cv_signal_names="none"
+        fi
+      else
+        ac_cv_signal_names="strsignal"
+      fi 
     else
-      ac_cv_signal_names="none"
-    fi
+      ac_cv_signal_names="_sys_siglist"
+    fi 
   else
-    ac_cv_signal_names="yes"
+    ac_cv_signal_names="sys_siglist"
   fi
 ])
 if test x"$ac_cv_signal_names" = x"none"; then
