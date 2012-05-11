@@ -499,6 +499,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 	else if (!is_unix && (service == SERVICE_CLIENT))
 	{
 		struct sockaddr_foobar server;
+		int server_len;
 		struct hostent *hp;
 #ifdef WINNT
 		char buf[BIG_BUFFER_SIZE+1];
@@ -523,37 +524,43 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 #ifndef WINNT
 
 #ifdef IPV6
-                memset(&hints, 0, sizeof(hints));
-                if (!getaddrinfo(hostn, NULL, &hints, &res) && res)
-                {
-                        sf = (struct sockaddr_foobar*) res->ai_addr;
+		memset(&hints, 0, sizeof(hints));
+		if (!getaddrinfo(hostn, NULL, &hints, &res) && res)
+		{
+			sf = (struct sockaddr_foobar*) res->ai_addr;
 
-                        close(fd);
+			close(fd);
 
-                        proto_type = (protocol == PROTOCOL_TCP) ? SOCK_STREAM : SOCK_DGRAM;
-                        if ((fd = socket(sf->sf_family, proto_type, 0)) < 0)
-                                return -1;
-                        set_socket_options (fd);
+			proto_type = (protocol == PROTOCOL_TCP) ? SOCK_STREAM : SOCK_DGRAM;
+			if ((fd = socket(sf->sf_family, proto_type, 0)) < 0)
+				return -1;
+			set_socket_options (fd);
 
-                        if ((server.sf_family = sf->sf_family) == AF_INET)
-                                memcpy(&server.sf_addr, &sf->sf_addr, sizeof(struct in_addr));
-                        else
-                                memcpy(&server.sf_addr6, &sf->sf_addr6, sizeof(struct in6_addr));
-                        server.sf_port = htons(*portnum);
+			if ((server.sf_family = sf->sf_family) == AF_INET)
+			{
+				memcpy(&server.sf_addr, &sf->sf_addr, sizeof(struct in_addr));
+				server_len = sizeof server.sins.sin;
+			}	
+			else
+			{
+				memcpy(&server.sf_addr6, &sf->sf_addr6, sizeof(struct in6_addr));
+				server_len = sizeof server.sins.sin6;
+			}
+			server.sf_port = htons(*portnum);
 
-                        memset(&hints, 0, sizeof(struct addrinfo));
-                        hints.ai_family = res->ai_family;
-                        freeaddrinfo(res);
+			memset(&hints, 0, sizeof(struct addrinfo));
+			hints.ai_family = res->ai_family;
+			freeaddrinfo(res);
  
-                        if (LocalHostName && !getaddrinfo(LocalHostName, NULL, &hints, &res) && res)
-                        {
-                                if (bind(fd, (struct sockaddr *) res->ai_addr, sizeof(struct sockaddr_foobar)))
-                                        return close(fd), -2;
-                                freeaddrinfo(res);
-                        }
-                }
-                else
-                        return close(fd), -6;
+			if (LocalHostName && !getaddrinfo(LocalHostName, NULL, &hints, &res) && res)
+			{
+				if (bind(fd, (struct sockaddr *) res->ai_addr, sizeof(struct sockaddr_foobar)))
+					return close(fd), -2;
+				freeaddrinfo(res);
+			}
+		}
+		else
+			return close(fd), -6;
 
 #else
 		if (isdigit((unsigned char)hostn[strlen(hostn)-1]))
@@ -566,6 +573,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 		}
 		server.sf_family = AF_INET;
 		server.sf_port = htons(*portnum);
+		server_len = sizeof server.sins.sin;
 #endif /* IPV6 */
 		
 #else
@@ -589,8 +597,9 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 				return (-2);
 		}
 		else
-			server.sf_family = AF_INET;
+		server.sf_family = AF_INET;
 		server.sf_port = (unsigned short) htons(*portnum);
+		server_len = sizeof server.sins.sin;
 #endif /* WINNT */
 
 #ifdef NON_BLOCKING_CONNECTS
@@ -611,7 +620,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 		}
 #endif
 		alarm(get_int_var(CONNECT_TIMEOUT_VAR));
-		if (connect(fd, (struct sockaddr *)&server, sizeof(server)) < 0 && errno != EINPROGRESS)
+		if (connect(fd, (struct sockaddr *)&server, server_len) < 0 && errno != EINPROGRESS)
 		{
 			alarm(0);
 			return close(fd), -4;
