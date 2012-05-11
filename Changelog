@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Fix known problem with IPv6 on FreeBSD and enable IPv6 on all supporting
+  platforms. Thanks to brabes and snadge. (caf)
+
 * Improve connect() error handling. (caf)
 
 * Remove obsolete .spec files. (caf)

@@ -734,40 +734,39 @@ AC_ARG_ENABLE(ipv6,
 [  --enable-ipv6           Enable IPv6 support (Linux only)],
 [ case "$enableval" in
     yes)
-      case "$(uname -s)" in
-        Linux)
-          if test -d "/usr/inet6/include"; then
-            CFLAGS="$CFLAGS -I/usr/inet6/include"
-            LIBS="-L/usr/inet6/lib -linet6 $LIBS"
-            AC_MSG_RESULT(yes (libinet6))
-            AC_DEFINE(IPV6, 1, Define this if you want IPV6 support.)
-          else
-            if test -d "/usr/local/v6/lib"; then
-              LIBS="-L/usr/local/v6/lib -linet6 $LIBS"
-              AC_MSG_RESULT(yes (freebsd+kame))
-              AC_DEFINE(IPV6, 1, Define this if you want IPV6 support.)
-            else
-              AC_TRY_RUN([
-              int main()
-              {
-                 #if !defined(__GLIBC__) || (__GLIBC__ < 2)
-                 #define NO_GLIBC_2 1
-                 #endif
+      AC_LINK_IFELSE([[
+      #include <sys/types.h>
+      #include <sys/socket.h>
+      #include <netinet/in.h>
 
-                 if (NO_GLIBC_2)
-                   exit(0);
-                 else
-                   exit(1);
-              }],[ AC_MSG_RESULT(yes (glibc2))
-                   AC_DEFINE(IPV6, 1, Define this if you want IPV6 support.)
-                 ], [AC_MSG_RESULT(no)], [AC_MSG_WARN(cross-compiling: assuming no ipv6)])
-            fi
+      int main()
+      {
+          struct sockaddr_in6 sin6;
+ 
+          sin6.sin6_family = AF_INET6;
+          sin6.sin6_addr = in6addr_any;
+
+          return sin6.sin6_addr.s6_addr[0];
+      }]], [ ac_cv_ipv6_type="native" ], [
+        if test -d "/usr/inet6/include"; then
+          CFLAGS="$CFLAGS -I/usr/inet6/include"
+          LIBS="-L/usr/inet6/lib -linet6 $LIBS"
+          ac_cv_ipv6_type="libinet6"
+        else
+          if test -d "/usr/local/v6/lib"; then
+            LIBS="-L/usr/local/v6/lib -linet6 $LIBS"
+            ac_cv_ipv6_type="freebsd+kame"
+          else
+            ac_cv_ipv6_type="none"
           fi
-          ;;
-        *)
-          AC_MSG_RESULT(no (ipv6 support can currently be enabled on Linux only))
-          ;;
-      esac
+        fi])
+
+      if test x"$ac_cv_ipv6_type" != x"none"; then
+        AC_MSG_RESULT(yes ($ac_cv_ipv6_type))
+        AC_DEFINE(IPV6, 1, Define this if you want IPV6 support.)
+      else
+        AC_MSG_RESULT(none found)
+      fi
       ;;
     no)
       AC_MSG_RESULT(no)
