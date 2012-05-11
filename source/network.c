@@ -611,13 +611,10 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 		}
 #endif
 		alarm(get_int_var(CONNECT_TIMEOUT_VAR));
-		if (connect (fd, (struct sockaddr *)&server, sizeof(server)) < 0)
+		if (connect(fd, (struct sockaddr *)&server, sizeof(server)) < 0 && errno != EINPROGRESS)
 		{
 			alarm(0);
-#ifdef NON_BLOCKING_CONNECTS
-			if (!nonblocking)
-#endif
-				return close(fd), -4;
+			return close(fd), -4;
 		}
 		alarm(0);
 	}
