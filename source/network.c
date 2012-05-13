@@ -520,7 +520,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 		}
 #endif
 
-		memset(&server, 0, sizeof(struct sockaddr_in));
+		memset(&server, 0, sizeof server);
 #ifndef WINNT
 
 #ifdef IPV6
@@ -554,7 +554,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
  
 			if (LocalHostName && !getaddrinfo(LocalHostName, NULL, &hints, &res) && res)
 			{
-				if (bind(fd, (struct sockaddr *) res->ai_addr, sizeof(struct sockaddr_foobar)))
+				if (bind(fd, (struct sockaddr *) res->ai_addr, res->ai_addrlen))
 					return close(fd), -2;
 				freeaddrinfo(res);
 			}
