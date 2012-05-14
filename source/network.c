@@ -696,18 +696,20 @@ extern char *BX_host_to_ip (const char *host)
 extern char *BX_ip_to_host (const char *ip)
 {
 	static char host[128];
-	struct sockaddr_foobar sf;
-	
-	if (inet_pton(AF_INET6, ip, &sf.sf_addr6))
-		sf.sf_family = AF_INET6;
-	else
+	struct addrinfo hints = { 0 };
+	struct addrinfo *res;
+
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_flags = AI_NUMERICHOST;
+
+	if (getaddrinfo(ip, NULL, &hints, &res) == 0)
 	{
-		inet_pton(AF_INET, ip, &sf.sf_addr);
-		sf.sf_family = AF_INET;
+		if (!res || getnameinfo(res->ai_addr, res->ai_addrlen, host, 128, NULL, 0, 0))
+			strlcpy(host, ip, sizeof host);
+		freeaddrinfo(res);
 	}
-	
-	if (getnameinfo((struct sockaddr*)&sf, sizeof(struct sockaddr_foobar), host, 128, NULL, 0, 0))
-		strncpy(host, ip, 128);
+	else
+		strlcpy(host, ip, sizeof host);
 
 	return host;
 }
