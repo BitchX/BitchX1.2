@@ -397,7 +397,7 @@ done:
 reallydone:
 	@echo
 	@echo $(_VERSION_) is now installed.
-	@echo Type \"$(bindir)/$(VERSION)$(EXEEXT)\" to start.
+	@echo Type \"$(INSTALL_IRC)\" to start.
 
 .PHONY: clean done reallydone installdirs local_installdirs
 
