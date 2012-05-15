@@ -639,10 +639,11 @@ int	lame_resolv (const char *hostname, struct sockaddr_foobar *buffer)
 {
 #ifdef IPV6
 	struct addrinfo *res;
-	if (getaddrinfo(hostname, NULL, NULL, &res) && res)
+	if (getaddrinfo(hostname, NULL, NULL, &res) || !res)
 		return -1;
 
 	memmove(buffer, res->ai_addr, res->ai_addrlen);
+	freeaddrinfo(res);
 	return 0;
 #else
 	struct hostent 	*hp;
