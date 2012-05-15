@@ -1996,6 +1996,11 @@ void ar_rename_nick(char *old_nick, char *new_nick, int server)
 #if defined( __APPLE__ ) && !defined( BIND_8_COMPAT )
   #define BIND_8_COMPAT
 #endif
+/* In OpenBSD, we have to define BIND_4_COMPAT to get
+ * nameser_compat.h included, to get the "old" bind interface. */
+#if defined( __OpenBSD__ ) && !defined( BIND_4_COMPAT )
+  #define BIND_4_COMPAT
+#endif
 
 #include <stdio.h>
 #include <fcntl.h>
