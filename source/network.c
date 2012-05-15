@@ -639,7 +639,8 @@ int	lame_resolv (const char *hostname, struct sockaddr_foobar *buffer)
 {
 #ifdef IPV6
 	struct addrinfo *res;
-	if (getaddrinfo(hostname, NULL, NULL, &res) || !res)
+	if (getaddrinfo(hostname, NULL, NULL, &res) || !res || 
+		res->ai_addrlen > sizeof *buffer)
 		return -1;
 
 	memmove(buffer, res->ai_addr, res->ai_addrlen);
