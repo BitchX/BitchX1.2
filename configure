@@ -14720,6 +14720,7 @@ echo "${ECHO_T}$ac_cv_system_version" >&6
         LDFLAGS="$LDFLAGS -Wl,-Bexport"
         ;;
       NetBSD*)
+        SHLIB_CFLAGS="-fPIC"
         if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
             SHLIB_LD="ld -Bshareable"
         else
@@ -14738,12 +14739,15 @@ echo "$as_me: error: sorry" >&2;}
         SHLIB_LD="ld -Bshareable"
         ;;
       FreeBSD*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       OpenBSD*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       BSDI*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       NEXTSTEP*)
@@ -14855,6 +14859,7 @@ rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
         ;;
       CYGWIN*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_SUFFIX=".dll"
         SHLIB_LD="dllwrap --export-all --output-def \$(PLUGIN_NAME).def --implib lib\$(PLUGIN_NAME).a --driver-name \$(CC)"
         ;;
@@ -16202,6 +16207,7 @@ echo "${ECHO_T}$ac_cv_system_version" >&6
         LDFLAGS="$LDFLAGS -Wl,-Bexport"
         ;;
       NetBSD*)
+        SHLIB_CFLAGS="-fPIC"
         if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
             SHLIB_LD="ld -Bshareable"
         else
@@ -16220,12 +16226,15 @@ echo "$as_me: error: sorry" >&2;}
         SHLIB_LD="ld -Bshareable"
         ;;
       FreeBSD*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       OpenBSD*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       BSDI*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       NEXTSTEP*)
@@ -16337,6 +16346,7 @@ rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
         ;;
       CYGWIN*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_SUFFIX=".dll"
         SHLIB_LD="dllwrap --export-all --output-def \$(PLUGIN_NAME).def --implib lib\$(PLUGIN_NAME).a --driver-name \$(CC)"
         ;;
