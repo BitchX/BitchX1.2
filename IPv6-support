@@ -1,17 +1,8 @@
 howto?
   ./configure --enable-ipv6
 
-supported platforms
-  linux with glibc (tested on redhat with glibc 2.1.1 and 2.2.x kernels)
-  linux with libinet6 (untested)
-  freebsd with kame (tested on freebsd 3.4)
-
 virtual hosts
-  they work only under linux (will anyone tell me how to get IPv6 addrs
-  under freebsd?). ifconfig is used to determine IP addrs, so you need
-  to recompile your net-tools package with INET6 address family support.
-
-  from now on you can use `-norev' parameter in `/irchost' to turn off
+  from now on you can use `-norev' parameter with `/irchost' to turn off
   name resolving, because it sometimes is veeery looong :)
 
 command line and `/server'
