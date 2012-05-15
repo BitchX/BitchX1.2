@@ -1337,6 +1337,7 @@ AC_DEFUN(AC_CHECK_PLUGIN_SUPPORT,
         LDFLAGS="$LDFLAGS -Wl,-Bexport"
         ;;
       NetBSD*)
+        SHLIB_CFLAGS="-fPIC"
         if echo __ELF__ | $CC -E - | grep __ELF__ >/dev/null; then
             SHLIB_LD="ld -Bshareable"
         else
@@ -1354,12 +1355,15 @@ AC_DEFUN(AC_CHECK_PLUGIN_SUPPORT,
         SHLIB_LD="ld -Bshareable"
         ;;
       FreeBSD*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       OpenBSD*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       BSDI*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_LD="$CC -shared"
         ;;
       NEXTSTEP*)
@@ -1424,6 +1428,7 @@ AC_DEFUN(AC_CHECK_PLUGIN_SUPPORT,
         ])
         ;;
       CYGWIN*)
+        SHLIB_CFLAGS="-fPIC"
         SHLIB_SUFFIX=".dll"
         SHLIB_LD="dllwrap --export-all --output-def \$(PLUGIN_NAME).def --implib lib\$(PLUGIN_NAME).a --driver-name \$(CC)"
         ;;
