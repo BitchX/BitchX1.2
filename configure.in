@@ -57,8 +57,6 @@ AC_CHECK_LIB(sun, getpwnam, LIBS="-lsun $LIBS",)
 AC_CHECK_LIB(dgc, inet_addr, LIBS="-ldgc $LIBS",)
 AC_CHECK_LIB(crypt, crypt, LIBS="-lcrypt $LIBS"; AC_DEFINE(HAVE_CRYPT, 1, Define this if you have a crypt implementation in -lcrypt),)
 AC_CHECK_LIB(m, pow, LIBS="-lm $LIBS",)
-AC_SEARCH_LIBS([res_mkquery], [resolv], AC_DEFINE(HAVE_RESOLV, 1, Define this if you have the resolv library.),
-[AC_SEARCH_LIBS([__res_mkquery], [resolv], AC_DEFINE(HAVE_RESOLV, 1, Define this if you have the resolv library.), [], [])], [])
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
@@ -117,6 +115,54 @@ else
   else
     AC_DEFINE(UNKNOWN_32INT, 1, Define this if you are unsure what is 32 bits.)
   fi
+fi
+
+dnl Check for resolver library (used by /NSLOOKUP)
+AC_CACHE_CHECK([library required for resolver functions], [bx_cv_lib_resolver],
+[
+OLDLIBS="$LIBS"
+bx_cv_lib_resolver="not found"
+for reslib in '' '-lresolv' '-lbind' '-lsocket'
+do
+	LIBS="$reslib $OLDLIBS"
+	AC_LINK_IFELSE([
+	#if defined( __APPLE__ ) && !defined( BIND_8_COMPAT )
+	  #define BIND_8_COMPAT
+	#endif
+	#if defined( __OpenBSD__ ) && !defined( BIND_4_COMPAT )
+	  #define BIND_4_COMPAT
+	#endif
+	AC_INCLUDES_DEFAULT
+	#ifdef HAVE_NETINET_IN_H
+	#include <netinet/in.h>
+	#endif
+	#ifdef HAVE_ARPA_NAMESER_H
+	#include <arpa/nameser.h>
+	#endif
+	#ifdef HAVE_RESOLV_H
+	#include <resolv.h>
+	#endif
+
+	int main()
+	{
+		return res_mkquery(0, 0, 0, 0, 0, 0, 0, 0, 0);
+	}], [
+	if test x"$reslib" != x; then
+		bx_cv_lib_resolver="$reslib"
+	else
+		bx_cv_lib_resolver="none required"
+	fi
+	break], [])
+done
+LIBS="$OLDLIBS"
+])
+if test x"$bx_cv_lib_resolver" != x"not found"; then
+	AC_DEFINE(HAVE_RESOLV, 1, Define this if you have the resolv library.)
+	if test x"$bx_cv_lib_resolver" != x"none required"; then
+		LIBS="$bx_cv_lib_resolver $LIBS"
+	fi
+else
+	AC_MSG_WARN([No resolver library found, /nslookup will be disabled.])
 fi
 
 dnl Checks for library functions.
