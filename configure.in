@@ -125,7 +125,7 @@ bx_cv_lib_resolver="not found"
 for reslib in '' '-lresolv' '-lbind' '-lsocket'
 do
 	LIBS="$reslib $OLDLIBS"
-	AC_LINK_IFELSE([
+	AC_LINK_IFELSE([AC_LANG_SOURCE([
 	#if defined( __APPLE__ ) && !defined( BIND_8_COMPAT )
 	  #define BIND_8_COMPAT
 	#endif
@@ -146,7 +146,7 @@ do
 	int main()
 	{
 		return res_mkquery(0, 0, 0, 0, 0, 0, 0, 0, 0);
-	}], [
+	}])], [
 	if test x"$reslib" != x; then
 		bx_cv_lib_resolver="$reslib"
 	else
@@ -780,7 +780,7 @@ AC_ARG_ENABLE(ipv6,
 [  --enable-ipv6           Enable IPv6 support (Linux only)],
 [ case "$enableval" in
     yes)
-      AC_LINK_IFELSE([[
+      AC_LINK_IFELSE([AC_LANG_SOURCE([[
       #include <sys/types.h>
       #include <sys/socket.h>
       #include <netinet/in.h>
@@ -793,7 +793,7 @@ AC_ARG_ENABLE(ipv6,
           sin6.sin6_addr = in6addr_any;
 
           return sin6.sin6_addr.s6_addr[0];
-      }]], [ ac_cv_ipv6_type="native" ], [
+      }]])], [ ac_cv_ipv6_type="native" ], [
         if test -d "/usr/inet6/include"; then
           CFLAGS="$CFLAGS -I/usr/inet6/include"
           LIBS="-L/usr/inet6/lib -linet6 $LIBS"
