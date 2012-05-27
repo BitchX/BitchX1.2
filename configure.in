@@ -126,11 +126,14 @@ for reslib in '' '-lresolv' '-lbind' '-lsocket'
 do
 	LIBS="$reslib $OLDLIBS"
 	AC_LINK_IFELSE([AC_LANG_SOURCE([
-	#if defined( __APPLE__ ) && !defined( BIND_8_COMPAT )
-	  #define BIND_8_COMPAT
-	#endif
-	#if defined( __OpenBSD__ ) && !defined( BIND_4_COMPAT )
-	  #define BIND_4_COMPAT
+	#if !defined( __APPLE__ ) 
+	  #if !defined( BIND_4_COMPAT )
+	    #define BIND_4_COMPAT
+	  #endif
+	#else
+	  #if !defined( BIND_8_COMPAT )
+	    #define BIND_8_COMPAT
+	  #endif
 	#endif
 	AC_INCLUDES_DEFAULT
 	#ifdef HAVE_NETINET_IN_H

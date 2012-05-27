@@ -1991,15 +1991,18 @@ void ar_rename_nick(char *old_nick, char *new_nick, int server)
  * heavily modified for use in a irc client.
  */
 
-/* In OS X 10.3 onward, we have to define BIND_8_COMPAT to get 
+#if !defined( __APPLE__ ) 
+/* On some systems, eg OpenBSD, we have to define BIND_4_COMPAT to get
  * nameser_compat.h included, to get the "old" bind interface. */
-#if defined( __APPLE__ ) && !defined( BIND_8_COMPAT )
-  #define BIND_8_COMPAT
-#endif
-/* In OpenBSD, we have to define BIND_4_COMPAT to get
- * nameser_compat.h included, to get the "old" bind interface. */
-#if defined( __OpenBSD__ ) && !defined( BIND_4_COMPAT )
-  #define BIND_4_COMPAT
+  #if !defined( BIND_4_COMPAT )
+    #define BIND_4_COMPAT
+  #endif
+#else
+/* After one too many bongs some developer at Apple decided to rename this
+ * macro for no good reason. */
+  #if !defined( BIND_8_COMPAT )
+    #define BIND_8_COMPAT
+  #endif
 #endif
 
 #include <stdio.h>
@@ -2660,10 +2663,10 @@ static	int	ar_procanswer(struct reslist *rptr, HEADER *hptr, char *buf, char *eo
 		 * the pointer to the right spot.  Some of thse are actually
 		 * useful so its not a good idea to skip past in one big jump.
 		 */
-		NS_GET16(type, cp);
-		NS_GET16(class, cp);
-		NS_GET32(ttl, cp);
-		NS_GET16(dlen, cp);
+		GETSHORT(type, cp);
+		GETSHORT(class, cp);
+		GETLONG(ttl, cp);
+		GETSHORT(dlen, cp);
 		rptr->re_type = type;
 
 		switch(type)
