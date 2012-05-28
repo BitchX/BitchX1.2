@@ -164,6 +164,8 @@ if test x"$bx_cv_lib_resolver" != x"not found"; then
 	if test x"$bx_cv_lib_resolver" != x"none required"; then
 		LIBS="$bx_cv_lib_resolver $LIBS"
 	fi
+	dnl This is for getting the DNS servers on Windows
+	AC_CHECK_HEADER([iphlpapi.h], [AC_CHECK_LIB(iphlpapi, GetNetworkParams, [], [])], [], [#include <windows.h>])
 else
 	AC_MSG_WARN([No resolver library found, /nslookup will be disabled.])
 fi

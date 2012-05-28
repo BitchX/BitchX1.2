@@ -2053,6 +2053,36 @@ static	struct	resstats {
 	int	re_timeouts;
 } ar_reinfo;
 
+#ifdef HAVE_LIBIPHLPAPI
+#include <windows.h>
+#include <iphlpapi.h>
+
+void ar_get_windows_dns(void)
+{
+	DWORD ret;
+	ULONG buflen = 0;
+	FIXED_INFO *buf;
+
+	ret = GetNetworkParams(NULL, &buflen);
+	if (ret != ERROR_BUFFER_OVERFLOW)
+		return;
+
+	buf = new_malloc(buflen);
+
+	ret = GetNetworkParams(buf, &buflen);
+	if (ret == NO_ERROR)
+	{
+		_res.nscount = 1;
+		_res.nsaddr_list[0].sin_family = AF_INET;
+		_res.nsaddr_list[0].sin_addr.s_addr = inet_addr(buf->DnsServerList.IpAddress.String);
+		_res.nsaddr_list[0].sin_port = htons(53);
+	}
+
+	new_free(&buf);
+	return;
+}
+#endif /* HAVE_LIBIPHLPAPI */
+
 /*
  * ar_init
  *
@@ -2079,10 +2109,20 @@ int	ar_init(int op)
 		ret = res_init();
 		(void)strcpy(ar_domainname, ar_dot);
 		(void)strncat(ar_domainname, _res.defdname, HOSTLEN-2);
-		if (!_res.nscount)
+#ifdef HAVE_LIBIPHLPAPI
+		/* The Cygwin resolver library doesn't fill out _res.nsaddr_list
+		 * and sets _res.nscount to -1 if there's no /etc/resolv.conf file,
+		 * so we try fetching the first DNS server address ourselves. */
+		if (_res.nscount < 1)
+			ar_get_windows_dns();
+#endif
+		if (_res.nscount < 1)
 		{
+			/* Try falling back to the Google public DNS */
 			_res.nscount = 1;
-			_res.nsaddr_list[0].sin_addr.s_addr = inet_addr("127.0.0.1");
+			_res.nsaddr_list[0].sin_family = AF_INET;
+			_res.nsaddr_list[0].sin_addr.s_addr = inet_addr("8.8.8.8");
+			_res.nsaddr_list[0].sin_port = htons(53);
 		}
 	}
 
