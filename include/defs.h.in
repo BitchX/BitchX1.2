@@ -129,7 +129,7 @@
 /* Define to 1 if you have the `killpg' function. */
 #undef HAVE_KILLPG
 
-/* Define to 1 if you have the `iphlpapi' library (-liphlpapi). */
+/* Define to 1 if you have the Windows iphlpapi library */
 #undef HAVE_LIBIPHLPAPI
 
 /* Define to 1 if you have the `ssl' library (-lssl). */
