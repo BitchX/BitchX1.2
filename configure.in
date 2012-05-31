@@ -537,27 +537,44 @@ AC_MSG_RESULT(no)
 dnl Check for SSL support.
 AC_MSG_CHECKING(whether to enable SSL support)
 AC_ARG_WITH(ssl,
-[  --with-ssl=PFX          Enable SSL support (Prefix is optional)],
-[ case "$withval" in
+[[  --with-ssl[=PATH]       Enable SSL support (enabled by default if OpenSSL found)]],
+[], [with_ssl=check])
+
+case "$with_ssl" in
     yes)
       AC_MSG_RESULT(yes)
-      AC_DEFINE(HAVE_SSL, 1, Define this is the system has SSL support.)
-      LIBS="$LIBS -lssl -lcrypto"
-      AC_CHECK_LIB(ssl, SSL_accept,,AC_MSG_ERROR(Could not find OpenSSL.))
+      ;;
+    check)
+      AC_MSG_RESULT(if available)
       ;;
     no)
       AC_MSG_RESULT(no)
       ;;
     *)
       AC_MSG_RESULT(yes)
-      AC_DEFINE(HAVE_SSL, 1, Define this is the system has SSL support.)
-      LIBS="$LIBS -L${withval}/lib -lssl -lcrypto"
-      CFLAGS="$CFLAGS -I${withval}/include"
-      AC_CHECK_LIB(ssl, SSL_accept,,AC_MSG_ERROR(Could not find OpenSSL.))
+      CFLAGS="$CFLAGS -I${with_ssl}/include"
+      LDFLAGS="$LDFLAGS -L${with_ssl}/lib"
+      with_ssl=yes
       ;;
-  esac ],
-AC_MSG_RESULT(no)
-)
+esac
+case "$with_ssl" in
+    yes|check)
+      AC_CHECK_LIB([crypto], [SSLeay], [], [], [])
+      if test x"$ac_cv_lib_crypto_SSLeay" = x"yes"; then
+        AC_CHECK_LIB([ssl], [SSL_accept], [], [], [])
+      fi
+      if test x"$ac_cv_lib_ssl_SSL_accept" = x"yes"; then
+        dnl This would be unnecessary if we used HAVE_LIBSSL in the code
+        AC_DEFINE(HAVE_SSL, 1, Define this if the system has SSL support.)
+      else
+        if test x"$with_ssl" = x"yes"; then
+          AC_MSG_FAILURE([--with-ssl given, but could not find OpenSSL.])
+        else
+          AC_MSG_WARN([OpenSSL not found, will not have SSL support.])
+        fi
+      fi
+      ;;
+esac
 
 dnl Now that we've checked for PM and GTK support, make sure
 dnl that we "#define GUI" and and that we don't build wserv or
@@ -920,9 +937,9 @@ AC_MSG_RESULT(no)
 dnl Check for plugin support and which plugins to build.
 AC_MSG_CHECKING(whether to enable plugin support)
 AC_ARG_WITH(plugins,
-[  --with-plugins[=LIST]     Enable plugin support
+[[  --with-plugins[=LIST]   Enable plugin support
                           LIST is a comma separated list of plugins to build
-                          If none are specified, all available plugins are built],
+                          If none are specified, all available plugins are built]],
 [ case "$withval" in
     yes | all)
       AC_MSG_RESULT(yes)

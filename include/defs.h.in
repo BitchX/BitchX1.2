@@ -129,6 +129,9 @@
 /* Define to 1 if you have the `killpg' function. */
 #undef HAVE_KILLPG
 
+/* Define to 1 if you have the `crypto' library (-lcrypto). */
+#undef HAVE_LIBCRYPTO
+
 /* Define to 1 if you have the Windows iphlpapi library */
 #undef HAVE_LIBIPHLPAPI
 
@@ -204,7 +207,7 @@
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
 
-/* Define this is the system has SSL support. */
+/* Define this if the system has SSL support. */
 #undef HAVE_SSL
 
 /* Define to 1 if you have the <stdint.h> header file. */

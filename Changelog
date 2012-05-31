@@ -1,5 +1,7 @@
 [Changes 1.2c01]
 
+* Enable SSL support by default, if OpenSSL is present at build time. (caf)
+
 * Fix leak and potential crash in lame_resolv() using IPv6.  (caf, snadge)
 
 * Apply patch from snadge defining BIND_4_COMPAT on OpenBSD, to allow
