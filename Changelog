@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Use AI_ADDRCONFIG flag to improve server address selection when client
+  is built for IPv6 but we don't have an IPv6 address. (caf)
+
 * Enable SSL support by default, if OpenSSL is present at build time. (caf)
 
 * Fix leak and potential crash in lame_resolv() using IPv6.  (caf, snadge)
@@ -7,8 +10,8 @@
 * Apply patch from snadge defining BIND_4_COMPAT on OpenBSD, to allow
   /nslookup to build. (caf) 
 
-* Fix known problem with IPv6 on FreeBSD and enable IPv6 on all supporting
-  platforms. Thanks to brabes, snadge and packet. (caf)
+* Fix problem connecting to IPv4 when IPv6 enabled on FreeBSD and enable 
+  IPv6 on all supporting platforms. Thanks to brabes, snadge and packet. (caf)
 
 * Improve connect() error handling. (caf)
 

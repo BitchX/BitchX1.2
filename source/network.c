@@ -506,7 +506,6 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 #endif		
 #ifdef IPV6
 		struct addrinfo hints, *res;
-		struct sockaddr_foobar *sf = NULL;
 #else
 		struct sockaddr_in localaddr;
 		if (LocalHostName)
@@ -524,39 +523,34 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 #ifndef WINNT
 
 #ifdef IPV6
-		memset(&hints, 0, sizeof(hints));
+		memset(&hints, 0, sizeof hints);
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_flags = AI_ADDRCONFIG;
+		hints.ai_socktype = proto_type;
+
 		if (!getaddrinfo(hostn, NULL, &hints, &res) && res)
 		{
-			sf = (struct sockaddr_foobar*) res->ai_addr;
-
 			close(fd);
 
-			proto_type = (protocol == PROTOCOL_TCP) ? SOCK_STREAM : SOCK_DGRAM;
-			if ((fd = socket(sf->sf_family, proto_type, 0)) < 0)
+			if ((fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
 				return -1;
 			set_socket_options (fd);
 
-			if ((server.sf_family = sf->sf_family) == AF_INET)
-			{
-				memcpy(&server.sf_addr, &sf->sf_addr, sizeof(struct in_addr));
-				server_len = sizeof server.sins.sin;
-			}	
-			else
-			{
-				memcpy(&server.sf_addr6, &sf->sf_addr6, sizeof(struct in6_addr));
-				server_len = sizeof server.sins.sin6;
-			}
+			memcpy(&server, res->ai_addr, res->ai_addrlen);
+			server_len = res->ai_addrlen;
 			server.sf_port = htons(*portnum);
 
-			memset(&hints, 0, sizeof(struct addrinfo));
+			memset(&hints, 0, sizeof hints);
 			hints.ai_family = res->ai_family;
 			freeaddrinfo(res);
  
 			if (LocalHostName && !getaddrinfo(LocalHostName, NULL, &hints, &res) && res)
 			{
-				if (bind(fd, (struct sockaddr *) res->ai_addr, res->ai_addrlen))
-					return close(fd), -2;
+				int retval = bind(fd, (struct sockaddr *) res->ai_addr, res->ai_addrlen);
 				freeaddrinfo(res);
+
+				if (retval)	
+					return close(fd), -2;
 			}
 		}
 		else

@@ -99,6 +99,10 @@ extern char	thing_star[4];
 #include <netdb.h>
 #endif
 
+#ifndef AI_ADDRCONFIG
+#define AI_ADDRCONFIG 0
+#endif
+
 #include "bsdglob.h"
 
 #include "irc_std.h"
