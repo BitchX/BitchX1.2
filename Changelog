@@ -1,5 +1,8 @@
 [Changes 1.2c01]
 
+* Rename include/bitchx to include/options.h, fixes building on
+  case-insensitive platforms. (caf)
+
 * Use AI_ADDRCONFIG flag to improve server address selection when client
   is built for IPv6 but we don't have an IPv6 address. (caf)
 

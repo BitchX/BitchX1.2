@@ -1,5 +1,5 @@
 
-char compile_time_options[] = {
+static const char compile_time_options[] = {
  
 					'a',
 #ifdef NO_BOTS

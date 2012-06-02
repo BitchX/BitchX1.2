@@ -46,7 +46,7 @@ CVS_REVISION(functions_c)
 #define MAIN_SOURCE
 #include "modval.h"
 
-#include "bitchx"
+#include "options.h"
 #include <sys/stat.h>
 
 #ifdef HAVE_REGEX_H

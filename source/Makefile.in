@@ -499,7 +499,7 @@ functions.o: functions.c ../include/irc.h ../include/defs.h \
  ../include/gui.h ../include/gtkbitchx.h ../include/translat.h \
  ../include/notify.h ../include/misc.h ../include/userlist.h \
  ../include/numbers.h ../include/hash2.h ../include/whowas.h \
- ../include/log.h ../include/bitchx ../include/tcl_bx.h
+ ../include/log.h ../include/options.h ../include/tcl_bx.h
 funny.o: funny.c ../include/irc.h ../include/defs.h \
  ../include/config.h ../include/../.config.h ../include/color.h \
  ../include/bsdglob.h ../include/irc_std.h ../include/debug.h \
