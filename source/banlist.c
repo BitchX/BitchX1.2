@@ -829,20 +829,15 @@ register NickList *nicks;
 BUILT_IN_COMMAND(mknu)
 {
 	ChannelList *chan;
-register NickList *nicks;
+	NickList *nicks;
 	char *to = NULL, *rest;
 	int count;
 	int server = from_server;
+	int kickops;
 	
-	
-	if (!args || !*args)
-		to = NULL;
-	else if (*args == '#' || *args == '&' || !strncmp(args, "* ", 2) ||
-		 !strcmp(args, "*"))
+	if (args && (is_channel(args) || !strncmp(args, "* ", 2) || !strcmp(args, "*")))
 		to = next_arg(args, &args);
-	else
-		to = NULL;
-
+	
 	if (!(chan = prepare_command(&server, to, NEED_OP)))
 		return;
 
@@ -850,14 +845,14 @@ register NickList *nicks;
 	if (rest && !*rest)
 		rest = NULL;
 
+	kickops = get_cset_int_var(chan->csets, KICK_OPS_CSET);
 	count = 0;
 	for (nicks = next_nicklist(chan, NULL); nicks; nicks = next_nicklist(chan, nicks))
 	{
-		if (!nick_isop(nicks) && !isme(nicks->nick))
-		{
-			count++;
-			send_to_server("KICK %s %s :(non-users) \002%cX002", chan->channel, nicks->nick, rest ? rest : get_reason(nicks->nick, NULL));
-		}
+		if (nicks->userlist || (nick_isop(nicks) && !kickops) || isme(nicks->nick))
+			continue;
+		count++;
+		send_to_server("KICK %s %s :(non-users) \002%s\002", chan->channel, nicks->nick, rest ? rest : get_reason(nicks->nick, NULL));
 	}
 	if (!count)
 		say("No matches for masskick of non-users on %s", chan->channel);
