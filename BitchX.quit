@@ -1,11 +1,12 @@
 # For use with BitchX-75+
-# Last updated: 20120510
+# Last updated: 20120611
 
 ${a} Official FAQ Site -- http://wiki.bitchx.org/faq:start
 ${a} Official Wiki -- http://wiki.bitchx.org/
 ${a} Official IRC Channel -- #BitchX on EFNet
 ${a} Official WWW Site -- http://www.bitchx.org/
 ${a} Official Sourceforge Project -- http://sf.net/projects/bitchx/
+${a} Official Mailing List -- bitchx-devel@lists.sourceforge.net
 
 ${a} for president.
 
