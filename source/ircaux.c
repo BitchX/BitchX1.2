@@ -1326,7 +1326,7 @@ void	BX_ircpanic (char *format, ...)
 	}
 
 	yell("An unrecoverable logic error has occured.");
-	yell("Please email %s giving me the following message", "edwards@bitchx.dimension6.com"  );
+	yell("Please email " BUG_EMAIL " and include the following message:");
 
 	yell("Panic: [%s:%s %s]", irc_version, buffer, cx_function?cx_function:empty_string);
 	dump_call_stack();
@@ -2963,9 +2963,9 @@ size_t	BX_mangle_line	(char *incoming, int how, size_t how_much)
 		output = strip_ansi(incoming);
 		strip_ansi_never_xlate = 0;	/* XXXXX */
 		if (strlcpy(incoming, output, how_much) > how_much)
-			say("Mangle_line truncating results. #1 -- "
-				"Email jnelson@acronet.net [%d] [%d]",
-				strlen(buffer), how_much);
+			say("Mangle_line truncating results (%d > %d) - "
+				"please email " BUG_EMAIL,
+				strlen(output), how_much);
 		new_free(&output);
 	}
 

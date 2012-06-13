@@ -762,7 +762,7 @@ BuddahX, Hob, Lifendel, JondalaR, JVaughn, suicide, NovaLogic,\n\
 Jordy, BigHead,Ananda, Hybrid, Reefa, BlackJac, GenX, MHacker,\n\
 PSiLiCON, hop, Sheik, psykotyk, oweff, icetrey, Power, sideshow,\n\
 Raistlin, Mustang, [Nuke], Rosmo, Sellfone, Drago and bark0de!\n\n\
-Mailing list is at majordomo@lists.bitchx.com\n";
+Mailing list is at <bitchx-devel@lists.sourceforge.net>\n";
        gui_about_box(about_text);
        return;
 #else
@@ -803,7 +803,7 @@ Mailing list is at majordomo@lists.bitchx.com\n";
 	put_it("[0;30;47m          hop, Sheik, psykotyk, oweff, icetrey, Power, sideshow, Raistlin,  [0m");   
 	put_it("[0;30;47m          [Nuke], Rosmo and Bark0de!                                        [0m");
 	put_it("[0;30;47m A special thanks to ccm.net for co-locating BitchX.com                     [0m");
-	put_it("[0;30;47m Mailing list is at majordomo@lists.bitchx.com                              [0m");
+	put_it("[0;30;47m Mailing list is at <bitchx-devel@lists.sourceforge.net>                    [0m");
 	put_it(empty_string);
 #else
 	put_it("[35m    ‹‹‹‹€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€ﬂ€€[1;45m∞±≤[0;35;40m  [1;45m≤±[0;35;40mﬂ[1;32m‹[42m±≤[40m‹[0;35;40m [1;45m≤[40mﬁ[0m");
@@ -825,7 +825,7 @@ Mailing list is at majordomo@lists.bitchx.com\n";
 	put_it("[1;47m∞[0;30;47m          Ananda, Hybrid, Reefa, BlackJac, GenX, MHacker, PSiLiCON,         [1m≤[0m");
 	put_it("[1;47m∞[0;30;47m          hop, Sheik, psykotyk, oweff, icetrey, Power, sideshow, Raistlin,  [1m≤[0m");
 	put_it("[1;47m∞[0;30;47m          Mustang, [Nuke], Rosmo, Sellfone, Drago and bark0de!              [1m≤[0m");
-	put_it("[1;47m∞[0;30;47m Mailing list is at majordomo@lists.bitchx.com                              [1m≤[0m");
+	put_it("[1;47m∞[0;30;47m Mailing list is at <bitchx-devel@lists.sourceforge.net>                    [1m≤[0m");
 	put_it("ﬂ[1;30m≤ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ[0m");
 	put_it(empty_string);
 #endif

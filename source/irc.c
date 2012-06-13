@@ -491,7 +491,7 @@ extern char *sys_siglist[];
 	putlog(LOG_ALL, "*", "Error logged. %s at (%d)  %s", cx_file, cx_line, cx_function?cx_function:empty_string);
 #endif
 	printf("\n\r\n\rIRCII has been terminated by a [%s]\n\r", sys_siglist[unused]);
-	printf("Please inform panasync (edwards@bitchx.dimension6.com) of this\n\r");
+	printf("Please email " BUG_EMAIL "\n\r");
 	printf("with as much detail as possible about what you were doing when it happened.\n\r");
 	printf("Please include the version of IRCII (%s) and type of system in the report.\n\r", irc_version);
 	fflush(stdout);
