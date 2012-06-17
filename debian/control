@@ -1,0 +1,15 @@
+Source: bitchx
+Section: net
+Priority: optional
+Maintainer: Nye Liu <nyet@nyet.org>
+Build-Depends: debhelper (>= 8.0.0), libncurses5-dev, libssl-dev
+Standards-Version: 3.9.2
+Homepage: https://sourceforge.net/projects/bitchx/
+#Vcs-Git: git://git.debian.org/collab-maint/bitchx.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/bitchx.git;a=summary
+
+Package: bitchx
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: terminal based IRC client
+ BitchX (ircii-pana) is a terminal based IRC client for UNIX systems.
