@@ -112,11 +112,6 @@ IRCPATH = @IRCPATH@
 # Path for TRANSLATION variable.
 TRANSLATION_PATH = @TRANSLATION_PATH@
 
-# This command will be used to install the BitchX help files. If you don't
-# want to install them, replace with the following:
-# INSTALL_HELP_CMD = @echo The help files have not been installed.
-INSTALL_HELP_CMD = @INSTALL_HELP_CMD@
-
 # This is where the optional plugins will be copied to.
 PLUGINDIR = @PLUGINDIR@
 
@@ -216,9 +211,9 @@ installdll_local: $(srcdir)/Makefile dll/Makefile
 	  && $(MAKE) 'PLUGINDIR=$(local_dir)/.BitchX/plugins'
 
 installhelp: installdirs
-	cd $(top_srcdir) \
-	  && $(INSTALL_HELP_CMD)
-	(find $(DESTDIR)$(HELPDIR) -type f ! -name '*.bz2' ! -name '*.gz' | \
+	cd $(top_srcdir)/bitchx-docs && \
+		find . -name .svn -prune -o -print | cpio -pdmu -R `id -un`:`id -gn` "$(DESTDIR)$(HELPDIR)"
+	(find "$(DESTDIR)$(HELPDIR)" -type f ! -name '*.bz2' ! -name '*.gz' | \
 		(xargs bzip2 -9f || xargs gzip -9f) || :) 2>/dev/null
 
 installbin: installirc @INSTALL_EXTRAS@

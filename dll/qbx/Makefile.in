@@ -82,11 +82,6 @@ IRCPATH = @IRCPATH@
 # Path for TRANSLATION variable.
 TRANSLATION_PATH = @TRANSLATION_PATH@
 
-# This command will be used to install the BitchX help files. If you don't
-# want to install them, replace with the following:
-# INSTALL_HELP_CMD = @echo The help files have not been installed.
-INSTALL_HELP_CMD = @INSTALL_HELP_CMD@
-
 # This is where the optional plugins will be copied to.
 PLUGINDIR = @PLUGINDIR@
 
