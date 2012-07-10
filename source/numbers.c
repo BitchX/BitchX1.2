@@ -1421,6 +1421,15 @@ void numbered_command(char *from, int comm, char **ArgList)
 		if ((comm == 461) && oper_command)
 			oper_command--;
 	}
+	case 903:		/* SASL authentication successful */
+	case 904:		/* SASL authentication failed */
+	case 905:		/* SASL message too long */
+	{
+		my_send_to_server(from_server, "CAP END");
+		if (do_hook(current_numeric, "%s %s", from, *ArgList))
+			display_msg(from, ArgList);
+		break;
+	}
 	/*
 	 * The following accumulates the remaining arguments
 	 * in ArgSpace for hook detection. We can't use

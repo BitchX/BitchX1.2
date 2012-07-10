@@ -2401,3 +2401,58 @@ register unsigned int count = 0;
 	return count;
 }
 #endif
+
+/* ----------------------- start of base64 stuff ---------------------------*/
+/*
+ * Copyright (c) 1995-2001 Kungliga Tekniska Högskolan
+ * (Royal Institute of Technology, Stockholm, Sweden).
+ * All rights reserved.
+ *
+ * This is licensed under the 3-clause BSD license, which is found above.
+ */
+
+static char base64_chars[] = 
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+/*
+ * Return a malloced, base64 string representation of the first 'size' bytes
+ * starting at 'data'.  Returns strlen(*str).
+ */
+int	my_base64_encode (const void *data, int size, char **str)
+{
+    char *s, *p;
+    int i;
+    unsigned c;
+    const unsigned char *q;
+
+// XXX
+//    p = s = (char *)new_malloc(size * 4 / 3 + 4);
+    p = s = (char *)malloc(size * 4 / 3 + 4);
+    if (p == NULL)
+	return -1;
+    q = (const unsigned char *) data;
+    i = 0;
+    for (i = 0; i < size;) {
+	c = (unsigned)(unsigned char)q[i++];
+	c *= 256;
+	if (i < size)
+	    c += (unsigned)(unsigned char)q[i];
+	i++;
+	c *= 256;
+	if (i < size)
+	    c += (unsigned)(unsigned char)q[i];
+	i++;
+	p[0] = base64_chars[(c & 0x00fc0000) >> 18];
+	p[1] = base64_chars[(c & 0x0003f000) >> 12];
+	p[2] = base64_chars[(c & 0x00000fc0) >> 6];
+	p[3] = base64_chars[(c & 0x0000003f) >> 0];
+	if (i > size)
+	    p[3] = '=';
+	if (i > size + 1)
+	    p[2] = '=';
+	p += 4;
+    }
+    *p = 0;
+    *str = s;
+    return strlen(s);
+}

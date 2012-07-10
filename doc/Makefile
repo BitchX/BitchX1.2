@@ -1,5 +1,5 @@
 
-SHELL = /usr/local/bin/bash
+SHELL = /bin/sh
 
 default:
 	$(SHELL) ./configure --with-plugins

@@ -505,11 +505,11 @@ extern Function_ptr *global;
 #define close_all_server (*(void (*)(void ))global[CLOSE_ALL_SERVER])
 
 #define read_server_file (*(int (*)(char *))global[READ_SERVER_FILE])
-#define add_to_server_list (*(void (*)(char *, int , char *, char *, char *, int , int ))global[ADD_TO_SERVER_LIST])
+#define add_to_server_list (*(void (*)(char *, int , char *, char *, char *, char *, char *, int , int ))global[ADD_TO_SERVER_LIST])
 #define build_server_list (*(int (*)(char *))global[BUILD_SERVER_LIST])
 #define display_server_list (*(void (*)(void ))global[DISPLAY_SERVER_LIST])
 #define create_server_list (*(char *(*)(char *))global[CREATE_SERVER_LIST])
-#define parse_server_info (*(void (*)(char *, char **, char **, char **, char **))global[PARSE_SERVER_INFO])
+#define parse_server_info (*(void (*)(char *, char **, char **, char **, char **, char **, char **))global[PARSE_SERVER_INFO])
 #define server_list_size (*(int (*)(void ))global[SERVER_LIST_SIZE])
 
 #define find_server_refnum (*(int (*)(char *, char **))global[FIND_SERVER_REFNUM])

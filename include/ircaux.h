@@ -256,6 +256,8 @@ char	*ulongcomma		(unsigned long);
 	char 	*tparm (const char *, ...);
 #endif
 
+	int	my_base64_encode (const void *, int, char **);
+
 #ifndef HAVE_STRTOUL
 	unsigned long 	strtoul (const char *, char **, int);
 #endif

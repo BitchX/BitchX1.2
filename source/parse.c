@@ -887,6 +887,59 @@ static	void p_error(char *from, char **ArgList)
 	say("%s", ArgList[0]);
 }
 
+static	void p_cap(char *from, char **ArgList)
+{
+	/* Only ask to AUTHENTICATE before registering */
+	if (!strcmp(ArgList[1], "ACK") && !is_server_connected(from_server))
+	{
+		if (strstr(ArgList[2], "sasl"))
+			my_send_to_server(from_server, "AUTHENTICATE PLAIN");
+	}
+}
+
+static	void p_authenticate(char *from, char **ArgList)
+{
+	char buf[512];
+	char *p = buf;
+	char *output = NULL;
+	char *nick, *pass;
+	int size = sizeof buf;
+
+	/* "AUTHENTICATE command MUST be used before registration is complete" */
+	if (is_server_connected(from_server))
+		return;
+
+	if (!strcmp(ArgList[0], "+"))
+	{
+		nick = get_server_sasl_nick(from_server);
+		pass = get_server_sasl_pass(from_server);
+
+		/* "The client can abort an authentication by sending an asterisk as the data" */
+		if (!nick || !pass)
+		{
+			my_send_to_server(from_server, "AUTHENTICATE *");
+			return;
+		}
+
+		strlcpy(p, nick, size);
+		size -= strlen(nick) + 1;
+		p += strlen(nick) + 1;
+		strlcpy(p, nick, size);
+		size -= strlen(nick) + 1;
+		p += strlen(nick) + 1;
+		strlcpy(p, pass, size);
+
+		if (my_base64_encode(buf, strlen(nick) * 2 + strlen(pass) + 2, &output) > 0)
+		{
+			my_send_to_server(from_server, "AUTHENTICATE %s", output);
+// XXX			new_free(&output);
+			free(output);
+		}
+		else
+			my_send_to_server(from_server, "AUTHENTICATE *");
+	}
+}
+
 void add_user_who (WhoEntry *w, char *from, char **ArgList)
 {
 	char *userhost;
@@ -1758,7 +1811,9 @@ static void p_rpong (char *from, char **ArgList)
 
 protocol_command rfc1459[] = {
 {	"ADMIN",	NULL,		NULL,		0,		0, 0},
+{	"AUTHENTICATE",	p_authenticate,	NULL,		0,		0, 0},
 {	"AWAY",		NULL,		NULL,		0,		0, 0},
+{	"CAP",		p_cap,		NULL,		0,		0, 0},
 { 	"CONNECT",	NULL,		NULL,		0,		0, 0},
 {	"ERROR",	p_error,	NULL,		0,		0, 0},
 {	"ERROR:",	p_error,	NULL,		0,		0, 0},
