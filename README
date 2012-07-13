@@ -1,4 +1,4 @@
-BitchX-1.1-Final Readme file by sin <sin@bitchx.org>
+BitchX-1.2 2 Readme file by Dan Mashal <dan.mashal AT gmail.com>
 ======================================================
 
 BitchX is an IRC (Internet Relay Chat) client by Colten Edwards aka
@@ -9,10 +9,10 @@ BitchX was originally started as a script by Trench and HappyCrappy
 for the popular UNIX IRC client ircII. Around Christmas of 1994 the
 script was patched directly into the client by panasync. 
 
-Now in 2004 we are looking to revive the development of the client by merging
+Now in ~~2004~~ 2012 we are looking to revive the development of the client by merging
 it back to the current release of Epic and cleaning some of the features
 that are no longer needed or supported and moving on with the building of
-a whole new client.  10 years of BitchX and we're not nearly done yet.
+a whole new client.  18 years of BitchX and we're not nearly done yet.
 
 The new client will be based upon the final release of EPIC4 and will exclude
 a great number of the old features such as support for OS/2 and GTK which was
@@ -22,15 +22,14 @@ into a sane code base.  Less bloat and overhead is always good for you the
 user.
 
 For persons interested in becoming involved in the new project please visit
-our forums website at http://www.cyberpunkz.org or join EFnet #BitchX.
+our current website at http://www.github.com/BitchX or join #BitchX on freenode or EFNet.
 
 A special thanks to panasync.
 
 Links:
 ======
 
-http://www.bitchx.org/		<-- The official BitchX web site
-ftp://ftp.bitchx.org/		<-- The official BitchX ftp site
+http://www.bitchx.org/		<-- The official BitchX web site (outdated)
 http://scripts.bitchx.org/	<-- The official BitchX script web site
 http://faq.bitchx.org/		<-- FAQ Website
 http://bugs.bitchx.org/		<-- Bug Reporting tool
