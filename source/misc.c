@@ -2053,7 +2053,7 @@ static	struct	resstats {
 	int	re_timeouts;
 } ar_reinfo;
 
-#ifdef HAVE_LIBIPHLPAPI
+#if 0
 #include <windows.h>
 #include <iphlpapi.h>
 
@@ -2109,7 +2109,7 @@ int	ar_init(int op)
 		ret = res_init();
 		(void)strcpy(ar_domainname, ar_dot);
 		(void)strncat(ar_domainname, _res.defdname, HOSTLEN-2);
-#ifdef HAVE_LIBIPHLPAPI
+#if 0
 		/* The Cygwin resolver library doesn't fill out _res.nsaddr_list
 		 * and sets _res.nscount to -1 if there's no /etc/resolv.conf file,
 		 * so we try fetching the first DNS server address ourselves. */
