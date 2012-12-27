@@ -26,7 +26,7 @@
 #include "screen.h"
 #include "ircaux.h"
 
-#if defined(_ALL_SOURCE) || defined(__EMX__) || defined(__QNX__)
+#if defined(_ALL_SOURCE) || defined(__EMX__) || defined(__QNX__) || defined(_FreeBSD__)
 #include <termios.h>
 #else
 #include <sys/termios.h>
