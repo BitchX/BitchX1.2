@@ -275,8 +275,55 @@ char	*strftime_24hour = "%R";
 char	*strftime_12hour = "%I:%M%p";
 char	time_str[61];
 
+char    saved_termvar[BUFSIZ];
+
 void detachcmd(char *, char *, char *, char *);
 
+
+int
+munge_term_env_var(void)
+{
+  char *termvar = getenv("TERM");
+  int i;
+
+  /*
+   * Initialize saved_termvar
+   */
+
+  for (i = 0; i < BUFSIZ; i++)
+      saved_termvar[i] = '\0';
+
+  /*
+   * TERM var not there?  It'll get detected later.  Exit silently.
+   */
+
+  if (!termvar)
+      return 0;
+
+  if (!strcmp(termvar, "xterm-256color"))
+    {
+      snprintf(saved_termvar, BUFSIZ, "TERM=%s", termvar);
+      return 1;
+    }
+  else if (!strcmp(termvar, "xterm"))
+    {
+      snprintf(saved_termvar, BUFSIZ, "TERM=%s", termvar);
+      return 1;
+    }
+
+  /*
+   * Add more if's here, if needed.
+   */
+}
+
+void
+restore_term_env_var(void)
+{
+  if (strlen(saved_termvar) > 0)
+    {
+      putenv(saved_termvar);
+    }
+}
 
 
 /* update_clock: figUres out the current time and returns it in a nice format */
@@ -1470,6 +1517,9 @@ int main(int argc, char *argv[], char *envp[])
 	time(&idle_time);
 	time(&now);
 
+	if (munge_term_env_var())
+	    putenv("TERM=vt100");
+
 	/* We need to zero these early */
 	FD_ZERO(&readables);
 	FD_ZERO(&writables);
@@ -1690,5 +1740,6 @@ int main(int argc, char *argv[], char *envp[])
 #else
 	ircpanic("get_line() returned");
 #endif
+	restore_term_env_var ();
 	return (-((int)0xdead));
 }
