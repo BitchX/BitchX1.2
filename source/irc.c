@@ -63,7 +63,7 @@ CVS_REVISION(irc_c)
 #endif
 
 #ifndef VERSION
-	const char irc_version[] = "BitchX-1.2c02";
+	const char irc_version[] = "BitchX-1.2-final";
 #else
 	const char irc_version[] = VERSION;
 #endif
@@ -82,7 +82,7 @@ const unsigned long bitchx_numver = 120100;
  * Its format is actually YYYYMMDD, for the _release_ date of the
  * client..
  */
-const char internal_version[] = "20040326";
+const char internal_version[] = "20121231";
 
 int	irc_port = IRC_PORT,			/* port of ircd */
 	strip_ansi_in_echo,
