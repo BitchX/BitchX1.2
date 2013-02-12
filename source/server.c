@@ -472,7 +472,7 @@ static	time_t	last_timeout = 0;
 		if (((des = server_list[i].write) > -1) && FD_ISSET(des, wr) && !(server_list[i].login_flags & LOGGED_IN))
 		{
 			struct sockaddr_in sa;
-			int salen = sizeof(struct sockaddr_in);
+			socklen_t salen = sizeof(struct sockaddr_in);
 
 			if (getpeername(des, (struct sockaddr *) &sa, &salen) != -1)
 			{
@@ -1216,7 +1216,7 @@ static	int	connect_to_server_direct (char *server_name, int port)
 {
 	int		new_des;
 	struct sockaddr_foobar	*localaddr;
-	int		address_len;
+	socklen_t	address_len;
 	unsigned short	this_sucks;
 
 
@@ -3102,7 +3102,7 @@ unsigned int lport = 0, rport = 0;
 void identd_handler(int s)
 {
 struct  sockaddr_in     remaddr;
-int sra = sizeof(struct sockaddr_in);
+socklen_t sra = sizeof(struct sockaddr_in);
 int sock = -1;
 	if ((sock = my_accept(s, (struct sockaddr *) &remaddr, &sra)) > -1)
 	{

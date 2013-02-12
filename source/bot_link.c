@@ -116,11 +116,9 @@ int i;
 
 	for (i = 0; i < get_max_fd()+1; i++)
 	{
-		DCC_int *n;
 		if (!check_dcc_socket(i) || (idx == i)) continue;
 		s = get_socket(i);
 		if (!(s->flags & DCC_ACTIVE)) continue;
-		n = get_socketinfo(i);
 		
 		if (idx != i && (s->flags & DCC_BOTCHAT))
 			send(i, putbuf, strlen(putbuf), 0);
@@ -479,14 +477,12 @@ char buffer[IRCD_BUFFER_SIZE+1];
 int tell_who(int idx, char *arg)
 {
 SocketList *s;
-DCC_int *n;
 int i;
 int found = 0;
 	for (i = 0; i < get_max_fd()+1; i++)
 	{
 		if (!check_dcc_socket(i)) continue;
 		s = get_socket(i);
-		n = get_socketinfo(i);
 		if ((s->flags & DCC_TYPES) == DCC_CHAT && (s->flags & DCC_BOTCHAT))
 		{
 			if (!found++)
@@ -501,7 +497,6 @@ int found = 0;
 	{
 		if (!check_dcc_socket(i)) continue;
 		s = get_socket(i);
-		n = get_socketinfo(i);
 		if ((s->flags & DCC_TYPES) == DCC_BOTMODE)
 		{
 			if (!found++)
@@ -571,7 +566,6 @@ SocketList *s;
 
 int send_whom(int idx, char *arg)
 {
-int found = 0;
 int i;
 int j;
 SocketList *s, *s1 = NULL;
@@ -590,7 +584,6 @@ SocketList *s, *s1 = NULL;
 		{
 			dcc_printf(s->is_read, "whom %d:%s@%s %s %d\n",
 				idx, s1->server, get_server_nickname(from_server), arg, 0);
-			found = 1;
 		}
 	}
 	return 0;
@@ -598,8 +591,8 @@ SocketList *s, *s1 = NULL;
 
 int tand_priv (int idx, char *args)
 {
-char *to, *from, *p, *i_dx;
-	from = next_arg(args, &args);
+char *to, *p, *i_dx;
+	next_arg(args, &args);
 	to = next_arg(args, &args);
 	p = strchr(to, '@');
 	if (p && !my_stricmp(p+1, get_server_nickname(from_server)))

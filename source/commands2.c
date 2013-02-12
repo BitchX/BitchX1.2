@@ -404,7 +404,7 @@ char buffer[BIG_BUFFER_SIZE+1];
 			}
 			modelock++;
 		}
-		if (chan && chan->have_op && buffer)
+		if (chan && chan->have_op)
 			send_to_server("MODE %s %s", chan->channel, buffer);
 		new_free(&save);
 		new_free(&save1);
@@ -2459,7 +2459,7 @@ struct param parm;
 
 void handle_reconnect(int s)
 {
-int len;
+socklen_t len;
 struct sockaddr_in addr;
 int n;
 	memset(&addr, 0, sizeof(addr));

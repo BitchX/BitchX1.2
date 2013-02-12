@@ -395,18 +395,15 @@ static int do_local_send(char *command, char *args, char *rest)
 	pack *ptr = NULL;
 	char *temp = NULL, *file = NULL, *dccinfo = NULL, *q = NULL, *p;
 	int maxdcc, maxqueue;
-	int tdcc = 0;
 	int queued_files =  0;
 	int count = 0;
-				
-	if (*command == 'T')
-		tdcc = 1;	
+
 	if (!args || !*args)
 		return 0;
 
 	maxdcc = get_int_var(DCC_SEND_LIMIT_VAR);
 	maxqueue = get_int_var(DCC_QUEUE_LIMIT_VAR);
-		
+
 	while (1)
 	{
 		if (!(temp = next_arg(rest, &rest)))
@@ -654,7 +651,6 @@ static int r_list(char *from, char *args)
 	char bytes_out[30];
 	char bytes_in[30];
 	char speed_out[30];
-	char *type_msg;
 	int once = 0;
 
 	sprintf(mrate_out, "%1.3g", dcc_max_rate_out);
@@ -662,8 +658,6 @@ static int r_list(char *from, char *args)
 	sprintf(bytes_out, "%1.3g", dcc_bytes_out);
 	sprintf(bytes_in, "%1.3g", dcc_bytes_in);
 	sprintf(speed_out, "%1.3g", cdcc_minspeed);
-
-	type_msg = (do_notice_list)? "NOTICE":"PRIVMSG";
 
 	for (ptr = offerlist; ptr; ptr = ptr->next) 
 	{

@@ -395,7 +395,6 @@ int old_server = from_server;
 
 void userhost_ban(UserhostItem *stuff, char *nick1, char *args)
 {
-	char *temp;
 	char *str= NULL;
 	char *channel;
 	ChannelList *c = NULL;
@@ -412,7 +411,7 @@ void userhost_ban(UserhostItem *stuff, char *nick1, char *args)
 	
 	
 	channel = next_arg(args, &args);
-	temp = next_arg(args, &args);
+	next_arg(args, &args);
 
 	fuck = !my_stricmp("FUCK", args);
 	set_ignore = !my_stricmp("BKI", args);
@@ -471,15 +470,10 @@ BUILT_IN_COMMAND(multkick)
 	char *to = NULL, *temp = NULL, *reason = NULL;
 	ChannelList *chan;
 	int server = from_server;
-	int	filter = 0;
-	
 
-	if (command && *command)
-		filter = 1;
-		
 	if (!(to = next_arg(args, &args)))
 		to = NULL;
-	
+
 	if (to && !is_channel(to))
 	{
 		temp = to;
@@ -489,7 +483,7 @@ BUILT_IN_COMMAND(multkick)
 	}
 	else
 		temp = args;
-		
+
 	if (!(chan = prepare_command(&server, to, NEED_OP)))
 		return;
 
@@ -663,14 +657,11 @@ BUILT_IN_COMMAND(massop)
 	register NickList *nicks;
 
 	char	*to = NULL, 
-		*spec, 
-		*rest;
+		*spec;
 	char	buffer[BIG_BUFFER_SIZE + 1];
 	
 	int	maxmodes = get_int_var(NUM_OPMODES_VAR), 
 		count, 
-		i, 
-		all = 0,
 		massvoice =0;
 	int	server = 0;
 		
@@ -678,7 +669,6 @@ BUILT_IN_COMMAND(massop)
 	if (command)
 		massvoice = 1;
 
-	rest = NULL;
 	spec = NULL;
 
 	if (!(to = next_arg(args, &args)))
@@ -695,20 +685,11 @@ BUILT_IN_COMMAND(massop)
 	if (!spec && !(spec = next_arg(args, &args)))
 		spec = "*!*@*";
 	if (*spec == '-')
-	{
-		rest = spec;
 		spec = "*!*@*";
-	}
-	else
-		rest = args;
-
-	if (rest && !my_stricmp(rest, "-all"))
-		all = 1;
 
 	count = 0;
 	for (nicks = next_nicklist(chan, NULL); nicks; nicks = next_nicklist(chan, nicks))
 	{
-		i = 0;
 		sprintf(buffer, "%s!%s", nicks->nick, nicks->host);
 		if ((my_stricmp(nicks->nick, get_server_nickname(from_server)) && wild_match(spec, buffer)))
 		{

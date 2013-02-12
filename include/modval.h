@@ -115,7 +115,11 @@ extern Function_ptr *global;
 /* ircaux.c */
 #define new_malloc(x) ((void * (*)(size_t, const char *, const char *, int))global[NEW_MALLOC])((x),MODULENAME, __FILE__,__LINE__)
 #define new_free(x) (*(x) = ((void * (*)(void *, const char *, const char *, int))global[NEW_FREE])(*(x),MODULENAME, __FILE__,__LINE__))
-#define RESIZE(x, y, z) ((x) = ((void * (*)(void *, size_t, const char *, const char *, int))global[NEW_REALLOC])((x), sizeof(y) * (z), MODULENAME, __FILE__, __LINE__))
+#define RESIZE(x, y, z) \
+	{ \
+		void *__tmpval = ((void * (*)(void *, size_t, const char *, const char *, int))global[NEW_REALLOC])((x), sizeof(y) * (z), MODULENAME, __FILE__, __LINE__); \
+		(x) = __tmpval; \
+	}
 #define malloc_strcpy(x, y) ((char * (*)(char **, const char *, const char *, const char *, int))global[MALLOC_STRCPY])((x), (y), MODULENAME, __FILE__, __LINE__)
 #define malloc_strcat(x, y) ((char * (*)(char **, const char *, const char *, const char *, int))global[MALLOC_STRCAT])((x), (y), MODULENAME, __FILE__, __LINE__)
 #define malloc_str2cpy (*(char * (*)(char **, const char *, const char *))global[MALLOC_STR2CPY])

@@ -450,7 +450,7 @@ int BX_connect_by_number(char *hostn, unsigned short *portnum, int service, int 
 	/* Inet domain server */
 	if (!is_unix && (service == SERVICE_SERVER))
 	{
-		int length;
+		socklen_t length;
 #ifdef IP_PORTRANGE
 		int ports;
 #endif
@@ -780,7 +780,7 @@ extern char *BX_one_to_another (const char *what)
  * has been closed in the interim.  This wrapper for accept() attempts to
  * defeat this by making the accept() call nonblocking.
  */
-int	my_accept (int s, struct sockaddr *addr, int *addrlen)
+int	my_accept (int s, struct sockaddr *addr, socklen_t *addrlen)
 {
 	int	retval;
 	set_non_blocking(s);

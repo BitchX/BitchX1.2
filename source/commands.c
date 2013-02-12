@@ -2591,13 +2591,11 @@ extern int run_level, do_ignore_ajoin;
 BUILT_IN_COMMAND(e_channel)
 {
 	char	*chan;
-	int	len;
 	char	*buffer=NULL;
 	
 	set_display_target(NULL, LOG_CURRENT);
 	if ((chan = next_arg(args, &args)) != NULL)
 	{
-		len = strlen(chan);
 		if (!my_strnicmp(chan, "-i", 2))
 		{
 			if (invite_channel)
@@ -3166,7 +3164,6 @@ int silent = 0;
  */
 BUILT_IN_COMMAND(away)
 {
-	int	len;
 	char	*arg = NULL;
 	int	flag = AWAY_ONE;
 	int	i,
@@ -3197,7 +3194,6 @@ BUILT_IN_COMMAND(away)
 				*arg++ = '\0';
 			else
 				arg = empty_string;
-			len = strlen(args);
 			if (!my_strnicmp(args+1, "A", 1)) /* all */
 			{
 				flag = AWAY_ALL;
@@ -3363,35 +3359,9 @@ BUILT_IN_COMMAND(quotecmd)
 	if (args && *args)
 	{
 		char	*comm = new_next_arg(args, &args);
-		protocol_command *p;
-		int	cnt;
-		int	loc;
 
 		upper(comm);
-		p = (protocol_command *)find_fixed_array_item(
-			(void *)rfc1459, sizeof(protocol_command),
-			num_protocol_cmds + 1, comm, &cnt, &loc);
 
-		/*
-		 * If theyre dispatching some protocol commands we
-		 * dont know about, then let them, without complaint.
-		 */
-#if 0
-		if (cnt < 0 && (rfc1459[loc].flags & PROTO_NOQUOTE))
-		{
-			yell("Doing /QUOTE %s is not permitted.  Use the client's built in command instead.", comm);
-			from_server = old_from_server;
-			return;
-		}
-#endif
-		/*
-		 * If we know its going to cause a problem in the 
-		 * future, whine about it.
-		 */
-#if 0
-		if (cnt < 0 && (rfc1459[loc].flags & PROTO_DEPREC))
-			yell("Doing /QUOTE %s is discouraged because it will break the client in the future.  Use the client's built in command instead.", comm);
-#endif
 		if (all_servers)
 		{
 			int i;
@@ -3401,17 +3371,11 @@ BUILT_IN_COMMAND(quotecmd)
 				{
 					from_server = i;
 					send_to_server("%s %s", comm, args ? args:empty_string);
-					rfc1459[loc].bytes += strlen(args);
-					rfc1459[loc].count++;
 				}
 			}
 		}
 		else
-		{
 			send_to_server("%s %s", comm, args ? args : empty_string);
-			rfc1459[loc].bytes += strlen(comm) + (args? strlen(args) : 0);
-			rfc1459[loc].count++;
-		}
 	}
 
 	from_server = old_from_server;

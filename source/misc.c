@@ -1078,14 +1078,14 @@ char *mircansi(unsigned char *line)
 }
 #endif
 
-char *stripansi(unsigned char *line)
+char *stripansi(char *line)
 {
-register unsigned char    *cp;
+register char    *cp;
 unsigned char *newline;
 	newline = m_strdup(line);        
 	for (cp = newline; *cp; cp++)
 		if ((*cp < 31 && *cp > 13))
-			if (*cp != 1 && *cp != 15 && *cp !=22 && *cp != 0x9b)
+			if (*cp != 1 && *cp != 15 && *cp != 22)
 				*cp = (*cp & 127) | 64;
 	return (char *)newline;
 }
@@ -3789,7 +3789,7 @@ struct servent *serv;
 struct sockaddr_foobar	addr;
 struct hostent *host;
 char buf[128], *hostname = buf;
-        int             address_len;
+	socklen_t address_len;
 
 	address_len = sizeof(struct sockaddr_foobar);
         if ((getpeername(rc, (struct sockaddr *) &addr, &address_len)) != -1)
