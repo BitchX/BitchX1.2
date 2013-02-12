@@ -561,7 +561,7 @@ int var_index, cnt = 0;
 				return t;
 			}
 		}		
-		return m_strdup(s && *s ? s : empty_string);
+		return m_strdup(*s != '\0' ? s : empty_string);
 	}
 	return m_strdup(empty_string);
 }
