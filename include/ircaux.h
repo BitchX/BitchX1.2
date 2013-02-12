@@ -206,7 +206,13 @@ void	*n_free 	(void *, const char *, const char *, const int);
 #define new_malloc(x) n_malloc(x, MODULENAME, __FILE__, __LINE__)
 #define new_free(x) (*(x) = n_free(*(x), MODULENAME, __FILE__, __LINE__))
 
-#define RESIZE(x, y, z) ((x) = n_realloc((x), sizeof(y) * (z), MODULENAME, __FILE__, __LINE__))
+/* RESIZE() reworked to be sequence-point safe. --nenolod */
+#define RESIZE(x, y, z) \
+	{ \
+		void *__tmpval = n_realloc((x), sizeof(y) * (z), MODULENAME, __FILE__, __LINE__); \
+		(x) = __tmpval; \
+	}
+
 #define malloc_strcpy(x, y) n_malloc_strcpy((char **)x, (char *)y, MODULENAME, __FILE__, __LINE__)
 #define malloc_strcat(x, y) n_malloc_strcat((char **)x, (char *)y, MODULENAME, __FILE__, __LINE__)
 #define m_strdup(x) n_m_strdup(x, MODULENAME, __FILE__, __LINE__)
