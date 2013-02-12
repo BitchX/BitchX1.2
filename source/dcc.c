@@ -535,7 +535,7 @@ DCC_List		*new_i;
 		SocketList 		*s = NULL;
 		int			new_s;
 		struct	sockaddr_in	remaddr;
-		int			rl = sizeof(remaddr);
+		socklen_t		rl = sizeof(remaddr);
 
 
 		if (!new_i && !(new_i = find_dcc_pending(nick, filename, NULL, type, 1, -1)))
@@ -730,7 +730,7 @@ DCC_List		*new_i;
 static void start_dcc_chat(int s)
 {
 struct	sockaddr_in	remaddr;
-int	sra;
+socklen_t sra;
 int	type;
 int	new_s = -1;
 char	*nick = NULL;	
@@ -1789,7 +1789,7 @@ char *buffer = alloca(MAX_DCC_BLOCK_SIZE+1);
 void start_dcc_send(int s)
 {
 struct	sockaddr_in	remaddr;
-int	sra;
+socklen_t sra;
 int	type;
 int	new_s = -1;
 int	tdcc = 0;
@@ -3692,7 +3692,7 @@ int err;
 int open_listen_port(int s)
 {
 struct sockaddr_in data_addr = { 0 };
-int len = sizeof(struct sockaddr_in), data = -1;
+socklen_t len = sizeof(struct sockaddr_in), data = -1;
 int on = 1;
 char *a, *p;
 
@@ -3784,7 +3784,7 @@ int i = 0;
 	if (s->flags & DCC_WAIT)
 	{
 		struct	sockaddr_in	remaddr;
-		int			rl = sizeof(remaddr);
+		socklen_t		rl = sizeof(remaddr);
                                 
 		/* maybe we should login here. */
 		if (getpeername(snum, (struct sockaddr *) &remaddr, &rl) != -1)
@@ -3832,7 +3832,7 @@ void open_ftpget(SocketList *s, char *args)
 SocketList *sock;
 DCC_int *new;
 struct sockaddr_in data_addr = { 0 };
-int len = sizeof(struct sockaddr_in);
+socklen_t len = sizeof(struct sockaddr_in);
 char tmp[BIG_BUFFER_SIZE+1];
 int data = -1, s1 = -1;
 char *p, *bufptr;
@@ -3931,7 +3931,7 @@ SocketList *s;
 				int sock, s1;
 				DCC_int *new;
 				struct sockaddr_in data_addr = { 0 };
-				int len = sizeof(struct sockaddr_in);
+				socklen_t len = sizeof(struct sockaddr_in);
 				char tmp[BIG_BUFFER_SIZE+1], *bufptr;
 				if ((sock = open_listen_port(s->is_read)) == -1)
 					return -1;

@@ -159,7 +159,7 @@ char *			BX_ip_to_host (const char *);
 char *			BX_one_to_another (const char *);
 int			BX_set_blocking (int);
 int			BX_set_non_blocking (int);
-int			my_accept (int, struct sockaddr *, int *);
+int			my_accept (int, struct sockaddr *, socklen_t *);
 int			lame_resolv (const char *, struct sockaddr_foobar *);
 
 #define my_isspace(x) \

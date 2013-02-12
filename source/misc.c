@@ -3789,7 +3789,7 @@ struct servent *serv;
 struct sockaddr_foobar	addr;
 struct hostent *host;
 char buf[128], *hostname = buf;
-        int             address_len;
+	socklen_t address_len;
 
 	address_len = sizeof(struct sockaddr_foobar);
         if ((getpeername(rc, (struct sockaddr *) &addr, &address_len)) != -1)

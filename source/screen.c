@@ -1552,7 +1552,7 @@ extern	Window	*BX_create_additional_screen (void)
                 *termvar;
         int     screen_type = ST_NOTHING;
         struct  sockaddr_in NewSock;
-        int     NsZ;
+        socklen_t NsZ;
         int     s;
 	fd_set	fd_read;
 	struct	timeval	timeout;
