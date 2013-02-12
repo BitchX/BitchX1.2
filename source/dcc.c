@@ -417,14 +417,12 @@ char *othername = NULL;
 DCC_List *find_dcc_pending(char *nick, char *desc, char *othername, int type, int remove, int num)
 {
 unsigned long dcc_type;
-unsigned long flags;
 SocketList *s;
 DCC_int *n;
 DCC_List *new_i;
 DCC_List *last_i = NULL;
 	for (new_i = pending_dcc; new_i; last_i = new_i, new_i = new_i->next)
 	{
-		flags = new_i->sock.flags;
 		s = &new_i->sock;
 		n = (DCC_int *)s->info;
 		dcc_type = s->flags & DCC_TYPES;
@@ -2090,16 +2088,10 @@ void start_dcc_get(int snum)
 DCC_int *n;
 SocketList *s;
 int bytes_read;
-unsigned long type;
-int tdcc = 0;
 char buffer[MAX_DCC_BLOCK_SIZE+1];
 int err;
 	s = get_socket(snum);
 	n = (DCC_int *)s->info;
-	type = s->flags & DCC_TYPES;
-	tdcc = s->flags & DCC_TDCC;
-
-
 
 	set_display_target(NULL, LOG_DCC);
 	bytes_read = read(snum, buffer, MAX_DCC_BLOCK_SIZE);
@@ -3035,23 +3027,19 @@ int dcc_exempt_save(FILE *fptr)
 {
 int count = 0;
 List *nptr = NULL;
-	if (dcc_no_flood)
-	{
-		fprintf(fptr, "# Dcc Exempt from autoget OFF list\n");
-		fprintf(fptr, "DCC EXEMPT ");
-	}
+	fprintf(fptr, "# Dcc Exempt from autoget OFF list\n");
+	fprintf(fptr, "DCC EXEMPT ");
+
 	for (nptr = next_namelist(dcc_no_flood, NULL, DCC_HASHSIZE); nptr; nptr = next_namelist(dcc_no_flood, nptr, DCC_HASHSIZE))
 	{
 		fprintf(fptr, "+%s ", nptr->name);
 		count++;
 	}
-	if (dcc_no_flood)
-	{
-		fprintf(fptr, "\n");
-		if (count && do_hook(SAVEFILE_LIST, "DCCexempt %d", count))
-			bitchsay("Saved %d DccExempt entries", count);
-		                        
-	}
+
+	fprintf(fptr, "\n");
+	if (count && do_hook(SAVEFILE_LIST, "DCCexempt %d", count))
+		bitchsay("Saved %d DccExempt entries", count);
+
 	return count;
 }
 
@@ -3079,7 +3067,7 @@ static	void 	output_reject_ctcp (UserhostItem *stuff, char *nick, char *args)
 	description 		= next_arg(args, &args);
 	nickname_recieved 	= stuff->nick; 
 
-	if (nickname_recieved && *nickname_recieved)
+	if (nickname_requested && *nickname_requested && nickname_recieved && *nickname_recieved)
 		send_ctcp(CTCP_NOTICE, nickname_recieved, CTCP_DCC,
 				"REJECT %s %s", type, description);
 }
@@ -3829,7 +3817,6 @@ int i = 0;
 
 void open_ftpget(SocketList *s, char *args)
 {
-SocketList *sock;
 DCC_int *new;
 struct sockaddr_in data_addr = { 0 };
 socklen_t len = sizeof(struct sockaddr_in);
@@ -3882,7 +3869,6 @@ char *filename = NULL;
 		filename = args;
 
 	add_socketread(s1, 0,  DCC_FTPGET|DCC_ACTIVE, s->server, read_ftp_file, NULL);
-	sock = get_socket(s1);
 	new = new_malloc(sizeof(DCC_int));
 	{
 		char *t, *expand;
