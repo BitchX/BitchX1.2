@@ -77,7 +77,7 @@ int hsize,fs,mean_frame_size;
 					   nbal=&t_nbal2;
 					   sblimit=8;
 					   break;
-				default  : /*printf(" bit alloc info no gud ");*/
+				default  : printf(" bit alloc info no gud ");
 				}
 				break;
 		case 1 : switch (bitrate)	/* 1 = 48 kHz */
@@ -98,7 +98,7 @@ int hsize,fs,mean_frame_size;
 					   nbal=&t_nbal2;
 					   sblimit=8;
 					   break;
-				default  : /*printf(" bit alloc info no gud ");*/
+				default  : printf(" bit alloc info no gud ");
 				}
 				break;
 		case 2 : switch (bitrate)	/* 2 = 32 kHz */
@@ -122,10 +122,10 @@ int hsize,fs,mean_frame_size;
                                    nbal=&t_nbal3;
                                    sblimit=12;
 				   break;
-			default  : /*printf("bit alloc info not ok\n");*/
+			default  : printf("bit alloc info not ok\n");
 			}
 	                break;                                                    
-		default  : /*printf("sampling freq. not ok/n");*/
+		default  : printf("sampling freq. not ok/n");
 	} else {
 		bit_alloc_index=&t_allocMPG2;
 		nbal=&t_nbalMPG2;
